@@ -9,7 +9,7 @@ class Evm {
             : amp_factor(40)
             , freq_min(0.8)
             , freq_max(2.0)
-            , pyramid_levels(2)
+            , pyramid_levels(4)
             , default_fps(30)
         {}
 
@@ -26,10 +26,13 @@ class Evm {
         cv::Mat build_temporal_stack(const std::vector<cv::Mat>& in_frames);
         std::vector<cv::Mat> decompose_temporal_stack(const cv::Mat& temporal_stack, int frame_height);
 
-        cv::Mat filter_temporal_stack(const cv::Mat& temporal_stack);
+        cv::Mat filter_temporal_stack(const cv::Mat& temporal_stack, const cv::Mat& filter_response);
 
-        std::vector<cv::Mat> combine_frames(const std::vector<cv::Mat>& orig_frames, const std::vector<cv::Mat>& filtered_frames);
+        std::vector<cv::Mat> merge_frames(const std::vector<cv::Mat>& orig_frames, const std::vector<cv::Mat>& filtered_frames, float alpha);
 
+
+        cv::Mat getAllPassFilter(cv::Size size, int type);
+        cv::Mat getBandPassFilter(cv::Size size, int type, float freq_low, float freq_high, float sample_rate);
 
         //Options
         float amp_factor;

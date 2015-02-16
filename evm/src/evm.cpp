@@ -17,6 +17,9 @@ using cv::VideoCapture;
 using cv::VideoWriter;
 using cv::pyrDown;
 using cv::split;
+using cv::dft;
+using cv::idft;
+using cv::normalize;
 
 //using namespace cv;
 
@@ -38,7 +41,12 @@ void Evm::amplify_video(string in_file, string out_file) {
     Mat gauss_down_stack = build_temporal_stack(gauss_down_frames);
 
     //Temporally filter and amplify the stack
-    Mat down_filtered_stack = filter_temporal_stack(gauss_down_stack);
+    cout << "Filtering..." << endl;
+    /*
+     *Mat filter_response = getAllPassFilter(gauss_down_stack.size(), CV_32FC1);
+     */
+    Mat filter_response = getBandPassFilter(gauss_down_stack.size(), CV_32FC1, freq_min, freq_max, default_fps);
+    Mat down_filtered_stack = filter_temporal_stack(gauss_down_stack, filter_response);
 
     //Break the stack back into frames
     //  Convert the stack back into a sequence of frames
@@ -50,15 +58,12 @@ void Evm::amplify_video(string in_file, string out_file) {
 
     //Re-combine the filtered stack with the input frames
     //  Merge the filtered and original frames
-    cout << "Filtering..." << endl;
-    /*
-     *vector<Mat> out_frames = combine_frames(in_frames, filtered_frames);
-     */
-    vector<Mat> out_frames = filtered_frames;
+    vector<Mat> out_frames = merge_frames(in_frames, filtered_frames, amp_factor);
 
     //Write the output video
     cout << "Writing output..." << endl;
     write_frames(out_frames, default_fps, out_file);
+    //write_frames(filtered_frames, default_fps, out_file);
 
 }
 
@@ -204,35 +209,82 @@ vector<Mat> Evm::decompose_temporal_stack(const Mat& temporal_stack, int frame_h
     return frames;
 }
 
-Mat Evm::filter_temporal_stack(const Mat& temporal_stack) {
+Mat Evm::filter_temporal_stack(const Mat& temporal_stack, const Mat& filter_response) {
+
     //Filter each channel independantly
     vector<Mat> channels;
     split(temporal_stack, channels);
 
-    vector<Mat> filtered_channels;
+    vector<Mat> filtered_channels(channels.size());
 
-    int i = 0;
-    for(const Mat& channel : channels) {
-        if(i == 2) {
-            filtered_channels.push_back(channel);
-        } else {
-            filtered_channels.push_back(Mat::zeros(channels[0].size(), CV_8U));
-        }
-        //Row-based DFT
+    for(int i = 0; i < (int) channels.size(); i++) {
+        //We must do DFT in floating point...
+        Mat channel_float;
+        channels[i].convertTo(channel_float, CV_32FC1);
 
+
+        //Forward DFT temporal -> frequency 
+        Mat fft_result;
+        dft(channel_float, fft_result, cv::DFT_ROWS); 
+            
         //Apply ideal band-pass filter
+        Mat filtered_fft_result(fft_result.size(), fft_result.type());
+        mulSpectrums(fft_result, filter_response, filtered_fft_result, cv::DFT_ROWS);
+        /*
+         *Mat filtered_fft_result = fft_result;
+         */
 
         //Row-based inverse DFT
+        // frequency -> temporal
+        idft(filtered_fft_result, filtered_channels[i], cv::DFT_ROWS | cv::DFT_SCALE);
 
-        i++;
     }
 
+    //Merge back channels
     Mat filtered_temporal_stack;
     merge(filtered_channels, filtered_temporal_stack);
+
+    //Re-normalize values
+    //normalize(filtered_temporal_stack, filtered_temporal_stack, 0, 255);
+
+    //Convert to 8-bit
+    filtered_temporal_stack.convertTo(filtered_temporal_stack, CV_8UC3);
 
     return filtered_temporal_stack;
 }
 
-vector<Mat> Evm::combine_frames(const vector<Mat>& orig_frames, const vector<Mat>& filtered_frames) {
-    return orig_frames;
+vector<Mat> Evm::merge_frames(const vector<Mat>& orig_frames, const vector<Mat>& filtered_frames, float alpha) {
+    vector<Mat> output_frames;
+
+    //Same length
+    assert(orig_frames.size() == filtered_frames.size());
+
+    for(int i = 0; i < (int) orig_frames.size(); i++) {
+        Mat merged_frame = orig_frames[i] + alpha*filtered_frames[i];
+        output_frames.push_back(merged_frame);
+    }
+
+    return output_frames;
+}
+
+Mat Evm::getAllPassFilter(Size size, int type) {
+    Mat filter = Mat::ones(size, type);
+    return filter;
+}
+
+Mat Evm::getBandPassFilter(Size size, int type, float freq_low, float freq_high, float sample_rate) {
+    Mat filter = Mat::zeros(size, type);
+
+    float freq_low_idx = 2*freq_low*size.width / sample_rate;
+    float freq_high_idx = 2*freq_high*size.width / sample_rate;
+
+    for(int irow = 0; irow < size.height; irow++) {
+        for(int icol = 0; icol < size.width; icol++) {
+            if(icol >= freq_low_idx && icol <= freq_high_idx) {
+                filter.at<float>(irow, icol) = 1.0;
+            }
+        }
+    }
+
+    return filter;
 }
