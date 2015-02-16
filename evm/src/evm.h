@@ -24,7 +24,7 @@ class Evm {
         std::vector<cv::Mat> gauss_upsample_frames(const std::vector<cv::Mat>& in_frames, int levels);
 
         cv::Mat build_temporal_stack(const std::vector<cv::Mat>& in_frames);
-        std::vector<cv::Mat> decompose_temporal_stack(const cv::Mat& temporal_stack);
+        std::vector<cv::Mat> decompose_temporal_stack(const cv::Mat& temporal_stack, int frame_height);
 
         cv::Mat filter_temporal_stack(const cv::Mat& temporal_stack);
 

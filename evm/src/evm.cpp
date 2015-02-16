@@ -9,13 +9,16 @@
 using std::vector;
 using std::cout;
 using std::endl;
+using std::string;
 
 using cv::Mat;
+using cv::Size;
 using cv::VideoCapture;
 using cv::VideoWriter;
 using cv::pyrDown;
+using cv::split;
 
-using namespace cv;
+//using namespace cv;
 
 
 void Evm::amplify_video(string in_file, string out_file) {
@@ -29,23 +32,21 @@ void Evm::amplify_video(string in_file, string out_file) {
     cout << "Downsampling..." << endl;
     std::vector<Mat> gauss_down_frames = gauss_downsample_frames(in_frames, pyramid_levels);
 
-/*
- *    //Build the image stack
- *    //  Convert the frame sequence into an image stack (i.e. with a time dimension)
- *    //  This is used to perform temporal filtering on a per-pixel basis
- *    Mat gauss_down_stack = build_temporal_stack(gauss_down_frames);
- *
- *    //Temporally filter and amplify the stack
- *    Mat down_filtered_stack = filter_temporal_stack(gauss_down_stack);
- *
- *    //Break the stack back into frames
- *    //  Convert the stack back into a sequence of frames
- *    vector<Mat> down_filtered_frames = decompose_temporal_stack(down_filtered_stack);
- */
+    //Build the image stack
+    //  Convert the frame sequence into an image stack (i.e. with a time dimension)
+    //  This is used to perform temporal filtering on a per-pixel basis
+    Mat gauss_down_stack = build_temporal_stack(gauss_down_frames);
+
+    //Temporally filter and amplify the stack
+    Mat down_filtered_stack = filter_temporal_stack(gauss_down_stack);
+
+    //Break the stack back into frames
+    //  Convert the stack back into a sequence of frames
+    vector<Mat> down_filtered_frames = decompose_temporal_stack(down_filtered_stack, gauss_down_frames[0].size().height);
 
     //Upsample the frames using a gaussian filter
     cout << "Upsampling..." << endl;
-    std::vector<Mat> filtered_frames = gauss_upsample_frames(gauss_down_frames, pyramid_levels);
+    std::vector<Mat> filtered_frames = gauss_upsample_frames(down_filtered_frames, pyramid_levels);
 
     //Re-combine the filtered stack with the input frames
     //  Merge the filtered and original frames
@@ -53,12 +54,11 @@ void Evm::amplify_video(string in_file, string out_file) {
     /*
      *vector<Mat> out_frames = combine_frames(in_frames, filtered_frames);
      */
-    //vector<Mat> out_frames = filtered_frames;
+    vector<Mat> out_frames = filtered_frames;
 
     //Write the output video
     cout << "Writing output..." << endl;
-    //write_frames(out_frames, default_fps, out_file);
-    write_frames(in_frames, default_fps, out_file);
+    write_frames(out_frames, default_fps, out_file);
 
 }
 
@@ -160,18 +160,77 @@ vector<Mat> Evm::gauss_upsample_frames(const vector<Mat>& in_frames, int levels)
 
 
 Mat Evm::build_temporal_stack(const vector<Mat>& in_frames) {
-    Mat temporal_stack;
+    int nframes = (int) in_frames.size();
+    int frame_width = in_frames.at(0).size().width;
+    int frame_height = in_frames.at(0).size().height;
+
+
+    //Create an image stack upon which we will perform a DFT.
+    //  OpenCV supports performing a 'per-row' DFT on a 2D matrix,
+    //  so we build a 2D matrix where each 'row' is a pixel frame
+    //  with columns representing the values accross frames 
+    //  
+    //Therefore we build a matrix with:
+    //   - frame_width*frame_height rows
+    //   - nframes columns
+    Mat temporal_stack(frame_width*frame_height, nframes, CV_8UC3);
+
+    //Insert each frame into the stack
+    for(int i = 0; i < (int) in_frames.size(); i++) {
+        Mat frame_col = in_frames[i].reshape(3, frame_width*frame_height); //3 colour channels, npixel rows
+        Mat stack_col = temporal_stack.col(i);
+
+        frame_col.copyTo(stack_col);
+    }
 
     return temporal_stack;
 }
 
-vector<Mat> Evm::decompose_temporal_stack(const Mat& temporal_stack) {
+vector<Mat> Evm::decompose_temporal_stack(const Mat& temporal_stack, int frame_height) {
     vector<Mat> frames;
+
+    Size stack_size = temporal_stack.size();
+    int nframes = stack_size.width; //Number of columns
+
+    for(int i = 0; i < nframes; i++) {
+        Mat stack_col = temporal_stack.col(i).clone().reshape(3, frame_height);
+        Mat frame;
+
+        stack_col.copyTo(frame);
+
+        frames.push_back(frame);
+    }
+
     return frames;
 }
 
 Mat Evm::filter_temporal_stack(const Mat& temporal_stack) {
-    return temporal_stack;
+    //Filter each channel independantly
+    vector<Mat> channels;
+    split(temporal_stack, channels);
+
+    vector<Mat> filtered_channels;
+
+    int i = 0;
+    for(const Mat& channel : channels) {
+        if(i == 2) {
+            filtered_channels.push_back(channel);
+        } else {
+            filtered_channels.push_back(Mat::zeros(channels[0].size(), CV_8U));
+        }
+        //Row-based DFT
+
+        //Apply ideal band-pass filter
+
+        //Row-based inverse DFT
+
+        i++;
+    }
+
+    Mat filtered_temporal_stack;
+    merge(filtered_channels, filtered_temporal_stack);
+
+    return filtered_temporal_stack;
 }
 
 vector<Mat> Evm::combine_frames(const vector<Mat>& orig_frames, const vector<Mat>& filtered_frames) {
