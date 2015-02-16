@@ -45,7 +45,7 @@ void Evm::amplify_video(string in_file, string out_file) {
 
     //Upsample the frames using a gaussian filter
     cout << "Upsampling..." << endl;
-    //std::vector<Mat> filtered_frames = gauss_upsample_frames(in_frames, pyramid_levels);
+    std::vector<Mat> filtered_frames = gauss_upsample_frames(gauss_down_frames, pyramid_levels);
 
     //Re-combine the filtered stack with the input frames
     //  Merge the filtered and original frames
@@ -117,14 +117,19 @@ vector<Mat> Evm::gauss_downsample_frames(const vector<Mat>& in_frames, int level
     vector<Mat> gauss_down_frames;
 
     //Build a gaussian pyramid for each frame, and save the last (smallest) level
+    int i = 0;
     for(const Mat& frame : in_frames) {
         Mat downsampled_frame = frame.clone();
         for(int level = 0; level < levels; level++) {
             //Downsample the frame by a factor of 2 in each dimension,
             //using a gaussian averaging function
             pyrDown(downsampled_frame, downsampled_frame);
+            if(i == 0) {
+                cout << "\tDown Pyramid Level " << level << " Size: " << downsampled_frame.size() << endl;
+            }
         } 
         gauss_down_frames.push_back(downsampled_frame);
+        i++;
     }
 
     return gauss_down_frames;
@@ -134,14 +139,20 @@ vector<Mat> Evm::gauss_upsample_frames(const vector<Mat>& in_frames, int levels)
     vector<Mat> gauss_up_frames;
 
     //Build a gaussian pyramid for each frame, and save the last (smallest) level
+    int i = 0;
     for(const Mat& frame : in_frames) {
         Mat upsampled_frame = frame.clone();
         for(int level = 0; level < levels; level++) {
             //Upsample the frame by a factor of 2 in each dimension,
             //using a gaussian averaging function
             pyrUp(upsampled_frame, upsampled_frame);
+            if(i == 0) {
+                cout << "\tUp Pyramid Level " << level << " Size: " << upsampled_frame.size() << endl;
+            }
+
         } 
         gauss_up_frames.push_back(upsampled_frame);
+        i++;
     }
 
     return gauss_up_frames;
