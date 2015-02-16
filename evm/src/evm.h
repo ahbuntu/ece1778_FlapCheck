@@ -6,10 +6,10 @@
 class Evm {
     public:
         Evm()
-            : amp_factor(40)
+            : amp_factor(0.2)
             , freq_min(0.8)
-            , freq_max(2.0)
-            , pyramid_levels(4)
+            , freq_max(1.0)
+            , pyramid_levels(3)
             , default_fps(30)
         {}
 

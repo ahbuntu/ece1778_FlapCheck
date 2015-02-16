@@ -25,15 +25,18 @@ using cv::normalize;
 
 
 void Evm::amplify_video(string in_file, string out_file) {
+    vector<Mat> in_frames;
+    vector<Mat> filtered_frames;
+    vector<Mat> out_frames;
 
     //Load the frames from file
     cout << "Loading video..." << endl;
-    std::vector<Mat> in_frames = load_frames(in_file);
+    in_frames = load_frames(in_file);
 
     //Downsample the frames using a gaussian filter
     //  This reduces high frequency noise and the required computational workload
     cout << "Downsampling..." << endl;
-    std::vector<Mat> gauss_down_frames = gauss_downsample_frames(in_frames, pyramid_levels);
+    vector<Mat> gauss_down_frames = gauss_downsample_frames(in_frames, pyramid_levels);
 
     //Build the image stack
     //  Convert the frame sequence into an image stack (i.e. with a time dimension)
@@ -54,11 +57,11 @@ void Evm::amplify_video(string in_file, string out_file) {
 
     //Upsample the frames using a gaussian filter
     cout << "Upsampling..." << endl;
-    std::vector<Mat> filtered_frames = gauss_upsample_frames(down_filtered_frames, pyramid_levels);
+    filtered_frames = gauss_upsample_frames(down_filtered_frames, pyramid_levels);
 
     //Re-combine the filtered stack with the input frames
     //  Merge the filtered and original frames
-    vector<Mat> out_frames = merge_frames(in_frames, filtered_frames, amp_factor);
+    out_frames = merge_frames(in_frames, filtered_frames, amp_factor);
 
     //Write the output video
     cout << "Writing output..." << endl;
@@ -76,7 +79,7 @@ vector<Mat> Evm::load_frames(string in_file) {
     //Load all the frames
     //  This is bad for memory usage, but needed to due naieve FFT filtering
     int i = 0;
-    std::vector<Mat> frames;
+    vector<Mat> frames;
     while(true) {
         Mat frame;
         cap >> frame;
@@ -244,12 +247,6 @@ Mat Evm::filter_temporal_stack(const Mat& temporal_stack, const Mat& filter_resp
     Mat filtered_temporal_stack;
     merge(filtered_channels, filtered_temporal_stack);
 
-    //Re-normalize values
-    //normalize(filtered_temporal_stack, filtered_temporal_stack, 0, 255);
-
-    //Convert to 8-bit
-    filtered_temporal_stack.convertTo(filtered_temporal_stack, CV_8UC3);
-
     return filtered_temporal_stack;
 }
 
@@ -259,8 +256,38 @@ vector<Mat> Evm::merge_frames(const vector<Mat>& orig_frames, const vector<Mat>&
     //Same length
     assert(orig_frames.size() == filtered_frames.size());
 
+    /*
+     *cv::namedWindow("Orig Frame", cv::WINDOW_AUTOSIZE);
+     *cv::namedWindow("Filtered Frame", cv::WINDOW_AUTOSIZE);
+     *cv::namedWindow("Merged Frame", cv::WINDOW_AUTOSIZE);
+     */
+
     for(int i = 0; i < (int) orig_frames.size(); i++) {
-        Mat merged_frame = orig_frames[i] + alpha*filtered_frames[i];
+        //Convert original frame to float
+        Mat orig_frame;
+        orig_frames[i].convertTo(orig_frame, CV_32FC3, 1.0/255.0);
+
+        Mat filtered_frame;
+        normalize(filtered_frames[i], filtered_frame, 0, 1, cv::NORM_MINMAX);
+
+
+        //Add the frames
+        //Mat merged_frame = orig_frame;
+        Mat merged_frame = orig_frame + alpha*filtered_frame;
+        //normalize(merged_frame, merged_frame, 0, 1, cv::NORM_MINMAX);
+
+        /*
+         *cv::imshow("Original Frame", orig_frame);
+         *cv::imshow("Filtered Frame", filtered_frame);
+         *cv::imshow("Merged Frame", merged_frame);
+         *cv::waitKey(0);
+         */
+
+        //Re-normalize
+        normalize(merged_frame, merged_frame, 0, 255, cv::NORM_MINMAX);
+
+        merged_frame.convertTo(merged_frame, CV_8UC3);
+
         output_frames.push_back(merged_frame);
     }
 
