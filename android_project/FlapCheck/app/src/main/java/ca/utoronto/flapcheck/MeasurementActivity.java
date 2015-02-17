@@ -7,9 +7,12 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.io.File;
+
 
 public class MeasurementActivity extends Activity
-        implements MeasurementFragment.MeasurementFragmentListener
+        implements MeasurementFragment.MeasurementFragmentListener,
+                   TakePhotoFragment.TakePhotoFragmentListener
 {
 
     @Override
@@ -63,5 +66,10 @@ public class MeasurementActivity extends Activity
                 .replace(R.id.measure_container, new TakePhotoFragment())
                 .addToBackStack(null)
                 .commit();
+    }
+
+    @Override
+    public File getImageFileDir() {
+        return getFilesDir();
     }
 }
