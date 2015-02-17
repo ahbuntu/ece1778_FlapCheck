@@ -1,13 +1,16 @@
 package ca.utoronto.flapcheck;
 
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
 
-public class MeasurementActivity extends Activity {
+public class MeasurementActivity extends Activity
+        implements MeasurementFragment.MeasurementFragmentListener
+{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,5 +45,23 @@ public class MeasurementActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        FragmentManager fm = getFragmentManager();
+        if(fm.getBackStackEntryCount() > 0) {
+            fm.popBackStack(); //Return to previous fragment
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void onTakePhoto() {
+        getFragmentManager().beginTransaction()
+                .replace(R.id.measure_container, new TakePhotoFragment())
+                .addToBackStack(null)
+                .commit();
     }
 }

@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- Genera/Global-->
     <string name="app_name">FlapCheck</string>
 
+    <!-- Splash Screen-->
     <string name="splash_start_button">Start</string>
 
     <string name="main_frag_title">MainFragment</string>
     <string name="measure_button">MeasureActivity</string>
 
-    <!-- Measurement Fragment Strings -->
+    <!-- Measurement Fragment -->
     <string name="select_measurement">Select Measurement</string>
     <string name="temperature_button">Temperature</string>
     <string name="colour_button">Colour</string>
@@ -16,6 +18,9 @@
     <string name="pulse_button">Pulse</string>
     <string name="take_photo">Take Photo</string>
     <string name="photo_button">Picture</string>
+
+    <!-- TakePhoto Fragment -->
+    <string name="capture_photo_button">Capture</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
