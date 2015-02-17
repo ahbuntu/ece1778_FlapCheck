@@ -1,0 +1,5 @@
+#No user spelling dictionaries
+android_project/FlapCheck/.idea/dictionaries/
+
+#Vim related files
+*.swp
