@@ -84,6 +84,7 @@ vector<Mat> Evm::load_frames(string in_file) {
         Mat frame;
         cap >> frame;
 
+
         if(i == 0) {
             Size frameSize = frame.size();
             cout << "Input Frame size: " << frameSize.width << "x" << frameSize.height << endl;
@@ -91,6 +92,8 @@ vector<Mat> Evm::load_frames(string in_file) {
 
         if(frame.empty())
             break;
+
+        normalize(frame, frame, 0, 255, cv::NORM_MINMAX);
 
         frames.push_back(frame);
         i++;
