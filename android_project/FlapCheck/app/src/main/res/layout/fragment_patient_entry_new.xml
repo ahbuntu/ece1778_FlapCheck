@@ -1,0 +1,67 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:context="ca.utoronto.flapcheck.PatientEntryNewFragment">
+
+        <TextView android:id="@+id/text_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/text_name"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"/>
+            <!--android:layout_marginTop="75dp" -->
+
+        <EditText android:id="@+id/edit_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_name"
+            android:layout_below="@+id/text_name"
+            android:layout_centerHorizontal="true" />
+
+        <TextView android:id="@+id/text_mrn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/text_mrn"
+            android:layout_below="@+id/edit_name"
+            android:layout_centerHorizontal="true" />
+
+        <EditText android:id="@+id/edit_mrn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_mrn"
+            android:layout_below="@+id/text_mrn"
+            android:layout_centerHorizontal="true" />
+
+        <TextView android:id="@+id/text_opDateTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_opDateTime"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_below="@+id/edit_mrn"
+            android:layout_centerHorizontal="true" />
+
+        <TimePicker android:id="@+id/timePicker_opDateTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/text_opDateTime"
+            android:layout_centerHorizontal="true" />
+        <!--android:layout_below="@+id/text_opDateTime"-->
+
+        <DatePicker android:id="@+id/datePicker_opDateTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:calendarViewShown="false"
+            android:layout_below="@+id/timePicker_opDateTime"
+            android:layout_centerHorizontal="true" />
+
+
+    </RelativeLayout>
+
+</ScrollView>

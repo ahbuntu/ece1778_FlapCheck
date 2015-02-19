@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Genera/Global-->
+    <!-- Genera/Global -->
     <string name="app_name">FlapCheck</string>
 
-    <!-- Splash Screen-->
+    <!-- Splash Screen -->
     <string name="splash_start_button">Start</string>
-
     <string name="main_frag_title">MainFragment</string>
     <string name="measure_button">MeasureActivity</string>
 
@@ -21,10 +20,20 @@
 
     <!-- TakePhoto Fragment -->
     <string name="capture_photo_button">Capture</string>
-
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_measurement">MeasurementActivity</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_patient_entry">PatientEntryActivity</string>
 
+    <!--PatientEntry Activity-->
+    <string name="title_PE_new">New</string>
+    <string name="title_PE_archived">Archived</string>
+
+    <!-- PatientEntryNew Fragment -->
+    <string name="text_name">Enter patient Name</string>
+    <string name="text_mrn">Enter patient MRN</string>
+    <string name="text_opDateTime">Time out of surgery</string>
+    <string name="hint_name">type name here</string>
+    <string name="hint_mrn">type mrn here</string>
 </resources>
