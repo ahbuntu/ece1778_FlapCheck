@@ -1,0 +1,23 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!--https://github.com/astuetz/PagerSlidingTabStrip-->
+    <com.astuetz.PagerSlidingTabStrip xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/pe_tabs"
+        android:layout_width="match_parent"
+        android:layout_height="48dip"
+        app:pstsShouldExpand="true"
+        android:background="#000000"
+        app:pstsIndicatorColor="#E60000"
+
+        />
+
+        <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools" android:id="@+id/pager"
+            android:layout_width="match_parent" android:layout_height="match_parent"
+            tools:context="ca.utoronto.flapcheck.PatientEntryActivity"
+            />
+
+</LinearLayout>

@@ -24,6 +24,10 @@
             android:name=".MeasurementActivity"
             android:label="@string/title_activity_measurement" >
         </activity>
+        <activity
+            android:name=".PatientEntryActivity"
+            android:label="@string/title_activity_patient_entry" >
+        </activity>
     </application>
 
 </manifest>

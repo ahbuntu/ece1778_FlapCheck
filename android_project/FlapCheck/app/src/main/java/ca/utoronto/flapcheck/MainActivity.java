@@ -59,7 +59,11 @@ public class MainActivity extends Activity
 
     @Override
     public void startMeasurementActivity() {
-        Intent intent = new Intent(this, MeasurementActivity.class);
+//        Intent intent = new Intent(this, MeasurementActivity.class);
+//        startActivity(intent);
+
+        //hack for testing :)
+        Intent intent = new Intent(this, PatientEntryActivity.class);
         startActivity(intent);
     }
 }
