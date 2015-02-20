@@ -4,7 +4,10 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.DashPathEffect;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.hardware.Camera;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -15,6 +18,9 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by kmurray on 17/02/15.
  */
@@ -23,20 +29,36 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     private SurfaceHolder mHolder;
     private Camera mCamera;
     private int mCameraId;
+    private CameraPreviewOnTapListener mTapListener;
+    private Camera.AutoFocusCallback mAutoFocusCallback = new Camera.AutoFocusCallback() {
+        @Override
+        public void onAutoFocus(boolean success, Camera camera) {
+            if(success) {
+                camera.cancelAutoFocus();
+            }
+        }
+    };
 
-    public CameraPreview(Context context, Camera camera, int cameraId) {
+    public interface CameraPreviewOnTapListener {
+        void onCameraPreviewTap(float x, float y);
+    }
+
+    public CameraPreview(Context context, CameraPreviewOnTapListener tapListener, Camera camera, int cameraId) {
         super(context);
 
         if(camera == null) {
             throw new RuntimeException("Null mCamera in CameraPreview constructor");
         }
 
+        mTapListener = tapListener;
         mCamera = camera;
         mCameraId = cameraId;
 
         //Set up callback for surface creation/destruction
         mHolder = getHolder();
         mHolder.addCallback(this);
+
+        //Add the tap listener
     }
 
     public void surfaceCreated(SurfaceHolder holder) {
@@ -115,6 +137,21 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         }
     }
 
+    protected void doAutoFocus(Rect rect) {
+            List<Camera.Area> focusRegions = new ArrayList<Camera.Area>();
+
+            int meteringWeight = 1000;
+            Camera.Area focusRegion = new Camera.Area(rect, meteringWeight);
+            focusRegions.add(focusRegion);
+
+            Camera.Parameters params = mCamera.getParameters();
+            params.setFocusAreas(focusRegions);
+            params.setMeteringAreas(focusRegions);
+            mCamera.setParameters(params);
+
+            mCamera.autoFocus(mAutoFocusCallback);
+    }
+
     //Touch event
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -125,6 +162,17 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             float y = event.getY();
 
             Log.d(TAG, String.format("User tapped preview at (%f,%f)", x, y));
+            mTapListener.onCameraPreviewTap(x, y);
+
+            //Do auto-focus
+            int rect_height = 100;
+            int rect_width = 100;
+            Rect rect = new Rect(
+                                (int)x - rect_width/2,
+                                (int) y - rect_height/2,
+                                (int) x + rect_width/2,
+                                (int) y + rect_height/2);
+            doAutoFocus(rect);
 
 
         }
@@ -137,8 +185,8 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 class CameraFocusOverlay extends View {
     private Paint mCirclePaint;
     private float mDiameter;
-    private float mCenterX;
-    private float mCenterY;
+    private float mCentreX;
+    private float mCentreY;
 
     public CameraFocusOverlay(Context context) {
         super(context);
@@ -152,9 +200,21 @@ class CameraFocusOverlay extends View {
         init();
     }
 
+    public void setCentreX(float x) {
+        mCentreX = x;
+    }
+
+    public void setCentreY(float y) {
+        mCentreY = y;
+    }
+
     private void init() {
-        mCirclePaint = new Paint();
-        mCirclePaint.setColor(0xff101010);
+        mCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mCirclePaint.setColor(Color.RED);
+        DashPathEffect dashPathEffect = new DashPathEffect(new float[]{5,5}, 0.0f);
+        mCirclePaint.setPathEffect(dashPathEffect);
+        mCirclePaint.setStyle(Paint.Style.STROKE);
+        mCirclePaint.setStrokeWidth(5);
     }
 
     @Override
@@ -165,14 +225,15 @@ class CameraFocusOverlay extends View {
         float padded_w = w - xpad;
         float padded_h = h - ypad;
 
-        mDiameter = Math.min(padded_w, padded_h);
-        mCenterX = (float) w / 2;
-        mCenterY = (float) h / 2;
+        mDiameter = 200;
+        mCentreX = (float) w / 2;
+        mCentreY = (float) h / 2;
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        canvas.drawCircle(mCenterX, mCenterY, mDiameter/2, mCirclePaint);
+        canvas.drawCircle(mCentreX, mCentreY, mDiameter / 2, mCirclePaint);
+        super.onDraw(canvas);
     }
 
 

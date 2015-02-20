@@ -17,6 +17,7 @@ public class MainFragment extends Fragment {
 
     public interface MainFragmentListener {
         void startMeasurementActivity();
+        void startPatientEntryActivity();
     }
 
     public MainFragment() {
@@ -38,6 +39,16 @@ public class MainFragment extends Fragment {
                 //Start up the measure activity
                 MainFragmentListener activity = (MainFragmentListener) getActivity();
                 activity.startMeasurementActivity();
+            }
+        });
+
+        Button patientEntryButton = (Button) view.findViewById(R.id.patient_entry_button);
+        patientEntryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Start up the patient entry activity
+                MainFragmentListener activity = (MainFragmentListener) getActivity();
+                activity.startPatientEntryActivity();
             }
         });
 

@@ -20,10 +20,13 @@ import java.io.IOException;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TakePhotoFragment extends Fragment {
+public class TakePhotoFragment extends Fragment
+            implements CameraPreview.CameraPreviewOnTapListener
+{
     public interface TakePhotoFragmentListener {
         File getImageFileDir();
     }
+
 
 
     private int mCameraId;
@@ -106,7 +109,7 @@ public class TakePhotoFragment extends Fragment {
         }
 
         //Create the preview
-        mPreview = new CameraPreview(getActivity(), mCamera, mCameraId);
+        mPreview = new CameraPreview(getActivity(), this, mCamera, mCameraId);
         FrameLayout preview = (FrameLayout) getView().findViewById(R.id.photo_preview);
         preview.addView(mPreview);
 
@@ -122,5 +125,17 @@ public class TakePhotoFragment extends Fragment {
             mCamera = null;
         }
     }
+
+    public void onCameraPreviewTap(float x, float y) {
+        //Perform auto-focus
+
+        //First update the overlay
+        mPreviewOverlay.setCentreX(x);
+        mPreviewOverlay.setCentreY(y);
+        mPreviewOverlay.invalidate();
+
+        //Now set autofocus
+    }
+
 
 }
