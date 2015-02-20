@@ -29,6 +29,7 @@ public class TakePhotoFragment extends Fragment {
     private int mCameraId;
     private Camera mCamera;
     private CameraPreview mPreview;
+    private CameraFocusOverlay mPreviewOverlay;
 
     private Camera.PictureCallback mPicture = new Camera.PictureCallback() {
         @Override
@@ -104,9 +105,14 @@ public class TakePhotoFragment extends Fragment {
             throw new RuntimeException("Got null Camera object");
         }
 
+        //Create the preview
         mPreview = new CameraPreview(getActivity(), mCamera, mCameraId);
         FrameLayout preview = (FrameLayout) getView().findViewById(R.id.photo_preview);
         preview.addView(mPreview);
+
+        //Add the overaly on top of it
+        mPreviewOverlay = new CameraFocusOverlay(getActivity());
+        preview.addView(mPreviewOverlay);
     }
 
     protected void releaseCamera() {

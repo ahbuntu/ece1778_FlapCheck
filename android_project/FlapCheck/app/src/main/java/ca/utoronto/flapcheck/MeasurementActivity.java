@@ -61,7 +61,7 @@ public class MeasurementActivity extends Activity
     }
 
     @Override
-    public void onTakePhoto() {
+    public void onMeasurePhoto() {
         getFragmentManager().beginTransaction()
                 .replace(R.id.measure_container, new TakePhotoFragment())
                 .addToBackStack(null)

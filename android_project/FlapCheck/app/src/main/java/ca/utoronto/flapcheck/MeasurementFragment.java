@@ -15,7 +15,7 @@ import android.widget.Toast;
  */
 public class MeasurementFragment extends Fragment {
     public interface MeasurementFragmentListener {
-        void onTakePhoto();
+        void onMeasurePhoto();
     }
 
     public MeasurementFragment() {
@@ -75,7 +75,7 @@ public class MeasurementFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 MeasurementFragmentListener activity = (MeasurementFragmentListener) getActivity();
-                activity.onTakePhoto();
+                activity.onMeasurePhoto();
             }
         });
 

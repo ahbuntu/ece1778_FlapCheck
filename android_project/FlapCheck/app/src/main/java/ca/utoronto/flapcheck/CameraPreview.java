@@ -1,15 +1,25 @@
 package ca.utoronto.flapcheck;
 
+import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.hardware.Camera;
+import android.util.AttributeSet;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
+import android.widget.Toast;
 
 /**
  * Created by kmurray on 17/02/15.
  */
 public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
+    private static final String TAG = "CameraPreview";
     private SurfaceHolder mHolder;
     private Camera mCamera;
     private int mCameraId;
@@ -104,4 +114,66 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             e.printStackTrace();
         }
     }
+
+    //Touch event
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+
+        if(event.getAction() == MotionEvent.ACTION_DOWN) {
+            //User tapped the preview
+            float x = event.getX();
+            float y = event.getY();
+
+            Log.d(TAG, String.format("User tapped preview at (%f,%f)", x, y));
+
+
+        }
+
+        return true; //We handled the event
+    }
+}
+
+
+class CameraFocusOverlay extends View {
+    private Paint mCirclePaint;
+    private float mDiameter;
+    private float mCenterX;
+    private float mCenterY;
+
+    public CameraFocusOverlay(Context context) {
+        super(context);
+
+        init();
+    }
+
+    public CameraFocusOverlay(Context context, AttributeSet attrs) {
+        super(context, attrs);
+
+        init();
+    }
+
+    private void init() {
+        mCirclePaint = new Paint();
+        mCirclePaint.setColor(0xff101010);
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h , int oldw, int oldh) {
+        float xpad = (float)(getPaddingLeft() + getPaddingRight());
+        float ypad = (float)(getPaddingTop()  + getPaddingBottom());
+
+        float padded_w = w - xpad;
+        float padded_h = h - ypad;
+
+        mDiameter = Math.min(padded_w, padded_h);
+        mCenterX = (float) w / 2;
+        mCenterY = (float) h / 2;
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        canvas.drawCircle(mCenterX, mCenterY, mDiameter/2, mCirclePaint);
+    }
+
+
 }
