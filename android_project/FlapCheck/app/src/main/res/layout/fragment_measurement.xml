@@ -8,43 +8,140 @@
     android:clickable="true"
     >
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/select_measurement" />
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_margin="10dp"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/select_measurement"
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            android:textSize="25sp"
+            />
+    </LinearLayout>
 
-    <Button
-        android:id="@+id/temperature_button"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/temperature_button"/>
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginEnd="30dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        >
+        <Button
+            android:id="@+id/temperature_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/temperature_button"
+            android:drawableRight="@drawable/ic_launcher"
+            android:gravity="left|center_vertical"
+            />
+    </LinearLayout>
 
-    <Button
-        android:id="@+id/colour_button"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/colour_button"/>
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginEnd="30dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        >
+        <Button
+            android:id="@+id/colour_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/colour_button"
+            android:drawableRight="@drawable/ic_launcher"
+            android:gravity="left|center_vertical"
+            />
+    </LinearLayout>
 
-    <Button
-        android:id="@+id/cap_refill_button"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/cap_refill_button"/>
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginEnd="30dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        >
+        <Button
+            android:id="@+id/cap_refill_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/cap_refill_button"
+            android:drawableRight="@drawable/ic_launcher"
+            android:gravity="left|center_vertical"
+            />
 
-    <Button
-        android:id="@+id/pulse_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/pulse_button"/>
+    </LinearLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/take_photo" />
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginEnd="30dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        >
+        <Button
+            android:id="@+id/pulse_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/pulse_button"
+            android:drawableRight="@drawable/ic_launcher"
+            android:gravity="left|center_vertical"
+            />
+    </LinearLayout>
 
-    <Button
-        android:id="@+id/photo_button"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/photo_button"/>
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_margin="10dp"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/take_photo"
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            android:textSize="25sp"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginEnd="30dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:clickable="true"
+        >
+        <Button
+            android:id="@+id/photo_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/photo_button"
+            android:drawableRight="@drawable/ic_launcher"
+            android:gravity="left|center_vertical"
+            />
+    </LinearLayout>
 </LinearLayout>

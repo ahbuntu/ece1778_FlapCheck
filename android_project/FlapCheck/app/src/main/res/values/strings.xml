@@ -2,10 +2,15 @@
 <resources>
 
     <!-- Genera/Global -->
-    <string name="app_name">FlapCheck</string>
+    <string name="app_name">flapCHECK</string>
 
     <!-- Splash Screen -->
+    <string name="splash_title_flap">flap</string>
+    <string name="splash_title_check">check</string>
     <string name="splash_start_button">Start</string>
+    <string name="splash_text">Integrated system for monitoring tissue flap perfusion using smartphone technology</string>
+
+    <!-- Main Activity -->
     <string name="main_frag_title">MainFragment</string>
     <string name="measure_button">MeasureActivity</string>
     <string name="patient_entry_button">PatientEntryActivity</string>
