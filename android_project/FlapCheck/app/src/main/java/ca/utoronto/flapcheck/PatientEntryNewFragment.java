@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 
 /**
@@ -15,6 +16,7 @@ import android.view.ViewGroup;
  */
 public class PatientEntryNewFragment extends Fragment {
 
+    Button button_addPatient;
 
     /**
      * Use this factory method to create a new instance of
@@ -51,8 +53,27 @@ public class PatientEntryNewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_patient_entry_new, container, false);
+        View rootView =inflater.inflate(R.layout.fragment_patient_entry_new, container, false);
+        initWidgets(rootView);
+        return rootView;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        button_addPatient.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO: add the patient to the database/list
+                //TODO: display the archive fragment with sliding transition
+            }
+        });
+    }
 
+    /**
+     * initializes the widgets on the activity/fragment
+     */
+    private void initWidgets(View view) {
+        button_addPatient = (Button)  view.findViewById(R.id.button_addPatient);
+    }
 }

@@ -7,6 +7,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -24,6 +28,11 @@ public class PatientEntryArchiveFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+
+
+    List<Patient> patients;
+    private AbsListView mListView;
+    private PatientListAdapter mAdapter;
 
     /**
      * Use this factory method to create a new instance of
@@ -54,13 +63,25 @@ public class PatientEntryArchiveFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        //TODO: <time-permitting> maintain a list of persons that gets instantiated at the time of activity creation
+
+        patients = new ArrayList<Patient>();
+        Patient test = new Patient("Ahmad", "839238", (long)3324);
+        patients.add(test);
+        //TODO: get patient list from database
+        mAdapter = new PatientListAdapter(getActivity(),R.layout.patient_list_item, patients);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_patient_entry_archive, container, false);
+        View fragView = inflater.inflate(R.layout.fragment_patient_entry_archive, container, false);
+        // bind adapter to listview
+        mListView = (AbsListView) fragView.findViewById(R.id.listView_patients);
+        mListView.setAdapter(mAdapter);
+        return fragView;
     }
 
 
