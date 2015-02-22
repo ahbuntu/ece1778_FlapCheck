@@ -26,7 +26,8 @@
         </activity>
         <activity
             android:name=".PatientEntryActivity"
-            android:label="@string/title_activity_patient_entry" >
+            android:label="@string/title_activity_patient_entry"
+            android:windowSoftInputMode="stateHidden">
         </activity>
     </application>
 

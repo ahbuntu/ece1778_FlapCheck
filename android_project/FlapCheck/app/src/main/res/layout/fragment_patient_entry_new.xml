@@ -14,7 +14,8 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="@string/text_name"
             android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"/>
+            android:layout_centerHorizontal="true"
+            />
             <!--android:layout_marginTop="75dp" -->
 
         <EditText android:id="@+id/edit_name"
@@ -47,25 +48,42 @@
             android:layout_below="@+id/edit_mrn"
             android:layout_centerHorizontal="true" />
 
-        <TimePicker android:id="@+id/timePicker_opDateTime"
+        <EditText android:id="@+id/edit_opDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:hint="@string/hint_opDate"
+            android:editable="false"
             android:layout_below="@+id/text_opDateTime"
-            android:layout_centerHorizontal="true" />
-        <!--android:layout_below="@+id/text_opDateTime"-->
+            />
 
-        <DatePicker android:id="@+id/datePicker_opDateTime"
+
+        <EditText android:id="@+id/edit_opTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_opTime"
+            android:layout_below="@+id/text_opDateTime"
+            android:editable="false"
+            android:layout_toRightOf="@+id/edit_opDate"
+            />
+
+        <Button android:id="@+id/button_takeMeasurement"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:calendarViewShown="false"
-            android:layout_below="@+id/timePicker_opDateTime"
-            android:layout_centerHorizontal="true" />
+            android:layout_below="@+id/edit_opDate"
+            android:layout_centerHorizontal="true"
+            android:text="@string/button_measure"
+            android:textStyle="bold"
+            android:textColor="@color/fc_red"/>
 
         <Button
             android:id="@+id/button_addPatient"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/datePicker_opDateTime"/>
+            android:layout_below="@+id/button_takeMeasurement"
+            android:layout_centerHorizontal="true"
+            android:text="@string/button_addPatient"
+            android:textStyle="bold"
+            android:textColor="@color/fc_red"/>
     </RelativeLayout>
 
 </ScrollView>

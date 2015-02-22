@@ -37,9 +37,13 @@
     <string name="title_PE_archived">Archived</string>
 
     <!-- PatientEntryNew Fragment -->
-    <string name="text_name">Enter patient Name</string>
-    <string name="text_mrn">Enter patient MRN</string>
+    <string name="text_name">Patient\'s Name</string>
+    <string name="text_mrn">Patient\'s MRN</string>
     <string name="text_opDateTime">Time out of surgery</string>
-    <string name="hint_name">type name here</string>
-    <string name="hint_mrn">type mrn here</string>
+    <string name="hint_name">enter name</string>
+    <string name="hint_mrn">enter MRN</string>
+    <string name="hint_opDate">format current date</string>
+    <string name="hint_opTime">format current time</string>
+    <string name="button_measure">TAKE MEASUREMENT</string>
+    <string name="button_addPatient">DONE</string>
 </resources>
