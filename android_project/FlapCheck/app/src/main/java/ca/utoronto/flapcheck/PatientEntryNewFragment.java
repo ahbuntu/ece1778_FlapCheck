@@ -1,6 +1,7 @@
 package ca.utoronto.flapcheck;
 
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
@@ -37,12 +38,22 @@ import java.util.TimeZone;
  */
 public class PatientEntryNewFragment extends Fragment {
 
+    /**
+     * interface definitions
+     */
+    public interface PatientNewEntryListener {
+        public void onMeasureButtonClicked();
+        public void onAddPatientButtonClicked();
+    }
+
     Button button_addPatient;
     Button button_takeMeasurement;
     EditText edit_name ;
     EditText edit_mrn ;
     EditText edit_opDate;
     EditText edit_opTime;
+
+    private PatientNewEntryListener mListener;
 
     /**
      * Use this factory method to create a new instance of
@@ -86,53 +97,31 @@ public class PatientEntryNewFragment extends Fragment {
     }
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mListener = (PatientNewEntryListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement PatientNewEntryListener");
+        }
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         button_addPatient.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                EditText edit_name = (EditText) getActivity().findViewById(R.id.edit_name);
-//                EditText edit_mrn = (EditText) getActivity().findViewById(R.id.edit_mrn);
-//                EditText edit_opDate = (EditText) getActivity().findViewById(R.id.edit_opDate);
-//                EditText edit_opTime = (EditText) getActivity().findViewById(R.id.edit_opTime);
-
-                if (!isReadyToAdd()) {
-                    Toast.makeText(getActivity(), "Please enter the requested information.", Toast.LENGTH_SHORT)
-                            .show();
-                    return;
-                }
-
-                String savedDateTime = edit_opDate.getText() + " " + edit_opTime.getText();
-                Calendar cal = new GregorianCalendar();
-                SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy h:mm a");
-                dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));//need to use this while saving the datetime
-                try {
-                    cal.setTime(dateFormat.parse(savedDateTime));
-                    Patient patient = new Patient(edit_name.getText().toString(),
-                            edit_mrn.getText().toString(), cal.getTimeInMillis());
-
-                    PatientOpenDBHelper db = new PatientOpenDBHelper(getActivity());
-                    AddPatient addP = new AddPatient(db);
-                    addP.execute(patient);
-                    Toast.makeText(getActivity(), "Patient added.", Toast.LENGTH_SHORT)
-                            .show();
-                    resetWidgets();
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                    Toast.makeText(getActivity(), "Error while trying to add new patient.", Toast.LENGTH_SHORT)
-                            .show();
-                }
-
-                //TODO: display the archive fragment with sliding transition
+                addPatientToDB();
+                mListener.onAddPatientButtonClicked();
             }
         });
 
         button_takeMeasurement.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: start up measure activity from patient entry form
-//                MainFragment.MainFragmentListener activity = (MainFragment.MainFragmentListener) getActivity();
-//                activity.startMeasurementActivity();
+                addPatientToDB();
+                mListener.onMeasureButtonClicked();
             }
         });
 
@@ -177,6 +166,38 @@ public class PatientEntryNewFragment extends Fragment {
         edit_opTime = (EditText) view.findViewById(R.id.edit_opTime);
     }
 
+    /**
+     * runs validation to ensure patient can be added to the database.
+     * saves patient details to the database
+     */
+    private void addPatientToDB() {
+        if (!isReadyToAdd()) {
+            Toast.makeText(getActivity(), "Please enter the requested information.", Toast.LENGTH_SHORT)
+                    .show();
+            return;
+        }
+
+        String savedDateTime = edit_opDate.getText() + " " + edit_opTime.getText();
+        Calendar cal = new GregorianCalendar();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy h:mm a");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));//need to use this while saving the datetime
+        try {
+            cal.setTime(dateFormat.parse(savedDateTime));
+            Patient patient = new Patient(edit_name.getText().toString(),
+                    edit_mrn.getText().toString(), cal.getTimeInMillis());
+
+            PatientOpenDBHelper db = new PatientOpenDBHelper(getActivity());
+            AddPatient addP = new AddPatient(db);
+            addP.execute(patient);
+            Toast.makeText(getActivity(), "Patient added.", Toast.LENGTH_SHORT)
+                    .show();
+            resetWidgets();
+        } catch (ParseException e) {
+            e.printStackTrace();
+            Toast.makeText(getActivity(), "Error while trying to add new patient.", Toast.LENGTH_SHORT)
+                    .show();
+        }
+    }
     /**
      * sets the widgets to the state when the fragment is first loaded
      */
