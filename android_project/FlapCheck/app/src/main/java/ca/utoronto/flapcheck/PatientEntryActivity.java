@@ -2,6 +2,7 @@ package ca.utoronto.flapcheck;
 
 import java.util.Locale;
 
+import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
@@ -17,20 +18,30 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
 
 
-public class PatientEntryActivity extends ActionBarActivity {
+public class PatientEntryActivity extends ActionBarActivity
+                                    implements PatientEntryNewFragment.PatientNewEntryListener{
 
     SectionsPagerAdapter mSectionsPagerAdapter;
     ViewPager mViewPager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient_entry);
+
+        if(savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.patient_container, new PatientEntryArchiveFragment())
+//                    .add(R.id.patient_container, new PatientEntryNewFragment())
+                    .commit();
+        }
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         // Set up the ViewPager with the sections adapter.
@@ -41,7 +52,6 @@ public class PatientEntryActivity extends ActionBarActivity {
         PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) findViewById(R.id.pe_tabs);
         tabs.setViewPager(mViewPager);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -105,6 +115,32 @@ public class PatientEntryActivity extends ActionBarActivity {
         }
     }
 
+
+    /**
+     * implementation of PatientEntryNewFragment.PatientNewEntryListener.onMeasureButtonClicked()
+     * starts the MeasurementActivity
+     */
+    @Override
+    public void onMeasureButtonClicked() {
+        Intent intent = new Intent(this, MeasurementActivity.class);
+        startActivity(intent);
+    }
+
+    /**
+     * implementation of PatientEntryNewFragment.PatientNewEntryListener.onAddPatientButtonClicked()
+     * starts the PatientEntryArchiveFragment
+     */
+    @Override
+    public void onAddPatientButtonClicked() {
+        //BUG: the following code block doesn't work since view pager always displays fragment 0 as current
+//        getSupportFragmentManager().beginTransaction()
+//                .replace(R.id.patient_container, new PatientEntryArchiveFragment())
+//                .addToBackStack(null)
+//                .commit();
+        //WORKAROUND:
+        mViewPager.setCurrentItem(1, true);
+    }
+
     /**
      * A placeholder fragment containing a simple view.
      */
@@ -136,6 +172,7 @@ public class PatientEntryActivity extends ActionBarActivity {
             View rootView = inflater.inflate(R.layout.fragment_patient_entry, container, false);
             return rootView;
         }
+
     }
 
 }
