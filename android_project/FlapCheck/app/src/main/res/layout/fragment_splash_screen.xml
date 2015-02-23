@@ -15,35 +15,39 @@
         >
         <ImageView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="70dp"
             android:layout_margin="10dp"
-            android:src="@drawable/ic_launcher"
+            android:src="@drawable/ic_temperature"
+            android:layout_weight="1"
             />
         <ImageView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="70dp"
             android:layout_margin="10dp"
-            android:src="@drawable/ic_launcher"
+            android:src="@drawable/ic_colour"
+            android:layout_weight="1"
             />
         <ImageView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_launcher"
+            android:layout_height="70dp"
+            android:src="@drawable/ic_caprefill"
             android:layout_margin="10dp"
+            android:layout_weight="1"
             />
         <ImageView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="70dp"
             android:layout_margin="10dp"
-            android:src="@drawable/ic_launcher"
+            android:src="@drawable/ic_pulse"
+            android:layout_weight="1"
             />
         <ImageView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="70dp"
             android:layout_margin="10dp"
-            android:src="@drawable/ic_launcher"
+            android:src="@drawable/ic_photo"
+            android:layout_weight="1"
             />
-
     </LinearLayout>
 
     <LinearLayout
