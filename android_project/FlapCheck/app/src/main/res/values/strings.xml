@@ -3,6 +3,8 @@
 
     <!-- Genera/Global -->
     <string name="app_name">flapCHECK</string>
+    <string name="button_ok">OK</string>
+    <string name="button_cancel">Cancel</string>
 
     <!-- Splash Screen -->
     <string name="splash_title_flap">flap</string>
@@ -50,5 +52,10 @@
     <!-- PatientEntryNew Fragment -->
     <string name="text_PE_archive_Item">Patient</string>
     <string name="text_PE_archive_Date">Date of OR</string>
+
+    <!--SelectItemDialogFragment-->
+    <string name="dialog_select_instr">Select an action</string>
+    <string name="dialog_select_option1">Take Measurement</string>
+    <string name="dialog_select_option2">Review</string>
 
 </resources>

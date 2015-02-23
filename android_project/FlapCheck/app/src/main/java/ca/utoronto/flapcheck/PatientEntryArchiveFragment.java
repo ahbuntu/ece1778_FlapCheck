@@ -1,6 +1,11 @@
 package ca.utoronto.flapcheck;
 
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 //import android.app.Fragment;
@@ -10,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ProgressBar;
 
 import java.util.ArrayList;
@@ -22,7 +28,9 @@ import java.util.List;
  * create an instance of this fragment.
  */
 public class PatientEntryArchiveFragment extends Fragment
-                                            implements PatientEntryDBLoader.OnPatientListRetrieved{
+                                implements PatientEntryArchiveInterac.OnPatientListRetrieved,
+                                            AbsListView.OnItemClickListener{
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -87,6 +95,7 @@ public class PatientEntryArchiveFragment extends Fragment
     @Override
     public void onResume() {
         super.onResume();
+        mListView.setOnItemClickListener(this);
     }
 
     @Override
@@ -121,10 +130,10 @@ public class PatientEntryArchiveFragment extends Fragment
 
     private class GetPatientsFromDB extends AsyncTask<Integer, Integer, List<Patient>> {
 
-        private PatientEntryDBLoader.OnPatientListRetrieved mCallback = null;
+        private PatientEntryArchiveInterac.OnPatientListRetrieved mCallback = null;
         private PatientOpenDBHelper patientsDB;
 
-        public GetPatientsFromDB(PatientOpenDBHelper db, PatientEntryDBLoader.OnPatientListRetrieved ref) {
+        public GetPatientsFromDB(PatientOpenDBHelper db, PatientEntryArchiveInterac.OnPatientListRetrieved ref) {
             patientsDB = db;
             mCallback = ref;
         }
@@ -148,6 +157,68 @@ public class PatientEntryArchiveFragment extends Fragment
             super.onPostExecute(result);
             mCallback.onPatientListRetrieved(result);
         }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        SelectItemDialogFragment selectDlgFrag = new SelectItemDialogFragment();
+        Bundle selectDlgBundle = new Bundle();
+        selectDlgBundle.putInt("selectedPosition", position);
+        selectDlgFrag.setArguments(selectDlgBundle);
+        selectDlgFrag.show(getActivity().getFragmentManager(), "Select");
+    }
+
+    /**
+     * A simple {@link android.app.Fragment} subclass.
+     */
+    public static class SelectItemDialogFragment extends DialogFragment {
+
+        private static final String ARG_POSITION = "selectedPosition";
+        PatientEntryArchiveInterac.OnArchiveItemSelected mCallback = null;
+        int selectedPos = 0;
+
+        public SelectItemDialogFragment() {
+            // Required empty public constructor
+        }
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the Builder class for convenient dialog construction
+            if (getArguments() != null) {
+                selectedPos = getArguments().getInt(ARG_POSITION);
+            }
+            CharSequence options[] = new CharSequence[] {
+                    getActivity().getString(R.string.dialog_select_option1),
+                    getActivity().getString(R.string.dialog_select_option2)};
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle(R.string.dialog_select_instr);
+            builder.setItems(options, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int opt) {
+                    mCallback.onArchiveItemSelected(selectedPos, opt);
+                }
+            });
+            return builder.create();
+        }
+
+        @Override
+        public void onAttach(Activity activity) {
+            super.onAttach(activity);
+            try {
+                mCallback = (PatientEntryArchiveInterac.OnArchiveItemSelected) activity;
+            } catch (ClassCastException e) {
+                throw new ClassCastException(activity.toString()
+                        + " must implement OnArchiveItemSelected");
+            }
+        }
+
+        @Override
+        public void onDetach() {
+            super.onDetach();
+            mCallback = null;
+        }
+
     }
 
 }

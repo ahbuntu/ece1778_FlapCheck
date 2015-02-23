@@ -25,7 +25,8 @@ import com.astuetz.PagerSlidingTabStrip;
 
 
 public class PatientEntryActivity extends ActionBarActivity
-                                    implements PatientEntryNewFragment.PatientNewEntryListener{
+                                    implements PatientEntryNewFragment.PatientNewEntryListener,
+                                        PatientEntryArchiveInterac.OnArchiveItemSelected{
 
     SectionsPagerAdapter mSectionsPagerAdapter;
     ViewPager mViewPager;
@@ -81,6 +82,7 @@ public class PatientEntryActivity extends ActionBarActivity
      */
     @Override
     public void onMeasureButtonClicked() {
+        //TODO: pass a patient as part of the bundle
         Intent intent = new Intent(this, MeasurementActivity.class);
         startActivity(intent);
     }
@@ -89,7 +91,6 @@ public class PatientEntryActivity extends ActionBarActivity
      * implementation of PatientEntryNewFragment.PatientNewEntryListener.onAddPatientButtonClicked()
      * starts the PatientEntryArchiveFragment
      */
-    @Override
     public void onAddPatientButtonClicked() {
         //BUG: the following code block doesn't work since view pager always displays fragment 0 as current
 //        getSupportFragmentManager().beginTransaction()
@@ -99,6 +100,26 @@ public class PatientEntryActivity extends ActionBarActivity
         //WORKAROUND:
         mSectionsPagerAdapter.notifyDataSetChanged();
         mViewPager.setCurrentItem(1, true);
+    }
+
+    /**
+     * Function invoked when user has made a dialog selection
+     * @param position
+     * @param option
+     */
+    public void onArchiveItemSelected(int position, int option){
+        switch(option) {
+            case 0:
+                //TODO: pass a patient as part of the bundle
+                Intent intent = new Intent(this, MeasurementActivity.class);
+                startActivity(intent);
+                break;
+            case 1:
+                //need to invoke the Review activity
+                break;
+            default:
+                break;
+        }
     }
 
     /**

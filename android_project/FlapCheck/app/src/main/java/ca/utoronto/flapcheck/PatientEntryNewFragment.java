@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -17,18 +16,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-
-import org.w3c.dom.Text;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Locale;
 import java.util.TimeZone;
 
 
@@ -38,7 +32,7 @@ import java.util.TimeZone;
  * create an instance of this fragment.
  */
 public class PatientEntryNewFragment extends Fragment
-                                        implements PatientEntryDBLoader.OnPatientAdded{
+                                        implements PatientEntryArchiveInterac.OnPatientAdded{
 
     /**
      * interface definitions
@@ -362,9 +356,9 @@ public class PatientEntryNewFragment extends Fragment
     public static class AddPatient extends AsyncTask<Patient, Integer, Long> {
 
         private PatientOpenDBHelper patientsDB;
-        PatientEntryDBLoader.OnPatientAdded mCallback = null;
+        PatientEntryArchiveInterac.OnPatientAdded mCallback = null;
         View callingView;
-        public AddPatient(View v, PatientOpenDBHelper db, PatientEntryDBLoader.OnPatientAdded ref) {
+        public AddPatient(View v, PatientOpenDBHelper db, PatientEntryArchiveInterac.OnPatientAdded ref) {
             patientsDB = db;
             mCallback = ref;
             callingView = v;
