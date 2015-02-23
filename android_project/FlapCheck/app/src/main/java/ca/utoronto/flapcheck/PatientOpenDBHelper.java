@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -132,7 +133,7 @@ public class PatientOpenDBHelper extends SQLiteOpenHelper {
                     mPatient.setPatientId(Long.parseLong(cursor.getString(0)));
                     mPatient.setPatientName(cursor.getString(1));
                     mPatient.setPatientMRN(cursor.getString(2));
-                    mPatient.setPatientOpDateTime(Long.parseLong(cursor.getString(1)));
+                    mPatient.setPatientOpDateTime(Long.parseLong(cursor.getString(3)));
 
                     patientList.add(mPatient);
                 } while (cursor.moveToNext());
@@ -144,6 +145,20 @@ public class PatientOpenDBHelper extends SQLiteOpenHelper {
             patientList = null;
         }
         return  patientList;
+    }
+
+    /**
+     * ONLY for DEBUG purposes.
+     * Deletes all patients from the Patient table
+     */
+    public void deleteAllPatients() {
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+            db.delete(PatientEntry.TABLE_NAME, null, null);
+            db.close();
+        } catch (SQLiteException e) {
+            Log.d(TAG, e.getMessage());
+        }
     }
 
     //********** Implement the following as and when required ******************8

@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -36,7 +37,8 @@ import java.util.TimeZone;
  * Use the {@link PatientEntryNewFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PatientEntryNewFragment extends Fragment {
+public class PatientEntryNewFragment extends Fragment
+                                        implements PatientEntryDBLoader.OnPatientAdded{
 
     /**
      * interface definitions
@@ -112,16 +114,24 @@ public class PatientEntryNewFragment extends Fragment {
         button_addPatient.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addPatientToDB();
-                mListener.onAddPatientButtonClicked();
+                if(addPatientToDB(v)) {
+                    //can't think of anything to do here; leaving it in just incase
+                }
             }
         });
 
         button_takeMeasurement.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addPatientToDB();
-                mListener.onMeasureButtonClicked();
+                if(addPatientToDB(v)) {
+                    //can't think of anything to do here; leaving it in just incase
+                }
+
+                /******************DEBUG ONLY************************
+                PatientOpenDBHelper db = new PatientOpenDBHelper(getActivity());
+                db.deleteAllPatients();
+                Toast.makeText(getActivity(), "patients deleted", Toast.LENGTH_SHORT);
+                 ****************************************************/
             }
         });
 
@@ -170,11 +180,11 @@ public class PatientEntryNewFragment extends Fragment {
      * runs validation to ensure patient can be added to the database.
      * saves patient details to the database
      */
-    private void addPatientToDB() {
+    private boolean addPatientToDB(View v) {
         if (!isReadyToAdd()) {
             Toast.makeText(getActivity(), "Please enter the requested information.", Toast.LENGTH_SHORT)
                     .show();
-            return;
+            return false;
         }
 
         String savedDateTime = edit_opDate.getText() + " " + edit_opTime.getText();
@@ -187,16 +197,17 @@ public class PatientEntryNewFragment extends Fragment {
                     edit_mrn.getText().toString(), cal.getTimeInMillis());
 
             PatientOpenDBHelper db = new PatientOpenDBHelper(getActivity());
-            AddPatient addP = new AddPatient(db);
+            AddPatient addP = new AddPatient(v, db, this);
             addP.execute(patient);
-            Toast.makeText(getActivity(), "Patient added.", Toast.LENGTH_SHORT)
-                    .show();
             resetWidgets();
         } catch (ParseException e) {
             e.printStackTrace();
             Toast.makeText(getActivity(), "Error while trying to add new patient.", Toast.LENGTH_SHORT)
                     .show();
+            return false;
         }
+
+        return true;
     }
     /**
      * sets the widgets to the state when the fragment is first loaded
@@ -323,18 +334,45 @@ public class PatientEntryNewFragment extends Fragment {
         }
     }
 
+    public void onPatientAdded(View callingView, Long rowId) {
+        int id = callingView.getId();
+        if (rowId != -1) { //means successfully added to the database
+            switch (id) {
+                case (R.id.button_addPatient):
+                    //the toast cannot be triggered from here since the db action is async
+                    Toast.makeText(getActivity(), "Patient added.", Toast.LENGTH_SHORT)
+                            .show();
+                    mListener.onAddPatientButtonClicked();
+                    break;
+                case (R.id.button_takeMeasurement):
+                    //the toast cannot be triggered from here since the db action is async
+                    Toast.makeText(getActivity(), "Patient added.", Toast.LENGTH_SHORT)
+                            .show();
+                    mListener.onMeasureButtonClicked();
+                    break;
+                default:
+                    break;
+            }
+        } else {
+            Toast.makeText(getActivity(), "Error while trying to add new patient.", Toast.LENGTH_SHORT)
+                    .show();
+        }
+    }
+
     public static class AddPatient extends AsyncTask<Patient, Integer, Long> {
 
         private PatientOpenDBHelper patientsDB;
-
-        public AddPatient(PatientOpenDBHelper db) {
+        PatientEntryDBLoader.OnPatientAdded mCallback = null;
+        View callingView;
+        public AddPatient(View v, PatientOpenDBHelper db, PatientEntryDBLoader.OnPatientAdded ref) {
             patientsDB = db;
+            mCallback = ref;
+            callingView = v;
         }
 
         @Override
         protected Long doInBackground(Patient... patients) {
-            Long rowID = (long) -1;
-
+            Long rowID;
             rowID = patientsDB.addPatient(patients[0]);
             return rowID;
         }
@@ -342,6 +380,7 @@ public class PatientEntryNewFragment extends Fragment {
         @Override
         protected void onPostExecute(Long result) {
             super.onPostExecute(result);
+            mCallback.onPatientAdded(callingView, result);
         }
     }
 }

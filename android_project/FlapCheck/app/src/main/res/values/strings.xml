@@ -46,4 +46,9 @@
     <string name="hint_opTime">format current time</string>
     <string name="button_measure">TAKE MEASUREMENT</string>
     <string name="button_addPatient">DONE</string>
+
+    <!-- PatientEntryNew Fragment -->
+    <string name="text_PE_archive_Item">Patient</string>
+    <string name="text_PE_archive_Date">Date of OR</string>
+
 </resources>
