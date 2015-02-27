@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:clickable="true"
+    android:background="@color/fc_background"
     >
 
     <LinearLayout
@@ -13,7 +14,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
-        android:layout_margin="10dp"
+        android:layout_margin="5dp"
         >
         <TextView
             android:layout_width="wrap_content"
@@ -22,6 +23,7 @@
             android:textAllCaps="true"
             android:textStyle="bold"
             android:textSize="25sp"
+            android:textColor="@color/fc_dark_gray"
             />
     </LinearLayout>
 
@@ -32,16 +34,18 @@
         android:gravity="center_vertical"
         android:layout_marginEnd="30dp"
         android:layout_marginStart="30dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
         >
         <Button
             android:id="@+id/temperature_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/temperature_button"
-            android:drawableRight="@drawable/ic_launcher"
+            android:drawableEnd="@drawable/ic_temperature"
             android:gravity="left|center_vertical"
+            android:textColor="@color/fc_blue"
+            android:textSize="20sp"
             />
     </LinearLayout>
 
@@ -52,7 +56,7 @@
         android:gravity="center_vertical"
         android:layout_marginEnd="30dp"
         android:layout_marginStart="30dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:layout_marginBottom="10dp"
         >
         <Button
@@ -60,8 +64,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/colour_button"
-            android:drawableRight="@drawable/ic_launcher"
+            android:drawableEnd="@drawable/ic_colour"
             android:gravity="left|center_vertical"
+            android:textColor="@color/fc_blue"
+            android:textSize="20sp"
             />
     </LinearLayout>
 
@@ -72,16 +78,18 @@
         android:gravity="center_vertical"
         android:layout_marginEnd="30dp"
         android:layout_marginStart="30dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
         >
         <Button
             android:id="@+id/cap_refill_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/cap_refill_button"
-            android:drawableRight="@drawable/ic_launcher"
+            android:drawableEnd="@drawable/ic_caprefill"
             android:gravity="left|center_vertical"
+            android:textColor="@color/fc_blue"
+            android:textSize="20sp"
             />
 
     </LinearLayout>
@@ -93,16 +101,18 @@
         android:gravity="center_vertical"
         android:layout_marginEnd="30dp"
         android:layout_marginStart="30dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
         >
         <Button
             android:id="@+id/pulse_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/pulse_button"
-            android:drawableRight="@drawable/ic_launcher"
+            android:drawableEnd="@drawable/ic_pulse"
             android:gravity="left|center_vertical"
+            android:textColor="@color/fc_blue"
+            android:textSize="20sp"
             />
     </LinearLayout>
 
@@ -111,7 +121,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
-        android:layout_margin="10dp"
+        android:layout_margin="5dp"
         >
         <TextView
             android:layout_width="wrap_content"
@@ -120,6 +130,7 @@
             android:textAllCaps="true"
             android:textStyle="bold"
             android:textSize="25sp"
+            android:textColor="@color/fc_dark_gray"
             />
 
     </LinearLayout>
@@ -131,8 +142,8 @@
         android:gravity="center_vertical"
         android:layout_marginEnd="30dp"
         android:layout_marginStart="30dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
         android:clickable="true"
         >
         <Button
@@ -140,8 +151,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/photo_button"
-            android:drawableRight="@drawable/ic_launcher"
+            android:drawableEnd="@drawable/ic_photo"
             android:gravity="left|center_vertical"
+            android:textColor="@color/fc_blue"
+            android:textSize="20sp"
             />
     </LinearLayout>
 </LinearLayout>
