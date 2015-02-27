@@ -13,7 +13,7 @@ import android.widget.Button;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MainFragment extends Fragment {
+public class MainFragment extends android.support.v4.app.Fragment {
 
     public interface MainFragmentListener {
         void startMeasurementActivity();

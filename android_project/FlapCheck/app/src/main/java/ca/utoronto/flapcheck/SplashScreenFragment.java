@@ -12,7 +12,7 @@ import android.widget.Button;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SplashScreenFragment extends Fragment {
+public class SplashScreenFragment extends android.support.v4.app.Fragment {
 
     public interface SplashScreenFragmentListener {
         public void exitSplashScreen();

@@ -2,6 +2,8 @@ package ca.utoronto.flapcheck;
 
 import android.app.Activity;
 import android.app.FragmentManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -10,10 +12,13 @@ import android.view.MenuItem;
 import java.io.File;
 
 
-public class MeasurementActivity extends Activity
+public class MeasurementActivity extends FragmentActivity
         implements MeasurementFragment.MeasurementFragmentListener,
                    TakePhotoFragment.TakePhotoFragmentListener
 {
+    static final String ARG_MEASUREMENT_TYPE = "measurement_type";
+    static final String PHOTO_MEASUREMENT = "photo";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,8 +26,17 @@ public class MeasurementActivity extends Activity
         setContentView(R.layout.activity_measurement);
 
         if(savedInstanceState == null) {
-            getFragmentManager().beginTransaction()
-                    .add(R.id.measure_container, new MeasurementFragment())
+            Bundle bundle = getIntent().getExtras();
+            Fragment frag = null;
+
+            String measurement_type = bundle.getString(ARG_MEASUREMENT_TYPE);
+
+            if(measurement_type.equals(PHOTO_MEASUREMENT)) {
+                frag = new TakePhotoFragment();
+            }
+
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.measure_container, frag)
                     .commit();
         }
     }
@@ -62,7 +76,7 @@ public class MeasurementActivity extends Activity
 
     @Override
     public void onMeasurePhoto() {
-        getFragmentManager().beginTransaction()
+        getSupportFragmentManager().beginTransaction()
                 .replace(R.id.measure_container, new TakePhotoFragment())
                 .addToBackStack(null)
                 .commit();

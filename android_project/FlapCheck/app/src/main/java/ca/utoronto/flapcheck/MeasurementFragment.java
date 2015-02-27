@@ -14,7 +14,7 @@ import android.widget.Toast;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MeasurementFragment extends Fragment {
+public class MeasurementFragment extends android.support.v4.app.Fragment {
     public interface MeasurementFragmentListener {
         void onMeasurePhoto();
     }

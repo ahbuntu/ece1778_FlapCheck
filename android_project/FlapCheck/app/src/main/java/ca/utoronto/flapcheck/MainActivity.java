@@ -1,28 +1,34 @@
 package ca.utoronto.flapcheck;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 
 
-public class MainActivity extends Activity
+public class MainActivity extends FragmentActivity
             implements SplashScreenFragment.SplashScreenFragmentListener,
-                       MainFragment.MainFragmentListener
+                       MainFragment.MainFragmentListener,
+                       MeasurementFragment.MeasurementFragmentListener
 {
+    MainPagerAdapter mViewPagerAdapter;
+    ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if(savedInstanceState == null) {
-            //Load the splash screen the first time
-            getFragmentManager().beginTransaction()
-                .add(R.id.main_container, new SplashScreenFragment())
-                //Don't add the splash screen to the back stack
-                .commit();
+            mViewPagerAdapter = new MainPagerAdapter(getSupportFragmentManager());
+            mViewPager = (ViewPager) findViewById(R.id.main_pager);
+            mViewPager.setAdapter(mViewPagerAdapter);
         }
     }
 
@@ -50,11 +56,7 @@ public class MainActivity extends Activity
 
     @Override
     public void exitSplashScreen() {
-        //Once the user exits the splash screen swap in the main fragment
-        getFragmentManager().beginTransaction()
-                .replace(R.id.main_container, new MainFragment())
-                //Don't add it to the back stack, since this is the primary fragment
-                .commit();
+
     }
 
     @Override
@@ -67,5 +69,52 @@ public class MainActivity extends Activity
     public void startPatientEntryActivity() {
         Intent intent = new Intent(this, PatientEntryActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void onMeasurePhoto() {
+        Intent intent = new Intent(this, MeasurementActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(MeasurementActivity.ARG_MEASUREMENT_TYPE, MeasurementActivity.PHOTO_MEASUREMENT);
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
+    public class MainPagerAdapter extends FragmentPagerAdapter {
+
+        public MainPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            Fragment frag = null;
+            if(position == 0) {
+                frag = new SplashScreenFragment();
+            } else if (position == 1) {
+                frag = new MeasurementFragment();
+            } else if (position == 2) {
+                frag = new MainFragment();
+            }
+            return frag;
+        }
+
+        @Override
+        public int getCount() {
+            return 3;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            String title = null;
+            if(position == 0) {
+                title = "Splash";
+            } else if (position == 1) {
+                title = "Measure";
+            } else if (position == 2) {
+                title = "Review";
+            }
+            return title;
+        }
     }
 }
