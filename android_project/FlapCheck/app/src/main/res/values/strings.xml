@@ -10,7 +10,7 @@
     <string name="splash_title_flap">flap</string>
     <string name="splash_title_check">check</string>
     <string name="splash_start_button">Start</string>
-    <string name="splash_text">Integrated system for monitoring tissue flap perfusion using smartphone technology</string>
+    <string name="splash_text">Integrated system for monitoring tissue flap perfusion</string>
 
     <!-- Main Activity -->
     <string name="main_frag_title">MainFragment</string>

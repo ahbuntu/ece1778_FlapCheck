@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="fc_red">#B21212</color>
+    <color name="fc_blue">#6D889B</color>
+    <color name="fc_dark_gray">#696969</color>
+    <color name="fc_background">#F2F2F2</color>
+    <color name="fc_white">#FFFFFF</color>
 
 </resources>

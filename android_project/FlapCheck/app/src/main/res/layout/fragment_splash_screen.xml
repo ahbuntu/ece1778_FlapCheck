@@ -5,81 +5,56 @@
     android:orientation="vertical"
     android:clickable="true"
     android:layout_gravity="center"
+    android:background="@color/fc_background"
     >
     <LinearLayout
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_weight="2.5"
+        android:gravity="bottom"
         >
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="70dp"
-            android:layout_margin="10dp"
-            android:src="@drawable/ic_temperature"
-            android:layout_weight="1"
-            />
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="70dp"
-            android:layout_margin="10dp"
-            android:src="@drawable/ic_colour"
-            android:layout_weight="1"
-            />
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="70dp"
-            android:src="@drawable/ic_caprefill"
-            android:layout_margin="10dp"
-            android:layout_weight="1"
-            />
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="70dp"
-            android:layout_margin="10dp"
-            android:src="@drawable/ic_pulse"
-            android:layout_weight="1"
-            />
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="70dp"
-            android:layout_margin="10dp"
-            android:src="@drawable/ic_photo"
-            android:layout_weight="1"
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            >
+            <TextView
+                android:id="@+id/splash_title_flap"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/splash_title_flap"
+                android:textColor="@color/fc_blue"
+                android:textSize="70sp"
+                android:textStyle="bold"
+                />
+            <TextView
+                android:id="@+id/splash_title_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/splash_title_check"
+                android:textSize="70sp"
+                android:textAllCaps="true"
+                android:textColor="@color/fc_dark_gray"
+                android:textStyle="bold"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:background="@color/fc_dark_gray"
             />
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_weight="1"
-        >
-        <TextView
-            android:id="@+id/splash_title_flap"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/splash_title_flap"
-            android:textColor="@color/fc_red"
-            android:textSize="50sp"
-            />
-        <TextView
-            android:id="@+id/splash_title_check"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/splash_title_check"
-            android:textSize="50sp"
-            android:textAllCaps="true"
-            />
-    </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center"
+        android:background="@color/fc_blue"
         >
         <TextView
             android:id="@+id/splash_text"
@@ -87,16 +62,19 @@
             android:layout_height="wrap_content"
             android:text="@string/splash_text"
             android:textSize="18sp"
-            android:layout_margin="50dp"
+            android:textAllCaps="true"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
             android:gravity="center"
-
+            android:textColor="@color/fc_white"
             />
     </LinearLayout>
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="2"
+        android:layout_weight="1"
         android:gravity="center_horizontal"
+        android:background="@color/fc_blue"
         >
         <Button
             android:id="@+id/splash_start_button"
@@ -104,7 +82,8 @@
             android:layout_height="wrap_content"
             android:text="@string/splash_start_button"
             android:textSize="15sp"
-            android:textColor="@color/fc_red"
+            android:textColor="@color/fc_white"
+            android:background="@color/fc_blue"
             />
     </LinearLayout>
 </LinearLayout>
