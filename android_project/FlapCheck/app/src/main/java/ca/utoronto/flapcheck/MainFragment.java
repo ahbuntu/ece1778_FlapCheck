@@ -31,17 +31,6 @@ public class MainFragment extends android.support.v4.app.Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_main, container, false);
 
-
-        Button measureButton = (Button) view.findViewById(R.id.measure_button);
-        measureButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Start up the measure activity
-                MainFragmentListener activity = (MainFragmentListener) getActivity();
-                activity.startMeasurementActivity();
-            }
-        });
-
         Button patientEntryButton = (Button) view.findViewById(R.id.patient_entry_button);
         patientEntryButton.setOnClickListener(new View.OnClickListener() {
             @Override

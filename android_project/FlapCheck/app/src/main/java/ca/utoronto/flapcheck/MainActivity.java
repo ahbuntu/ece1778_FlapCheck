@@ -94,6 +94,8 @@ public class MainActivity extends FragmentActivity
             } else if (position == 1) {
                 frag = new MeasurementFragment();
             } else if (position == 2) {
+                frag = new ReviewFragment();
+            } else if (position == 3) {
                 frag = new MainFragment();
             }
             return frag;
@@ -101,7 +103,7 @@ public class MainActivity extends FragmentActivity
 
         @Override
         public int getCount() {
-            return 3;
+            return 4;
         }
 
         @Override
@@ -113,6 +115,8 @@ public class MainActivity extends FragmentActivity
                 title = "Measure";
             } else if (position == 2) {
                 title = "Review";
+            } else if (position == 3) {
+                title = "Old main fragment";
             }
             return title;
         }
