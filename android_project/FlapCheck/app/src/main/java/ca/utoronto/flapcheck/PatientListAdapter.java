@@ -9,7 +9,10 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
@@ -34,7 +37,6 @@ public class PatientListAdapter extends ArrayAdapter<Patient> {
         patients = list;
     }
 
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if(convertView==null){
@@ -42,17 +44,29 @@ public class PatientListAdapter extends ArrayAdapter<Patient> {
             LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
             convertView = inflater.inflate(layoutResourceId, parent, false);
         }
-        // object item based on the position
-        Log.d(TAG, "position of the view to inflate: " + position);
-        Patient item = patients.get(position);
+
         TextView textViewName  = (TextView) convertView.findViewById(R.id.text_PE_arch_name);
         TextView textViewMRN = (TextView) convertView.findViewById(R.id.text_PE_arch_mrn);
         TextView textViewOpDateTime  = (TextView) convertView.findViewById(R.id.text_PE_arch_opDateTime);
-        textViewName.setText(item.getPatientName());
-        textViewMRN.setText(item.getPatientMRN());
-        //TODO: need to convert this to datetime format
-        textViewOpDateTime .setText(Long.toString(item.getPatientOpDateTime()));
 
+        // object item based on the position
+//        Log.d(TAG, "position of the view to inflate: " + position);
+        if (patients == null) {
+            textViewName.setText("");
+            textViewMRN.setText("");
+            textViewOpDateTime.setText("");
+        } else {
+            Patient item = patients.get(position);
+            textViewName.setText(item.getPatientName());
+            textViewMRN.setText(item.getPatientMRN());
+
+            String formatStyle = "MMM dd, yyyy";
+            SimpleDateFormat dateTimeFormat = new SimpleDateFormat(formatStyle);
+            Calendar cal = new GregorianCalendar();
+            dateTimeFormat.setTimeZone(cal.getTimeZone());
+//            edit_opDate.setHint(dateTimeFormat.format(cal.getTime()));
+            textViewOpDateTime.setText(dateTimeFormat.format(cal.getTime()));
+        }
         return convertView;
     }
 }

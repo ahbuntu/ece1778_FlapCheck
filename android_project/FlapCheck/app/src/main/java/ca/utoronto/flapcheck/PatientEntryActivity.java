@@ -25,7 +25,8 @@ import com.astuetz.PagerSlidingTabStrip;
 
 
 public class PatientEntryActivity extends ActionBarActivity
-                                    implements PatientEntryNewFragment.PatientNewEntryListener{
+                                    implements PatientEntryNewFragment.PatientNewEntryListener,
+                                        PatientEntryArchiveInterac.OnArchiveItemSelected{
 
     SectionsPagerAdapter mSectionsPagerAdapter;
     ViewPager mViewPager;
@@ -74,6 +75,53 @@ public class PatientEntryActivity extends ActionBarActivity
         return super.onOptionsItemSelected(item);
     }
 
+
+    /**
+     * implementation of PatientEntryNewFragment.PatientNewEntryListener.onMeasureButtonClicked()
+     * starts the MeasurementActivity
+     */
+    @Override
+    public void onMeasureButtonClicked() {
+        //TODO: pass a patient as part of the bundle
+        Intent intent = new Intent(this, MeasurementActivity.class);
+        startActivity(intent);
+    }
+
+    /**
+     * implementation of PatientEntryNewFragment.PatientNewEntryListener.onAddPatientButtonClicked()
+     * starts the PatientEntryArchiveFragment
+     */
+    public void onAddPatientButtonClicked() {
+        //BUG: the following code block doesn't work since view pager always displays fragment 0 as current
+//        getSupportFragmentManager().beginTransaction()
+//                .replace(R.id.patient_container, new PatientEntryArchiveFragment())
+//                .addToBackStack(null)
+//                .commit();
+        //WORKAROUND:
+        mSectionsPagerAdapter.notifyDataSetChanged();
+        mViewPager.setCurrentItem(1, true);
+    }
+
+    /**
+     * Function invoked when user has made a dialog selection
+     * @param position
+     * @param option
+     */
+    public void onArchiveItemSelected(int position, int option){
+        switch(option) {
+            case 0:
+                //TODO: pass a patient as part of the bundle
+                Intent intent = new Intent(this, MeasurementActivity.class);
+                startActivity(intent);
+                break;
+            case 1:
+                //need to invoke the Review activity
+                break;
+            default:
+                break;
+        }
+    }
+
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
@@ -117,31 +165,6 @@ public class PatientEntryActivity extends ActionBarActivity
 
 
     /**
-     * implementation of PatientEntryNewFragment.PatientNewEntryListener.onMeasureButtonClicked()
-     * starts the MeasurementActivity
-     */
-    @Override
-    public void onMeasureButtonClicked() {
-        Intent intent = new Intent(this, MeasurementActivity.class);
-        startActivity(intent);
-    }
-
-    /**
-     * implementation of PatientEntryNewFragment.PatientNewEntryListener.onAddPatientButtonClicked()
-     * starts the PatientEntryArchiveFragment
-     */
-    @Override
-    public void onAddPatientButtonClicked() {
-        //BUG: the following code block doesn't work since view pager always displays fragment 0 as current
-//        getSupportFragmentManager().beginTransaction()
-//                .replace(R.id.patient_container, new PatientEntryArchiveFragment())
-//                .addToBackStack(null)
-//                .commit();
-        //WORKAROUND:
-        mViewPager.setCurrentItem(1, true);
-    }
-
-    /**
      * A placeholder fragment containing a simple view.
      */
     public static class PlaceholderFragment extends Fragment {
@@ -172,7 +195,6 @@ public class PatientEntryActivity extends ActionBarActivity
             View rootView = inflater.inflate(R.layout.fragment_patient_entry, container, false);
             return rootView;
         }
-
     }
 
 }
