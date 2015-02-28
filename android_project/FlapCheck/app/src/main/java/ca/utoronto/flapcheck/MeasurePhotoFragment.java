@@ -1,6 +1,7 @@
 package ca.utoronto.flapcheck;
 
 
+import android.app.DialogFragment;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -39,6 +40,9 @@ public class MeasurePhotoFragment extends Fragment
         public void onPictureTaken(byte[] data, Camera camera) {
             TakePhotoFragmentListener activity = (TakePhotoFragmentListener) getActivity();
 
+            //Ask the user who this photo should be saved under
+            askSelectPatient();
+
             File pictureDir = activity.getImageFileDir();
             File pictureFile = new File(pictureDir, "test.jpg"); //TODO generate a real filename
 
@@ -46,7 +50,7 @@ public class MeasurePhotoFragment extends Fragment
 
             try {
                 FileOutputStream fos = new FileOutputStream(pictureFile);
-                fos.write(data);
+                fos.write(data); //Save thea ctula data
                 fos.close();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -99,7 +103,12 @@ public class MeasurePhotoFragment extends Fragment
     }
 
     public void takePicture() {
+
+        //Take the picture
         mCamera.takePicture(null, null, mPicture);
+
+        //Prompt the user to select a patient
+
     }
 
     protected void acquireCamera() {
@@ -137,5 +146,9 @@ public class MeasurePhotoFragment extends Fragment
         //Now set autofocus
     }
 
+    public void askSelectPatient() {
+        DialogSelectPatient frag = new DialogSelectPatient();
+        frag.show(getActivity().getSupportFragmentManager(), null);
+    }
 
 }

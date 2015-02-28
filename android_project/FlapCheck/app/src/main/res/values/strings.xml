@@ -59,6 +59,11 @@
     <string name="dialog_select_option2">Review</string>
     <string name="title_activity_node_connection">NodeConnectionActivity</string>
 
+
     <!--SelectItemDialogFragment-->
     <string name="button_capture_therma">Capture Reading</string>
+
+    <!--DialogSelectPatient-->
+    <string name="select_patient">Select a patient to save measurement:</string>
+
 </resources>
