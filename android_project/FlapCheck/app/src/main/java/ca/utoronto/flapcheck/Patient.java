@@ -4,8 +4,9 @@ package ca.utoronto.flapcheck;
  * Created by ahmadul.hassan on 2015-02-19.
  */
 public class Patient {
+    public static long INVALID_ID = -1;
 
-    private long patientId = -1; //this will only be populated after being inserted into the db
+    private long patientId = INVALID_ID; //this will only be populated after being inserted into the db
     private String patientName;
     private String patientMRN;
     private Long patientOpDateTime; //displaying this in human friendly format should be handled at UI level
@@ -77,5 +78,9 @@ public class Patient {
 
     public Long getPatientOpDateTime() {
         return patientOpDateTime;
+    }
+
+    public String toString() {
+        return String.format("%s (%s)", getPatientName(), getPatientMRN());
     }
 }

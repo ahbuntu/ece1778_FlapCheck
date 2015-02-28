@@ -12,11 +12,13 @@ import java.io.File;
 
 public class MeasurementActivity extends FragmentActivity
         implements MainMeasurementFragment.MeasurementFragmentListener,
-                   MeasurePhotoFragment.TakePhotoFragmentListener
+                   MeasurePhotoFragment.TakePhotoFragmentListener,
+                   DialogSelectPatient.DialogSelectPatientListener
 {
     static final String ARG_MEASUREMENT_TYPE = "measurement_type";
     static final String PHOTO_MEASUREMENT = "photo";
 
+    private long mActivePatientId = Patient.INVALID_ID; //Set by dialog
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,5 +90,10 @@ public class MeasurementActivity extends FragmentActivity
     @Override
     public File getImageFileDir() {
         return getFilesDir();
+    }
+
+    @Override
+    public void setActivePatient(long patientId) {
+        mActivePatientId = patientId;
     }
 }

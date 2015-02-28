@@ -64,6 +64,8 @@
     <string name="button_capture_therma">Capture Reading</string>
 
     <!--DialogSelectPatient-->
-    <string name="select_patient">Select a patient to save measurement:</string>
+    <string name="dialog_select_patient_title">Select a patient</string>
+    <string name="dialog_select_patient_spinner_prefix">Patient:</string>
+    <string name="dialog_select_patient_new_patient">Add New Patient</string>
 
 </resources>
