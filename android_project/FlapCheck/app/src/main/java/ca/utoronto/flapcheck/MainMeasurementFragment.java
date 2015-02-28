@@ -20,7 +20,7 @@ import com.variable.framework.node.NodeDevice;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MeasurementFragment extends android.support.v4.app.Fragment {
+public class MainMeasurementFragment extends android.support.v4.app.Fragment {
     private static final String TAG = "MeasureFragment";
 
     public interface MeasurementFragmentListener {
@@ -32,7 +32,7 @@ public class MeasurementFragment extends android.support.v4.app.Fragment {
 //        void onMeasurePulse();
     }
 
-    public MeasurementFragment() {
+    public MainMeasurementFragment() {
         // Required empty public constructor
     }
 

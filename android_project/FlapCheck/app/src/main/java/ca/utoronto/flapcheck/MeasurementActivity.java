@@ -1,10 +1,8 @@
 package ca.utoronto.flapcheck;
 
-import android.app.Activity;
 import android.app.FragmentManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,8 +11,8 @@ import java.io.File;
 
 
 public class MeasurementActivity extends FragmentActivity
-        implements MeasurementFragment.MeasurementFragmentListener,
-                   TakePhotoFragment.TakePhotoFragmentListener
+        implements MainMeasurementFragment.MeasurementFragmentListener,
+                   MeasurePhotoFragment.TakePhotoFragmentListener
 {
     static final String ARG_MEASUREMENT_TYPE = "measurement_type";
     static final String PHOTO_MEASUREMENT = "photo";
@@ -32,7 +30,7 @@ public class MeasurementActivity extends FragmentActivity
             String measurement_type = bundle.getString(ARG_MEASUREMENT_TYPE);
 
             if(measurement_type.equals(PHOTO_MEASUREMENT)) {
-                frag = new TakePhotoFragment();
+                frag = new MeasurePhotoFragment();
             }
 
             getSupportFragmentManager().beginTransaction()
@@ -77,7 +75,7 @@ public class MeasurementActivity extends FragmentActivity
     @Override
     public void onMeasurePhoto() {
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.measure_container, new TakePhotoFragment())
+                .replace(R.id.measure_container, new MeasurePhotoFragment())
                 .addToBackStack(null)
                 .commit();
     }

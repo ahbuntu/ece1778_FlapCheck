@@ -21,7 +21,7 @@ import com.variable.framework.node.enums.NodeEnums;
 public class MainActivity extends FragmentActivity
             implements SplashScreenFragment.SplashScreenFragmentListener,
                        MainFragment.MainFragmentListener,
-                       MeasurementFragment.MeasurementFragmentListener
+                       MainMeasurementFragment.MeasurementFragmentListener
 {
     MainPagerAdapter mViewPagerAdapter;
     ViewPager mViewPager;
@@ -175,9 +175,9 @@ public class MainActivity extends FragmentActivity
             if(position == 0) {
                 frag = new SplashScreenFragment();
             } else if (position == 1) {
-                frag = new MeasurementFragment();
+                frag = new MainMeasurementFragment();
             } else if (position == 2) {
-                frag = new ReviewFragment();
+                frag = new MainReviewFragment();
             } else if (position == 3) {
                 frag = new MainFragment();
             }

@@ -20,7 +20,7 @@ import java.io.IOException;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TakePhotoFragment extends Fragment
+public class MeasurePhotoFragment extends Fragment
             implements CameraPreview.CameraPreviewOnTapListener
 {
     public interface TakePhotoFragmentListener {
@@ -59,7 +59,7 @@ public class TakePhotoFragment extends Fragment
         }
     };
 
-    public TakePhotoFragment() {
+    public MeasurePhotoFragment() {
         // Required empty public constructor
     }
 
