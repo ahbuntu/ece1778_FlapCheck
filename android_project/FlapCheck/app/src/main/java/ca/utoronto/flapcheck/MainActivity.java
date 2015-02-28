@@ -19,8 +19,7 @@ import com.variable.framework.node.enums.NodeEnums;
 
 
 public class MainActivity extends FragmentActivity
-            implements SplashScreenFragment.SplashScreenFragmentListener,
-                       MainFragment.MainFragmentListener,
+            implements MainFragment.MainFragmentListener,
                        MainMeasurementFragment.MeasurementFragmentListener
 {
     MainPagerAdapter mViewPagerAdapter;
@@ -57,14 +56,10 @@ public class MainActivity extends FragmentActivity
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void exitSplashScreen() {
 
-    }
 
     @Override
     public void startMeasurementActivity() {
@@ -162,6 +157,7 @@ public class MainActivity extends FragmentActivity
         return sensor != null;
     }
 
+    //region FragmentPagerAdapter implementation
 
     public class MainPagerAdapter extends FragmentPagerAdapter {
 
@@ -173,12 +169,11 @@ public class MainActivity extends FragmentActivity
         public Fragment getItem(int position) {
             Fragment frag = null;
             if(position == 0) {
-                frag = new SplashScreenFragment();
-            } else if (position == 1) {
                 frag = new MainMeasurementFragment();
-            } else if (position == 2) {
+            } else if (position == 1) {
                 frag = new MainReviewFragment();
-            } else if (position == 3) {
+            }
+            else if (position == 2) {
                 frag = new MainFragment();
             }
             return frag;
@@ -186,22 +181,22 @@ public class MainActivity extends FragmentActivity
 
         @Override
         public int getCount() {
-            return 4;
+            return 3;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
             String title = null;
             if(position == 0) {
-                title = "Splash";
-            } else if (position == 1) {
                 title = "Measure";
-            } else if (position == 2) {
+            } else if (position == 1) {
                 title = "Review";
-            } else if (position == 3) {
+            }
+            else if (position == 2) {
                 title = "Old main fragment";
             }
             return title;
         }
     }
+    //endregion
 }
