@@ -7,12 +7,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import ca.utoronto.flapcheck.PatientContract.PatientEntry;
+import ca.utoronto.flapcheck.DBPatientContract.PatientEntry;
 
 /**
  * Created by ahmadul.hassan on 2015-02-19.
