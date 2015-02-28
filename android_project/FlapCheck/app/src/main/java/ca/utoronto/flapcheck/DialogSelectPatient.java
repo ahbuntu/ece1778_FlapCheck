@@ -92,8 +92,6 @@ public class DialogSelectPatient extends DialogFragment {
             }
         });
 
-
-
         return builder.create();
     }
 
