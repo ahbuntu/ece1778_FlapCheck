@@ -80,7 +80,7 @@ public class PatientOpenDBHelper extends SQLiteOpenHelper {
      * @param id - the row ID of the patient in the database
      * @return the patient object if found; null otherwise
      */
-    public Patient getPatient(int id) {
+    public Patient getPatient(long id) {
         Patient foundPatient = null;
         try {
             SQLiteDatabase db = this.getReadableDatabase();

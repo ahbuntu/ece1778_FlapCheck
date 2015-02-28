@@ -20,6 +20,8 @@ public class MeasurementActivity extends FragmentActivity
 
     private long mActivePatientId = Patient.INVALID_ID; //Set by dialog
 
+    private MeasurePhotoFragment mMeasurePhotoFragment = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,7 +34,8 @@ public class MeasurementActivity extends FragmentActivity
             String measurement_type = bundle.getString(ARG_MEASUREMENT_TYPE);
 
             if(measurement_type.equals(PHOTO_MEASUREMENT)) {
-                frag = new MeasurePhotoFragment();
+                mMeasurePhotoFragment = new MeasurePhotoFragment();
+                frag = mMeasurePhotoFragment;
             }
 
             getSupportFragmentManager().beginTransaction()
@@ -88,12 +91,23 @@ public class MeasurementActivity extends FragmentActivity
     }
 
     @Override
-    public File getImageFileDir() {
-        return getFilesDir();
+    public long requestActivePatientId() {
+        DialogSelectPatient frag = new DialogSelectPatient();
+        frag.show(getSupportFragmentManager(), null);
+        return mActivePatientId;
     }
 
     @Override
-    public void setActivePatient(long patientId) {
+    public void onDismissSelectPatient() {
+        //Pass
+    }
+
+    @Override
+    public void onSetActivePatientId(long patientId) {
         mActivePatientId = patientId;
+
+        if(mMeasurePhotoFragment != null) {
+            mMeasurePhotoFragment.moveLastPhotoToPatientDirectory(patientId);
+        }
     }
 }

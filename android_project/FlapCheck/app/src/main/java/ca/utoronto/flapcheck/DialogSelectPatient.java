@@ -4,6 +4,7 @@ package ca.utoronto.flapcheck;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Intent;
 import android.support.v4.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -28,12 +29,18 @@ import java.util.List;
 public class DialogSelectPatient extends DialogFragment {
 
     interface DialogSelectPatientListener {
-        void setActivePatient(long patientId);
+        void onDismissSelectPatient();
+        void onSetActivePatientId(long patientId);
     }
 
     private DialogSelectPatientListener mListenerCallback;
     private Patient mActivePatient = null;
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mListenerCallback = (DialogSelectPatientListener) activity;
+    }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -45,7 +52,7 @@ public class DialogSelectPatient extends DialogFragment {
         //The view representing the dialog
         View dialogView = inflater.inflate(R.layout.dialog_select_patient, null);
 
-        //Get the data to populate th spinner
+        //Get the data to populate the spinner
         PatientOpenDBHelper dbHelper = new PatientOpenDBHelper(getActivity().getApplicationContext());
         List<Patient> patientList = dbHelper.getAllPatients();
         ArrayAdapter<Patient> patientArrayAdapter = new ArrayAdapter<Patient>(getActivity(), android.R.layout.simple_spinner_dropdown_item, patientList);
@@ -73,7 +80,7 @@ public class DialogSelectPatient extends DialogFragment {
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                mListenerCallback.setActivePatient(mActivePatient.getPatientId());
+                mListenerCallback.onSetActivePatientId(mActivePatient.getPatientId());
             }
         });
 
@@ -81,26 +88,19 @@ public class DialogSelectPatient extends DialogFragment {
         builder.setNeutralButton(R.string.dialog_select_patient_new_patient, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(getActivity(), "Tried to add a patient (not yet implemented)!", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity(), "Tried to add a patient (not yet implemented)!", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getActivity(), PatientEntryActivity.class);
+                startActivity(intent);
             }
         });
 
         builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                mListenerCallback.setActivePatient(Patient.INVALID_ID);
+                mListenerCallback.onDismissSelectPatient();
             }
         });
 
-
-
         return builder.create();
     }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mListenerCallback = (DialogSelectPatientListener) activity;
-    }
-
 }
