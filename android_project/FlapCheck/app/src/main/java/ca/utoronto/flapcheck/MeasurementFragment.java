@@ -1,8 +1,12 @@
 package ca.utoronto.flapcheck;
 
 
+import android.bluetooth.BluetoothAdapter;
+import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,13 +14,22 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.variable.framework.node.NodeDevice;
+
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class MeasurementFragment extends android.support.v4.app.Fragment {
+    private static final String TAG = "MeasureFragment";
+
     public interface MeasurementFragmentListener {
         void onMeasurePhoto();
+        void onMeasureTemperature();
+        //TODO: implement the interfaces when the time comes
+//        void onMeasureColour();
+//        void onMeasureCapRefill();
+//        void onMeasurePulse();
     }
 
     public MeasurementFragment() {
@@ -39,7 +52,8 @@ public class MeasurementFragment extends android.support.v4.app.Fragment {
         takeTemp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(), "Temperature measurement not yet implemented!", Toast.LENGTH_SHORT).show();
+                MeasurementFragmentListener activity = (MeasurementFragmentListener) getActivity();
+                activity.onMeasureTemperature();
             }
         });
 
@@ -83,5 +97,9 @@ public class MeasurementFragment extends android.support.v4.app.Fragment {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
 
 }

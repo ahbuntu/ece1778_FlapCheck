@@ -1,5 +1,16 @@
 apply plugin: 'com.android.application'
 
+repositories {
+    mavenCentral()
+
+    maven {
+        url = "http://repository-achartengine.forge.cloudbees.com/snapshot"
+    }
+    maven {
+        url = 'https://repository-variabletech.forge.cloudbees.com/release/'
+    }
+}
+
 android {
     compileSdkVersion 21
     buildToolsVersion "21.1.2"
@@ -24,4 +35,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile 'com.android.support:cardview-v7:21.0.3'
     compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
+    //Release Line, using the latest.integration will allow this to stay up to date with releases.
+    compile group:'node.android.framework', name:'Android.API', version:'1.8'
 }

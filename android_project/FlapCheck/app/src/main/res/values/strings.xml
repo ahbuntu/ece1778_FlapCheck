@@ -57,5 +57,8 @@
     <string name="dialog_select_instr">Select an action</string>
     <string name="dialog_select_option1">Take Measurement</string>
     <string name="dialog_select_option2">Review</string>
+    <string name="title_activity_node_connection">NodeConnectionActivity</string>
 
+    <!--SelectItemDialogFragment-->
+    <string name="button_capture_therma">Capture Reading</string>
 </resources>

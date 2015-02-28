@@ -83,6 +83,11 @@ public class MeasurementActivity extends FragmentActivity
     }
 
     @Override
+    public void onMeasureTemperature() {
+        //TODO: need to decide where which activity will actually handle taking measurements     
+    }
+
+    @Override
     public File getImageFileDir() {
         return getFilesDir();
     }
