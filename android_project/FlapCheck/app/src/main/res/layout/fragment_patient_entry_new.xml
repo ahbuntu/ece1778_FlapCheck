@@ -40,6 +40,7 @@
         <EditText android:id="@+id/edit_mrn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:inputType="number"
             android:hint="@string/hint_mrn"
             android:layout_below="@+id/text_mrn"
             android:layout_centerHorizontal="true" />
