@@ -20,7 +20,7 @@ import com.variable.framework.node.enums.NodeEnums;
 
 public class MainActivity extends FragmentActivity
             implements MainFragment.MainFragmentListener,
-                       MainMeasurementFragment.MeasurementFragmentListener
+        MainMeasurementFragment.MainMeasurementFragmentListener
 {
     MainPagerAdapter mViewPagerAdapter;
     ViewPager mViewPager;

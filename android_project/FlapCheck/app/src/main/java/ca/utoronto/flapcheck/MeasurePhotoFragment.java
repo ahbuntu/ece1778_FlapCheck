@@ -2,7 +2,6 @@ package ca.utoronto.flapcheck;
 
 
 import android.app.Activity;
-import android.app.DialogFragment;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -30,11 +29,11 @@ public class MeasurePhotoFragment extends Fragment
 {
     private static String TAG ="MeasurePhotoFragment";
 
-    public interface TakePhotoFragmentListener {
+    public interface MeasurePhotoFragmentListener {
         long requestActivePatientId();
     }
 
-    private TakePhotoFragmentListener mTakePhotoFragmentListener;
+    private MeasurePhotoFragmentListener mMeasurePhotoFragmentListener;
     private File lastPhoto = null;
 
     private int mCameraId;
@@ -45,7 +44,7 @@ public class MeasurePhotoFragment extends Fragment
     private Camera.PictureCallback mPicture = new Camera.PictureCallback() {
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
-            TakePhotoFragmentListener activity = (TakePhotoFragmentListener) getActivity();
+            MeasurePhotoFragmentListener activity = (MeasurePhotoFragmentListener) getActivity();
 
 
 
@@ -84,7 +83,7 @@ public class MeasurePhotoFragment extends Fragment
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        mTakePhotoFragmentListener = (TakePhotoFragmentListener) activity;
+        mMeasurePhotoFragmentListener = (MeasurePhotoFragmentListener) activity;
     }
 
     @Override
@@ -125,7 +124,7 @@ public class MeasurePhotoFragment extends Fragment
         //Take the picture
         mCamera.takePicture(null, null, mPicture);
 
-        mTakePhotoFragmentListener.requestActivePatientId();
+        mMeasurePhotoFragmentListener.requestActivePatientId();
     }
 
     public void onReceiveActivePatientId(long patientId) {
@@ -178,6 +177,16 @@ public class MeasurePhotoFragment extends Fragment
             mCamera.release();
             mCamera = null;
         }
+        FrameLayout preview = (FrameLayout) getView().findViewById(R.id.photo_preview);
+        if(mPreviewOverlay != null) {
+            preview.removeView(mPreviewOverlay);
+            mPreviewOverlay = null;
+        }
+        if(mPreview != null) {
+            preview.removeView(mPreview);
+            mPreview = null;
+        }
+
     }
 
     public void onCameraPreviewTap(float x, float y) {

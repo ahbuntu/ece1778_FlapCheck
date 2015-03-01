@@ -1,20 +1,13 @@
 package ca.utoronto.flapcheck;
 
 
-import android.bluetooth.BluetoothAdapter;
-import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.Toast;
-
-import com.variable.framework.node.NodeDevice;
 
 
 /**
@@ -23,7 +16,7 @@ import com.variable.framework.node.NodeDevice;
 public class MainMeasurementFragment extends android.support.v4.app.Fragment {
     private static final String TAG = "MeasureFragment";
 
-    public interface MeasurementFragmentListener {
+    public interface MainMeasurementFragmentListener {
         void onMeasurePhoto();
         void onMeasureTemperature();
         //TODO: implement the interfaces when the time comes
@@ -52,7 +45,7 @@ public class MainMeasurementFragment extends android.support.v4.app.Fragment {
         takeTemp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MeasurementFragmentListener activity = (MeasurementFragmentListener) getActivity();
+                MainMeasurementFragmentListener activity = (MainMeasurementFragmentListener) getActivity();
                 activity.onMeasureTemperature();
             }
         });
@@ -89,7 +82,7 @@ public class MainMeasurementFragment extends android.support.v4.app.Fragment {
         takePicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MeasurementFragmentListener activity = (MeasurementFragmentListener) getActivity();
+                MainMeasurementFragmentListener activity = (MainMeasurementFragmentListener) getActivity();
                 activity.onMeasurePhoto();
             }
         });

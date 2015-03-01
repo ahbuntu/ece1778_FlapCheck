@@ -7,12 +7,10 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import java.io.File;
-
 
 public class MeasurementActivity extends FragmentActivity
-        implements MainMeasurementFragment.MeasurementFragmentListener,
-                   MeasurePhotoFragment.TakePhotoFragmentListener,
+        implements MainMeasurementFragment.MainMeasurementFragmentListener,
+        MeasurePhotoFragment.MeasurePhotoFragmentListener,
                    DialogSelectPatient.DialogSelectPatientListener
 {
     static final String ARG_MEASUREMENT_TYPE = "measurement_type";
