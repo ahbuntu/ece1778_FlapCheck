@@ -145,8 +145,19 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             focusRegions.add(focusRegion);
 
             Camera.Parameters params = mCamera.getParameters();
-            params.setFocusAreas(focusRegions);
-            params.setMeteringAreas(focusRegions);
+
+            if(params.getMaxNumFocusAreas() <= focusRegions.size()) {
+                params.setFocusAreas(focusRegions);
+            } else {
+                Toast.makeText(getContext(), String.format("Could not set %d focus areas. Max supported %d", focusRegions.size(), params.getMaxNumFocusAreas()), Toast.LENGTH_SHORT).show();
+            }
+
+            if(params.getMaxNumMeteringAreas() <= focusRegions.size()) {
+                params.setMeteringAreas(focusRegions);
+            } else {
+                Toast.makeText(getContext(), String.format("Could not set %d metering areas. Max supported %d", focusRegions.size(), params.getMaxNumMeteringAreas()), Toast.LENGTH_SHORT).show();
+            }
+
             mCamera.setParameters(params);
 
             mCamera.autoFocus(mAutoFocusCallback);
