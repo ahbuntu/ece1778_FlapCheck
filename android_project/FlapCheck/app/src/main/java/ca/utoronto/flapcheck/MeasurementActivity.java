@@ -1,6 +1,8 @@
 package ca.utoronto.flapcheck;
 
+import android.app.Activity;
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -96,7 +98,10 @@ public class MeasurementActivity extends FragmentActivity
 
     @Override
     public void onDismissSelectPatient() {
-        //Pass
+        if(mMeasurePhotoFragment != null) {
+            //The user didn't want to select a patient so drop the photo
+            mMeasurePhotoFragment.removeLastPhoto();
+        }
     }
 
     @Override
@@ -107,4 +112,21 @@ public class MeasurementActivity extends FragmentActivity
             mMeasurePhotoFragment.moveLastPhotoToPatientDirectory(patientId);
         }
     }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == Constants.ADD_PATIENT_REQUEST) {
+            if (resultCode == Activity.RESULT_OK) {
+                Bundle results = data.getExtras();
+                long addedPatientId = results.getLong(Constants.PATIENT_ENTRY_KEY_ADDED_PATIENT_ID);
+
+                //Same as on positive button selection
+                onSetActivePatientId(addedPatientId);
+            }
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
 }

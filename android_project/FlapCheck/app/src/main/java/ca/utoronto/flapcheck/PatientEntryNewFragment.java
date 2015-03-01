@@ -38,8 +38,8 @@ public class PatientEntryNewFragment extends Fragment
      * interface definitions
      */
     public interface PatientNewEntryListener {
-        public void onMeasureButtonClicked();
-        public void onAddPatientButtonClicked();
+        public void onMeasureButtonClicked(long patientId);
+        public void onAddPatientButtonClicked(long patientId);
     }
 
     Button button_addPatient;
@@ -336,13 +336,13 @@ public class PatientEntryNewFragment extends Fragment
                     //the toast cannot be triggered from here since the db action is async
                     Toast.makeText(getActivity(), "Patient added.", Toast.LENGTH_SHORT)
                             .show();
-                    mListener.onAddPatientButtonClicked();
+                    mListener.onAddPatientButtonClicked(rowId);
                     break;
                 case (R.id.button_takeMeasurement):
                     //the toast cannot be triggered from here since the db action is async
                     Toast.makeText(getActivity(), "Patient added.", Toast.LENGTH_SHORT)
                             .show();
-                    mListener.onMeasureButtonClicked();
+                    mListener.onMeasureButtonClicked(rowId);
                     break;
                 default:
                     break;

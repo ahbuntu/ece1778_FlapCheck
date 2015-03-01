@@ -157,6 +157,14 @@ public class MeasurePhotoFragment extends Fragment
         }
     }
 
+    public void removeLastPhoto() {
+        if(lastPhoto != null) {
+            Toast.makeText(getActivity(), String.format("Deleting %s since no patient was added or selected.", lastPhoto.getPath()), Toast.LENGTH_SHORT).show();
+            lastPhoto.delete();
+            lastPhoto = null;
+        }
+    }
+
     protected void acquireCamera() {
         mCamera = Camera.open(mCameraId);
         if(mCamera == null) {
