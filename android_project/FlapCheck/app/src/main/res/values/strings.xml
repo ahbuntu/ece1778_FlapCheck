@@ -69,4 +69,8 @@
     <string name="dialog_select_patient_new_patient">Add New Patient</string>
     <string name="title_activity_splash">SplashActivity</string>
 
+    <!-- MainReviewFragment -->
+    <string name="review_title">Review A Measurement</string>
+    <string name="review_select_patient">Patient:</string>
+
 </resources>

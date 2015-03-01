@@ -6,6 +6,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+
+import java.util.List;
 
 
 /**
@@ -24,6 +28,13 @@ public class MainReviewFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_review, container, false);
+
+        Spinner spinner = (Spinner) view.findViewById(R.id.review_patient_spinner);
+
+        PatientOpenDBHelper dbHelper = new PatientOpenDBHelper(getActivity().getApplicationContext());
+        List<Patient> patientList = dbHelper.getAllPatients();
+        ArrayAdapter<Patient> patientArrayAdapter = new ArrayAdapter<Patient>(getActivity(), android.R.layout.simple_spinner_dropdown_item, patientList);
+        spinner.setAdapter(patientArrayAdapter);
 
         return view;
     }
