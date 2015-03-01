@@ -181,7 +181,7 @@ public class MainActivity extends FragmentActivity
 
         @Override
         public int getCount() {
-            return 3;
+            return 2;
         }
 
         @Override
@@ -191,9 +191,6 @@ public class MainActivity extends FragmentActivity
                 title = "Measure";
             } else if (position == 1) {
                 title = "Review";
-            }
-            else if (position == 2) {
-                title = "Old main fragment";
             }
             return title;
         }

@@ -69,7 +69,7 @@
     <string name="title_activity_splash">SplashActivity</string>
 
     <!-- MainReviewFragment -->
-    <string name="review_title">Review A Measurement</string>
+    <string name="review_title">Review Measurements</string>
     <string name="review_select_patient">Patient:</string>
     <string name="title_activity_review">ReviewActivity</string>
 
