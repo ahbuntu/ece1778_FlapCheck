@@ -7,11 +7,29 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         >
-        <TextView
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/hello_blank_fragment"
-            />
+            android:orientation="horizontal"
+            android:background="@color/fc_blue"
+            >
+            <TextView
+                android:id="@+id/photo_review_patient_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/fc_white"
+                android:layout_gravity="start"
+                android:layout_weight="1"
+                />
+            <TextView
+                android:id="@+id/photo_review_patient_mrn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/fc_white"
+                android:layout_gravity="end"
+                />
+        </LinearLayout>
 
         <android.support.v4.view.ViewPager
             android:id="@+id/image_pager_1"

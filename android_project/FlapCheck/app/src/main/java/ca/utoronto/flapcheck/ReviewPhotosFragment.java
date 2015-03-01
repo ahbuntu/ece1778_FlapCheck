@@ -2,25 +2,38 @@ package ca.utoronto.flapcheck;
 
 
 import android.app.Activity;
+import android.media.ExifInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.io.File;
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.TimeZone;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class ReviewPhotosFragment extends Fragment {
+    private static String TAG = "ReviewPhotosFragment";
+
     private ViewPager mPager1;
     private ViewPager mPager2;
     private PagerAdapter mPagerAdapter;
@@ -47,6 +60,12 @@ public class ReviewPhotosFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_review_photos, container, false);
 
+        Patient patient = mListenerCallback.getPatient();
+        TextView patientName = (TextView) view.findViewById(R.id.photo_review_patient_name);
+        TextView patientMrn = (TextView) view.findViewById(R.id.photo_review_patient_mrn);
+        patientName.setText(patient.getPatientName());
+        patientMrn.setText(patient.getPatientMRN());
+
         mPager1 = (ViewPager) view.findViewById(R.id.image_pager_1);
         mPager2 = (ViewPager) view.findViewById(R.id.image_pager_2);
 
@@ -60,6 +79,7 @@ public class ReviewPhotosFragment extends Fragment {
 
     private class PhotoPagerAdapter extends FragmentPagerAdapter {
         private List<File> mImageFiles;
+        private long patientOpTime;
 
         public PhotoPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -67,6 +87,8 @@ public class ReviewPhotosFragment extends Fragment {
             mImageFiles = new ArrayList<File>();
 
             Patient patient = mListenerCallback.getPatient();
+            patientOpTime = patient.getPatientOpDateTime();
+
             //TODO get the real path...
             File pictureDir = new File(getActivity().getFilesDir(), "patient_id");
 
@@ -77,6 +99,8 @@ public class ReviewPhotosFragment extends Fragment {
                     mImageFiles.add(file);
                 }
             }
+
+
         }
 
         @Override
@@ -84,8 +108,36 @@ public class ReviewPhotosFragment extends Fragment {
             Fragment frag = new ReviewPhotosPageFragment();
             Bundle args = new Bundle();
 
-            args.putFloat(ReviewPhotosPageFragment.ARG_HOURS_POST_OP, 0.5f);
-            args.putString(ReviewPhotosPageFragment.ARG_IMAGE_PATH, mImageFiles.get(position).getPath());
+            File image =  mImageFiles.get(position);
+
+            //Calculate image time relative to post-op
+            //First load the date/time info from the image
+            ExifInterface exifData = null;
+            try {
+                exifData = new ExifInterface(image.getAbsolutePath());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if(exifData != null) {
+                String dateTime = exifData.getAttribute(ExifInterface.TAG_DATETIME);
+                Calendar cal = Calendar.getInstance();
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy:MM:dd kk:mm:ss");
+                try {
+                    cal.setTime(dateFormat.parse(dateTime)); //Assume default timezone
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                long photoTime = cal.getTimeInMillis();
+
+                long postOpDeltaTimeMs = photoTime - patientOpTime;
+
+                args.putLong(ReviewPhotosPageFragment.ARG_POST_OP_DELTA_TIME, postOpDeltaTimeMs);
+            }
+
+
+
+            args.putString(ReviewPhotosPageFragment.ARG_IMAGE_PATH, image.getPath());
 
             frag.setArguments(args);
 
