@@ -49,6 +49,7 @@ public class MeasurePhotoFragment extends Fragment
 
 
             File pictureDir = getActivity().getFilesDir();
+            pictureDir.mkdirs();
             String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
             File pictureFile = new File(pictureDir, "IMG_" + timestamp + ".jpg"); //TODO generate a real filename
 
@@ -141,6 +142,7 @@ public class MeasurePhotoFragment extends Fragment
                 //TODO: query the DB to find the path to stick the photo in
                 //    e.g.    File patientPicDir = patient.getImageDir();
                 File patientPicDir = new File(getActivity().getFilesDir(), "patient_id");
+                patientPicDir.mkdirs();
                 File targetFileLocation = new File(patientPicDir, lastPhoto.getName());
 
                 //Move the image to the correct location

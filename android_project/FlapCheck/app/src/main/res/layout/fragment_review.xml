@@ -50,7 +50,7 @@
         android:clickable="true"
         >
         <Button
-            android:id="@+id/photo_button"
+            android:id="@+id/photo_review_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/photo_button"

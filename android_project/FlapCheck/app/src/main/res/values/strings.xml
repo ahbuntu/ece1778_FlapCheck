@@ -34,7 +34,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_patient_entry">PatientEntryActivity</string>
 
-    <!--PatientEntry Activity-->
+    <!-- PatientEntry Activity -->
     <string name="title_PE_new">New</string>
     <string name="title_PE_archived">Archived</string>
 
@@ -53,17 +53,16 @@
     <string name="text_PE_archive_Item">Patient</string>
     <string name="text_PE_archive_Date">Date of OR</string>
 
-    <!--SelectItemDialogFragment-->
+    <!-- SelectItemDialogFragment -->
     <string name="dialog_select_instr">Select an action</string>
     <string name="dialog_select_option1">Take Measurement</string>
     <string name="dialog_select_option2">Review</string>
     <string name="title_activity_node_connection">NodeConnectionActivity</string>
 
-
-    <!--SelectItemDialogFragment-->
+    <!-- SelectItemDialogFragment -->
     <string name="button_capture_therma">Capture Reading</string>
 
-    <!--DialogSelectPatient-->
+    <!-- DialogSelectPatient -->
     <string name="dialog_select_patient_title">Select a patient</string>
     <string name="dialog_select_patient_spinner_prefix">Patient:</string>
     <string name="dialog_select_patient_new_patient">Add New Patient</string>
@@ -72,5 +71,9 @@
     <!-- MainReviewFragment -->
     <string name="review_title">Review A Measurement</string>
     <string name="review_select_patient">Patient:</string>
+    <string name="title_activity_review">ReviewActivity</string>
+
+    <!-- ReviewPhotosFragment & ReviewPhotosPageFragment -->
+
 
 </resources>

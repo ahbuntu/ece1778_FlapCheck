@@ -10,6 +10,13 @@ public class Constants {
 
     //***************** Media Directory ***********************
 
+    //***************** Measurement Types *********************
+    public static final String MEASUREMENT_PHOTO = "Photograph";
+    public static final String MEASUREMENT_TEMP = "Temperature";
+    public static final String MEASUREMENT_COLOUR = "Colour";
+    public static final String MEASUREMENT_CAP_REFILL = "Capilary Refill";
+    public static final String MEASUREMENT_PULSE = "Pulse";
+
     //***************** BUNDlE key names  *********************
     //proposed format:
     // 1. prefix with activity or fragment name

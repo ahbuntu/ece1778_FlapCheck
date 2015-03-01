@@ -77,7 +77,7 @@ public class MainActivity extends FragmentActivity
     public void onMeasurePhoto() {
         Intent intent = new Intent(this, MeasurementActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString(MeasurementActivity.ARG_MEASUREMENT_TYPE, MeasurementActivity.PHOTO_MEASUREMENT);
+        bundle.putString(MeasurementActivity.ARG_MEASUREMENT_TYPE, Constants.MEASUREMENT_PHOTO);
         intent.putExtras(bundle);
         startActivity(intent);
     }

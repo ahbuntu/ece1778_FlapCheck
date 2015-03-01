@@ -14,7 +14,6 @@ public class MeasurementActivity extends FragmentActivity
                    DialogSelectPatient.DialogSelectPatientListener
 {
     static final String ARG_MEASUREMENT_TYPE = "measurement_type";
-    static final String PHOTO_MEASUREMENT = "photo";
 
     private long mActivePatientId = Patient.INVALID_ID; //Set by dialog
 
@@ -31,7 +30,7 @@ public class MeasurementActivity extends FragmentActivity
 
             String measurement_type = bundle.getString(ARG_MEASUREMENT_TYPE);
 
-            if(measurement_type.equals(PHOTO_MEASUREMENT)) {
+            if(measurement_type.equals(Constants.MEASUREMENT_PHOTO)) {
                 mMeasurePhotoFragment = new MeasurePhotoFragment();
                 frag = mMeasurePhotoFragment;
             }
