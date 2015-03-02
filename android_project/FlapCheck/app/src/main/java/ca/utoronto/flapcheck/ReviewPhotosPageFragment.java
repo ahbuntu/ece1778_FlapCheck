@@ -42,7 +42,7 @@ public class ReviewPhotosPageFragment extends Fragment {
             long postOpTimeDeltaSec = TimeUnit.MILLISECONDS.toSeconds(postOpTimeDeltaMs) - TimeUnit.MINUTES.toSeconds(postOpTimeDeltaMin) - TimeUnit.HOURS.toSeconds(postOpTimeDeltaHrs);
 
             float hrsPostOp = postOpTimeDeltaHrs + postOpTimeDeltaMin / 60f + postOpTimeDeltaSec / 3600f;
-            textView.setText(String.format("%+.2f hrs post-op", hrsPostOp));
+            textView.setText(String.format("%+.1f hrs post-op", hrsPostOp));
         } else {
             textView.setText("Unknown time post-op");
         }
