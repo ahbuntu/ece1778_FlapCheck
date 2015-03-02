@@ -20,7 +20,8 @@ import com.variable.framework.node.enums.NodeEnums;
 
 public class MainActivity extends FragmentActivity
             implements MainFragment.MainFragmentListener,
-        MainMeasurementFragment.MainMeasurementFragmentListener
+        MainMeasurementFragment.MainMeasurementSensorListener,
+        MainMeasurementFragment.MainMeasurementNODEListener
 {
     MainPagerAdapter mViewPagerAdapter;
     ViewPager mViewPager;
@@ -73,6 +74,9 @@ public class MainActivity extends FragmentActivity
         startActivity(intent);
     }
 
+    /**
+     * implementation of  MainMeasurementFragment.MainMeasurementSensorListener.onMeasurePhoto()
+     */
     @Override
     public void onMeasurePhoto() {
         Intent intent = new Intent(this, MeasurementActivity.class);
@@ -83,6 +87,9 @@ public class MainActivity extends FragmentActivity
     }
 
 
+    /**
+     * implementation of  MainMeasurementFragment.MainMeasurementSensorListener.onMeasureTemperature()
+     */
     @Override
     public void onMeasureTemperature() {
         NodeDevice node = ((FlapCheckApplication) getApplication()).getActiveNode();

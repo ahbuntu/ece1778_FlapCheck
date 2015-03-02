@@ -12,7 +12,7 @@ import android.view.MenuItem;
 
 
 public class MeasurementActivity extends FragmentActivity
-        implements MainMeasurementFragment.MainMeasurementFragmentListener,
+        implements
         MeasurePhotoFragment.MeasurePhotoFragmentListener,
         DialogSelectPatient.DialogSelectPatientListener,
         PatientEntryNewFragment.PatientNewEntryListener
@@ -77,19 +77,6 @@ public class MeasurementActivity extends FragmentActivity
         } else {
             super.onBackPressed();
         }
-    }
-
-    @Override
-    public void onMeasurePhoto() {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.measure_container, new MeasurePhotoFragment())
-                .addToBackStack(null)
-                .commit();
-    }
-
-    @Override
-    public void onMeasureTemperature() {
-        //TODO: need to decide where which activity will actually handle taking measurements     
     }
 
     /**

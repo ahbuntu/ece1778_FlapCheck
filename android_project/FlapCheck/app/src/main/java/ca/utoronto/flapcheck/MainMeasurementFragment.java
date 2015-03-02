@@ -16,13 +16,17 @@ import android.widget.Toast;
 public class MainMeasurementFragment extends android.support.v4.app.Fragment {
     private static final String TAG = "MeasureFragment";
 
-    public interface MainMeasurementFragmentListener {
+    public interface MainMeasurementSensorListener {
         void onMeasurePhoto();
-        void onMeasureTemperature();
-        //TODO: implement the interfaces when the time comes
-//        void onMeasureColour();
+        //TODO: implement the sensor interfaces when the time comes
 //        void onMeasureCapRefill();
 //        void onMeasurePulse();
+    }
+
+    public interface MainMeasurementNODEListener {
+        //TODO: implement the NODE interfaces when the time comes
+        void onMeasureTemperature();
+        //        void onMeasureColour();
     }
 
     public MainMeasurementFragment() {
@@ -45,7 +49,7 @@ public class MainMeasurementFragment extends android.support.v4.app.Fragment {
         takeTemp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainMeasurementFragmentListener activity = (MainMeasurementFragmentListener) getActivity();
+                MainMeasurementNODEListener activity = (MainMeasurementNODEListener) getActivity();
                 activity.onMeasureTemperature();
             }
         });
@@ -82,7 +86,7 @@ public class MainMeasurementFragment extends android.support.v4.app.Fragment {
         takePicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainMeasurementFragmentListener activity = (MainMeasurementFragmentListener) getActivity();
+                MainMeasurementSensorListener activity = (MainMeasurementSensorListener) getActivity();
                 activity.onMeasurePhoto();
             }
         });
