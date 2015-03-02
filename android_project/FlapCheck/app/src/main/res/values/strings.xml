@@ -5,6 +5,8 @@
     <string name="app_name">flapCHECK</string>
     <string name="button_ok">OK</string>
     <string name="button_cancel">Cancel</string>
+    <string name="title_activity_measurement">MeasurementActivity</string>
+    <string name="title_activity_patient_entry">PatientEntryActivity</string>
 
     <!-- Splash Screen -->
     <string name="splash_title_flap">flap</string>
@@ -28,11 +30,9 @@
 
     <!-- TakePhoto Fragment -->
     <string name="capture_photo_button">Capture</string>
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_measurement">MeasurementActivity</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_patient_entry">PatientEntryActivity</string>
+    <string name="take_photo_instructions">Centre flap in green region</string>
+
 
     <!-- PatientEntry Activity -->
     <string name="title_PE_new">New</string>

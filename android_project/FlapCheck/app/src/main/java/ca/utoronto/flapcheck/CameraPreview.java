@@ -1,7 +1,5 @@
 package ca.utoronto.flapcheck;
 
-import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -246,6 +244,69 @@ class CameraFocusOverlay extends View {
         canvas.drawCircle(mCentreX, mCentreY, mDiameter / 2, mCirclePaint);
         super.onDraw(canvas);
     }
+}
 
+class CameraFlapOverlay extends View {
+    private Paint mBorderPaint;
+    private float mDiameter;
+    private float mCentreX;
+    private float mCentreY;
 
+    private float mLeft;
+    private float mRight;
+    private float mBottom;
+    private float mTop;
+
+    public CameraFlapOverlay(Context context) {
+        super(context);
+
+        init();
+    }
+
+    public CameraFlapOverlay(Context context, AttributeSet attrs) {
+        super(context, attrs);
+
+        init();
+    }
+
+    public void setCentreX(float x) {
+        mCentreX = x;
+    }
+
+    public void setCentreY(float y) {
+        mCentreY = y;
+    }
+
+    private void init() {
+        mBorderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mBorderPaint.setColor(Color.GREEN);
+//        DashPathEffect dashPathEffect = new DashPathEffect(new float[]{5,5}, 0.0f);
+//        mBorderPaint.setPathEffect(dashPathEffect);
+        mBorderPaint.setStyle(Paint.Style.STROKE);
+        mBorderPaint.setStrokeWidth(5);
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h , int oldw, int oldh) {
+        float xpad = (float)(getPaddingLeft() + getPaddingRight());
+        float ypad = (float)(getPaddingTop()  + getPaddingBottom());
+
+        float padded_w = w - xpad;
+        float padded_h = h - ypad;
+
+        mDiameter = 300;
+        mCentreX = (float) w / 2;
+        mCentreY = (float) h / 2;
+
+        mLeft = 0.1f*w;
+        mRight = 0.9f*w;
+        mBottom = 0.1f*h;
+        mTop = 0.9f*h;
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        canvas.drawRect(mLeft, mBottom, mRight, mTop, mBorderPaint);
+        super.onDraw(canvas);
+    }
 }

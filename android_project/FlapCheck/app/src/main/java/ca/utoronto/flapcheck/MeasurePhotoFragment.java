@@ -39,7 +39,8 @@ public class MeasurePhotoFragment extends Fragment
     private int mCameraId;
     private Camera mCamera;
     private CameraPreview mPreview;
-    private CameraFocusOverlay mPreviewOverlay;
+    private CameraFocusOverlay mFocusOverlay;
+    private CameraFlapOverlay mFlapOverlay;
 
     private Camera.PictureCallback mPicture = new Camera.PictureCallback() {
         @Override
@@ -170,15 +171,22 @@ public class MeasurePhotoFragment extends Fragment
         if(mCamera == null) {
             throw new RuntimeException("Got null Camera object");
         }
+        FrameLayout frame = (FrameLayout) getView().findViewById(R.id.photo_preview);
+        mFlapOverlay = new CameraFlapOverlay(getActivity());
+        mFocusOverlay = new CameraFocusOverlay(getActivity());
 
         //Create the preview
         mPreview = new CameraPreview(getActivity(), this, mCamera, mCameraId);
-        FrameLayout preview = (FrameLayout) getView().findViewById(R.id.photo_preview);
-        preview.addView(mPreview);
 
-        //Add the overlay on top of it
-        mPreviewOverlay = new CameraFocusOverlay(getActivity());
-        preview.addView(mPreviewOverlay);
+        //Add the main camera preview
+        frame.addView(mPreview);
+
+        //Add the focus overlay on top of it
+        frame.addView(mFocusOverlay);
+
+        //Add the flap overlay
+        frame.addView(mFlapOverlay);
+
     }
 
     protected void releaseCamera() {
@@ -187,27 +195,28 @@ public class MeasurePhotoFragment extends Fragment
             mCamera.release();
             mCamera = null;
         }
+
+        //Detach the overlays
         FrameLayout preview = (FrameLayout) getView().findViewById(R.id.photo_preview);
-        if(mPreviewOverlay != null) {
-            preview.removeView(mPreviewOverlay);
-            mPreviewOverlay = null;
+        if(mFlapOverlay != null) {
+            preview.removeView(mFlapOverlay);
+            mFlapOverlay = null;
+        }
+        if(mFocusOverlay != null) {
+            preview.removeView(mFocusOverlay);
+            mFocusOverlay = null;
         }
         if(mPreview != null) {
             preview.removeView(mPreview);
             mPreview = null;
         }
-
     }
 
     public void onCameraPreviewTap(float x, float y) {
-        //Perform auto-focus
-
         //First update the overlay
-        mPreviewOverlay.setCentreX(x);
-        mPreviewOverlay.setCentreY(y);
-        mPreviewOverlay.invalidate();
-
-        //Now set autofocus
+        mFocusOverlay.setCentreX(x);
+        mFocusOverlay.setCentreY(y);
+        mFocusOverlay.invalidate(); //Force re-draw
     }
 
 }
