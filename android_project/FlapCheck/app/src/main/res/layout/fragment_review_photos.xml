@@ -13,6 +13,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:background="@color/fc_blue"
+
             >
             <TextView
                 android:id="@+id/photo_review_patient_name"
@@ -38,6 +39,7 @@
             android:id="@+id/image_pager_1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginBottom="1dp"
             android:layout_weight="1"
             />
 
@@ -45,6 +47,7 @@
             android:id="@+id/image_pager_2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="1dp"
             android:layout_weight="1"
             />
     </LinearLayout>

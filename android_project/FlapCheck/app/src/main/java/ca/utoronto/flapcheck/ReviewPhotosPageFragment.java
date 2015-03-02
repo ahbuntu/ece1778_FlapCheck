@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 public class ReviewPhotosPageFragment extends Fragment {
     public static String ARG_POST_OP_DELTA_TIME = "post_op_delta_time";
     public static String ARG_IMAGE_PATH = "image_path";
+    public static String ARG_IMAGE_ROTATION = "image_rotation";
 
     public ReviewPhotosPageFragment() {
         // Required empty public constructor

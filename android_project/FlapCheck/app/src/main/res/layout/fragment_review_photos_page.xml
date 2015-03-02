@@ -3,22 +3,9 @@
     android:layout_height="match_parent"
     tools:context="ca.utoronto.flapcheck.ReviewPhotosPageFragment">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        >
-
-        <TextView
-            android:id="@+id/photo_page_time"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_gravity="center"
-            android:background="@color/fc_dark_gray"
-            android:textColor="@color/fc_white"
-            />
-
+        android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/photo_page_image"
@@ -26,5 +13,17 @@
             android:layout_height="match_parent"
             android:scaleType="fitCenter"
             />
-    </LinearLayout>
+
+        <TextView
+            android:id="@+id/photo_page_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:gravity="center"
+            android:background="@color/fc_dark_gray"
+            android:textColor="@color/fc_white"
+            />
+
+    </RelativeLayout>
 </FrameLayout>

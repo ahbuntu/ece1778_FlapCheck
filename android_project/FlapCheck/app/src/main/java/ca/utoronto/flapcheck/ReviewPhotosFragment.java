@@ -133,6 +133,9 @@ public class ReviewPhotosFragment extends Fragment {
                 long postOpDeltaTimeMs = photoTime - patientOpTime;
 
                 args.putLong(ReviewPhotosPageFragment.ARG_POST_OP_DELTA_TIME, postOpDeltaTimeMs);
+
+                int orientation = exifData.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);
+                args.putInt(ReviewPhotosPageFragment.ARG_IMAGE_ROTATION, orientation);
             }
 
 
