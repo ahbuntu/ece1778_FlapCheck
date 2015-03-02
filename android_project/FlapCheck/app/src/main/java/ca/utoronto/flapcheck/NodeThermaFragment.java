@@ -28,18 +28,18 @@ import com.variable.framework.node.enums.NodeEnums;
 import com.variable.framework.node.reading.SensorReading;
 
 import java.text.DecimalFormat;
+import ca.utoronto.flapcheck.MeasurementInterface.MeasurementFragmentListener;
 
 /**
  * Created by coreymann on 8/13/13.
  */
 public class NodeThermaFragment extends Fragment
-        implements ThermaSensor.ThermaListener {
+        implements ThermaSensor.ThermaListener{
+
+    public static final String TAG = NodeThermaFragment.class.getName();
 
     //TODO: need to handle onBackpressed
-    public interface NodeThermaFragmentListener {
-        public void onTemperatureRecorded(float tempVal);
-    }
-    public static final String TAG = NodeThermaFragment.class.getName();
+    private MeasurementFragmentListener mMeasureListener = null;
 
     //The Handler of this class primarily demonstrates how to use a NodeDevice isntance with a physical therma attached.
 
@@ -51,7 +51,6 @@ public class NodeThermaFragment extends Fragment
 
     private ThermaSensor therma;
     public static final String PREF_EMISSIVITY_NUMBER = "com.variable.demo.api.setting.EMISSIVITY_NUMBER";
-    private NodeThermaFragmentListener mListener = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -105,7 +104,6 @@ public class NodeThermaFragment extends Fragment
             public void onClick(View view) {
                 tempCels = Constants.TEMP_INVALID_MEAS;
                 tempCaptured = false;
-                mListener.onTemperatureRecorded(tempCels);
             }
         });
 
@@ -113,7 +111,7 @@ public class NodeThermaFragment extends Fragment
             @Override
             public void onClick(View view) {
                 if (tempCaptured) {
-                    mListener.onTemperatureRecorded(tempCels);
+                    mMeasureListener.requestActivePatientId();
                 } else {
                     Toast.makeText(getActivity(), "Please take a temperature reading.", Toast.LENGTH_SHORT)
                             .show();
@@ -139,7 +137,7 @@ public class NodeThermaFragment extends Fragment
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        mListener = (NodeThermaFragmentListener) activity;
+        mMeasureListener = (MeasurementFragmentListener) activity;
     }
     @Override
     public void onResume() {
@@ -157,6 +155,14 @@ public class NodeThermaFragment extends Fragment
         } else {
             //TODO: should take action if the node gets disconnected
         }
+    }
+
+    /**
+     * returns the recorded temperature, if captured
+     * @return
+     */
+    public float getRecordedTemperature() {
+        return  tempCels;
     }
     /**
      * Builds a Dialog to ask the user to change the emissivity setting.

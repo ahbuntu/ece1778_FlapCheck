@@ -184,7 +184,7 @@ public class PatientEntryNewFragment extends Fragment
             Patient patient = new Patient(edit_name.getText().toString(),
                     edit_mrn.getText().toString(), cal.getTimeInMillis());
 
-            PatientOpenDBHelper db = new PatientOpenDBHelper(getActivity());
+            DBLoaderPatient db = new DBLoaderPatient(getActivity());
             AddPatient addP = new AddPatient(v, db, this);
             addP.execute(patient);
             resetWidgets();
@@ -348,10 +348,10 @@ public class PatientEntryNewFragment extends Fragment
 
     public static class AddPatient extends AsyncTask<Patient, Integer, Long> {
 
-        private PatientOpenDBHelper patientsDB;
+        private DBLoaderPatient patientsDB;
         PatientEntryArchiveInterac.OnPatientAdded mCallback = null;
         View callingView;
-        public AddPatient(View v, PatientOpenDBHelper db, PatientEntryArchiveInterac.OnPatientAdded ref) {
+        public AddPatient(View v, DBLoaderPatient db, PatientEntryArchiveInterac.OnPatientAdded ref) {
             patientsDB = db;
             mCallback = ref;
             callingView = v;

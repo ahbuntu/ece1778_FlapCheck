@@ -43,7 +43,7 @@ public class ReviewActivity extends FragmentActivity implements
 
     @Override
     public Patient getPatient() {
-        PatientOpenDBHelper dbHelper = new PatientOpenDBHelper(getApplicationContext());
+        DBLoaderPatient dbHelper = new DBLoaderPatient(getApplicationContext());
 
         return dbHelper.getPatient(mPatientId);
     }

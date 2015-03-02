@@ -3,6 +3,7 @@ package ca.utoronto.flapcheck;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -16,34 +17,30 @@ import ca.utoronto.flapcheck.DBMeasurementContract.MeasurementEntry;
 /**
  * Created by ahmadul.hassan on 2015-02-19.
  */
-public class MeasurmentOpenDBHelper extends SQLiteOpenHelper {
-    private static final String TAG = "MeasurementOpenDBHelper";
+public class DBLoaderMeasurement {
+    private static final String TAG = "DBLoaderMeasurement";
 
-    public MeasurmentOpenDBHelper(Context context) {
-        super(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION);
+    protected SQLiteDatabase activeDB;
+    private DBHelper dbHelper;
+    private Context mContext;
+
+
+    public DBLoaderMeasurement(Context context) {
+        mContext = context;
+        dbHelper = DBHelper.getHelper(mContext);
+        openDB();
     }
 
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        String CREATE_PATIENT_TABLE = "CREATE TABLE " + MeasurementEntry.TABLE_NAME + "("
-                + MeasurementEntry.COL_MEASUREMENT_ID+ " INTEGER PRIMARY KEY,"
-                + MeasurementEntry.COL_MEASUREMENT_PATIENT_ID+ " INTEGER,"
-                + MeasurementEntry.COL_MEASUREMENT_TIMESTAMP + " INTEGER,"
-                + MeasurementEntry.COL_MEASUREMENT_TEMP_CELS + " REAL,"
-                + MeasurementEntry.COL_MEASUREMENT_COLOUR_RGB + " TEXT,"
-                + MeasurementEntry.COL_MEASUREMENT_COLOUR_LAB + " TEXT,"
-                + MeasurementEntry.COL_MEASUREMENT_COLOUR_HEX + " TEXT" + ")";
-        db.execSQL(CREATE_PATIENT_TABLE );
+    public void openDB() throws SQLException {
+        if(dbHelper == null)
+            dbHelper = DBHelper.getHelper(mContext);
+        activeDB = dbHelper.getWritableDatabase();
     }
 
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Drop older table if existed
-        db.execSQL("DROP TABLE IF EXISTS " + MeasurementEntry.TABLE_NAME);
-        // Create tables again
-        onCreate(db);
+    public void closeDB() {
+        dbHelper.close();
+        activeDB = null;
     }
-
     //*********** All CRUD(Create, Read, Update, Delete) Operations ************
 
     /**
@@ -55,8 +52,6 @@ public class MeasurmentOpenDBHelper extends SQLiteOpenHelper {
     public long addReading(MeasurementReading reading) {
         long id = -1;
         try {
-            SQLiteDatabase db = this.getWritableDatabase();
-
             ContentValues values = new ContentValues();
             values.put(MeasurementEntry.COL_MEASUREMENT_PATIENT_ID, reading.getMeas_patientID());
             values.put(MeasurementEntry.COL_MEASUREMENT_TIMESTAMP, reading.getMeas_timestamp());
@@ -66,8 +61,8 @@ public class MeasurmentOpenDBHelper extends SQLiteOpenHelper {
             values.put(MeasurementEntry.COL_MEASUREMENT_COLOUR_HEX, reading.getMeas_colour_hex());
 
             // Inserting Row
-            id = db.insert(MeasurementEntry.TABLE_NAME, null, values);
-            db.close(); // Closing database connection
+            id = activeDB.insert(MeasurementEntry.TABLE_NAME, null, values);
+            closeDB(); // Closing database connection
 
         } catch (SQLiteException e) {
             Log.d(TAG, e.getMessage());
@@ -85,8 +80,7 @@ public class MeasurmentOpenDBHelper extends SQLiteOpenHelper {
     public MeasurementReading getReading(int id) {
         MeasurementReading foundReading = null;
         try {
-            SQLiteDatabase db = this.getReadableDatabase();
-            Cursor cursor = db.query(MeasurementEntry.TABLE_NAME,
+            Cursor cursor = activeDB.query(MeasurementEntry.TABLE_NAME,
                     new String[] {MeasurementEntry.COL_MEASUREMENT_ID,
                             MeasurementEntry.COL_MEASUREMENT_PATIENT_ID,
                             MeasurementEntry.COL_MEASUREMENT_TIMESTAMP,
@@ -108,7 +102,7 @@ public class MeasurmentOpenDBHelper extends SQLiteOpenHelper {
                         (cursor.getString(5)), //meas colour lab
                         (cursor.getString(6))); //meas colour hex
             }
-            db.close();
+            closeDB();
 
         } catch (SQLiteException e) {
             Log.d(TAG, e.getMessage());
@@ -123,13 +117,12 @@ public class MeasurmentOpenDBHelper extends SQLiteOpenHelper {
 
     /**
      * ONLY for DEBUG purposes.
-     * Deletes all patients from the Patient table
+     * Deletes all records from the Measurement table
      */
     public void deleteAllReadings() {
         try {
-            SQLiteDatabase db = this.getWritableDatabase();
-            db.delete(MeasurementEntry.TABLE_NAME, null, null);
-            db.close();
+            activeDB.delete(MeasurementEntry.TABLE_NAME, null, null);
+            closeDB();
         } catch (SQLiteException e) {
             Log.d(TAG, e.getMessage());
         }

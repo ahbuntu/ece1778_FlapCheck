@@ -34,7 +34,7 @@ public class MainReviewFragment extends Fragment {
 
         Spinner spinner = (Spinner) view.findViewById(R.id.review_patient_spinner);
 
-        PatientOpenDBHelper dbHelper = new PatientOpenDBHelper(getActivity().getApplicationContext());
+        DBLoaderPatient dbHelper = new DBLoaderPatient(getActivity().getApplicationContext());
         List<Patient> patientList = dbHelper.getAllPatients();
         ArrayAdapter<Patient> patientArrayAdapter = new ArrayAdapter<Patient>(getActivity(), android.R.layout.simple_spinner_dropdown_item, patientList);
         spinner.setAdapter(patientArrayAdapter);

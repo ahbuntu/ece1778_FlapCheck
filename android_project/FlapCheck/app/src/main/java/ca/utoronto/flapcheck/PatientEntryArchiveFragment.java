@@ -10,7 +10,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 //import android.app.Fragment;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -102,7 +101,7 @@ public class PatientEntryArchiveFragment extends Fragment
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
-            PatientOpenDBHelper db = new PatientOpenDBHelper(getActivity());
+            DBLoaderPatient db = new DBLoaderPatient(getActivity());
             GetPatientsFromDB getPatients = new GetPatientsFromDB(db, this);
             getPatients.execute(0);
         }
@@ -131,9 +130,9 @@ public class PatientEntryArchiveFragment extends Fragment
     private class GetPatientsFromDB extends AsyncTask<Integer, Integer, List<Patient>> {
 
         private PatientEntryArchiveInterac.OnPatientListRetrieved mCallback = null;
-        private PatientOpenDBHelper patientsDB;
+        private DBLoaderPatient patientsDB;
 
-        public GetPatientsFromDB(PatientOpenDBHelper db, PatientEntryArchiveInterac.OnPatientListRetrieved ref) {
+        public GetPatientsFromDB(DBLoaderPatient db, PatientEntryArchiveInterac.OnPatientListRetrieved ref) {
             patientsDB = db;
             mCallback = ref;
         }
@@ -148,7 +147,7 @@ public class PatientEntryArchiveFragment extends Fragment
 
         @Override
         protected void onProgressUpdate(Integer... progress) {
-            //won't show real progress since PatientOpenDBHelper.getAllPatients doesn't expose it
+            //won't show real progress since DBLoaderPatient.getAllPatients doesn't expose it
             setProgressPercent(progress[0]);
         }
 

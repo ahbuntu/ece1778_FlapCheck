@@ -106,7 +106,6 @@ public class PatientEntryActivity extends ActionBarActivity
     public void onArchiveItemSelected(int position, int option){
         switch(option) {
             case 0:
-                //TODO: pass a patient as part of the bundle
                 Intent intent = new Intent(this, MeasurementActivity.class);
                 startActivity(intent);
                 break;

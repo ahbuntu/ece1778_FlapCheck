@@ -4,21 +4,15 @@ package ca.utoronto.flapcheck;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Intent;
 import android.support.v4.app.DialogFragment;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -56,7 +50,7 @@ public class DialogSelectPatient extends DialogFragment {
         View dialogView = inflater.inflate(R.layout.dialog_select_patient, null);
 
         //Get the data to populate the spinner
-        PatientOpenDBHelper dbHelper = new PatientOpenDBHelper(getActivity().getApplicationContext());
+        DBLoaderPatient dbHelper = new DBLoaderPatient(getActivity().getApplicationContext());
         List<Patient> patientList = dbHelper.getAllPatients();
         ArrayAdapter<Patient> patientArrayAdapter = new ArrayAdapter<Patient>(getActivity(), android.R.layout.simple_spinner_dropdown_item, patientList);
 

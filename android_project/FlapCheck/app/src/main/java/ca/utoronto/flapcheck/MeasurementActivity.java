@@ -6,14 +6,13 @@ import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 
 public class MeasurementActivity extends FragmentActivity
         implements
-        MeasurePhotoFragment.MeasurePhotoFragmentListener,
+        MeasurementInterface.MeasurementFragmentListener,
         DialogSelectPatient.DialogSelectPatientListener,
         PatientEntryNewFragment.PatientNewEntryListener
 {
@@ -102,11 +101,14 @@ public class MeasurementActivity extends FragmentActivity
         getSupportFragmentManager().popBackStack();
     }
 
+    /**
+     * implementation of MeasurementInterface.MeasurementListener.requestActivePatientId()
+     */
     @Override
-    public long requestActivePatientId() {
+    public void requestActivePatientId() {
         DialogSelectPatient frag = new DialogSelectPatient();
         frag.show(getSupportFragmentManager(), null);
-        return mActivePatientId;
+//        return mActivePatientId;
     }
 
     @Override

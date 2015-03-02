@@ -5,7 +5,7 @@ package ca.utoronto.flapcheck;
  */
 public class Constants {
     //***************** DATABASE ******************************
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 3;
     public static final String DATABASE_NAME = "FLAPCHECK";
 
     //***************** Media Directory ***********************
@@ -19,6 +19,7 @@ public class Constants {
 
     //***************** Activity Request Codes ****************
     public static final int ADD_PATIENT_REQUEST = 1;
+    public static final int GET_TEMPERATURE_REQUEST = 201;
 
     //***************** NODE measurement default/invalid values **
     public static final float TEMP_INVALID_MEAS  = 0.0f;

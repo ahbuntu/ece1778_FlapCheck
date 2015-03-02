@@ -3,6 +3,7 @@ package ca.utoronto.flapcheck;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -16,31 +17,29 @@ import ca.utoronto.flapcheck.DBPatientContract.PatientEntry;
 /**
  * Created by ahmadul.hassan on 2015-02-19.
  */
-public class PatientOpenDBHelper extends SQLiteOpenHelper {
-    private static final String TAG = "PatientOpenDBHelper";
+public class DBLoaderPatient {
+    private static final String TAG = "DBLoaderPatient";
 
-    public PatientOpenDBHelper(Context context) {
-        super(context, Constants.DATABASE_NAME, null, Constants.DATABASE_VERSION);
+    protected SQLiteDatabase activeDB;
+    private DBHelper dbHelper;
+    private Context mContext;
+
+
+    public DBLoaderPatient(Context context) {
+        mContext = context;
+        dbHelper = DBHelper.getHelper(mContext);
+        openDB();
     }
 
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        String CREATE_PATIENT_TABLE = "CREATE TABLE " + PatientEntry.TABLE_NAME + "("
-                + PatientEntry.COL_PATIENT_ID + " INTEGER PRIMARY KEY,"
-                + PatientEntry.COL_PATIENT_NAME + " TEXT,"
-                + PatientEntry.COL_PATIENT_MRN + " TEXT,"
-                + PatientEntry.COL_PATIENT_OPTIME + " INTEGER,"
-                + PatientEntry.COL_PATIENT_PHOTO_PATH + " TEXT,"
-                + PatientEntry.COL_PATIENT_VIDEO_PATH + " TEXT" + ")";
-        db.execSQL(CREATE_PATIENT_TABLE );
+    public void openDB() throws SQLException {
+        if(dbHelper == null)
+            dbHelper = DBHelper.getHelper(mContext);
+        activeDB = dbHelper.getWritableDatabase();
     }
 
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Drop older table if existed
-        db.execSQL("DROP TABLE IF EXISTS " + PatientEntry.TABLE_NAME);
-        // Create tables again
-        onCreate(db);
+    public void closeDB() {
+        dbHelper.close();
+        activeDB = null;
     }
 
     //*********** All CRUD(Create, Read, Update, Delete) Operations ************
@@ -55,8 +54,6 @@ public class PatientOpenDBHelper extends SQLiteOpenHelper {
     public long addPatient(Patient patient) {
         long id = -1;
         try {
-            SQLiteDatabase db = this.getWritableDatabase();
-
             //TODO: <time-permitting> enforce uniquenes for same name + mrn + opdatetime
 
             ContentValues values = new ContentValues();
@@ -67,8 +64,8 @@ public class PatientOpenDBHelper extends SQLiteOpenHelper {
             values.put(PatientEntry.COL_PATIENT_VIDEO_PATH, patient.getPatientVidPath());
 
             // Inserting Row
-            id = db.insert(PatientEntry.TABLE_NAME, null, values);
-            db.close(); // Closing database connection
+            id = activeDB.insert(PatientEntry.TABLE_NAME, null, values);
+            closeDB(); // Closing database connection
 
         } catch (SQLiteException e) {
             Log.d(TAG, e.getMessage());
@@ -86,8 +83,7 @@ public class PatientOpenDBHelper extends SQLiteOpenHelper {
     public Patient getPatient(long id) {
         Patient foundPatient = null;
         try {
-            SQLiteDatabase db = this.getReadableDatabase();
-            Cursor cursor = db.query(PatientEntry.TABLE_NAME,
+            Cursor cursor = activeDB.query(PatientEntry.TABLE_NAME,
                     new String[] {PatientEntry.COL_PATIENT_ID,
                             PatientEntry.COL_PATIENT_NAME,
                             PatientEntry.COL_PATIENT_MRN,
@@ -106,7 +102,7 @@ public class PatientOpenDBHelper extends SQLiteOpenHelper {
                         cursor.getString(4),
                         cursor.getString(5));
             }
-            db.close();
+            closeDB();
 
         } catch (SQLiteException e) {
             Log.d(TAG, e.getMessage());
@@ -132,8 +128,7 @@ public class PatientOpenDBHelper extends SQLiteOpenHelper {
             // Select All Query
             String selectQuery = "SELECT  * FROM " + PatientEntry.TABLE_NAME;
 
-            SQLiteDatabase db = this.getWritableDatabase();
-            Cursor cursor = db.rawQuery(selectQuery, null);
+            Cursor cursor = activeDB.rawQuery(selectQuery, null);
 
             // looping through all rows and adding to list
             if (cursor.moveToFirst()) {
@@ -148,7 +143,7 @@ public class PatientOpenDBHelper extends SQLiteOpenHelper {
                 } while (cursor.moveToNext());
             }
 
-            db.close();
+            closeDB();
         } catch (SQLiteException e) {
             Log.d(TAG, e.getMessage());
             patientList = null;
@@ -162,9 +157,8 @@ public class PatientOpenDBHelper extends SQLiteOpenHelper {
      */
     public void deleteAllPatients() {
         try {
-            SQLiteDatabase db = this.getWritableDatabase();
-            db.delete(PatientEntry.TABLE_NAME, null, null);
-            db.close();
+            activeDB.delete(PatientEntry.TABLE_NAME, null, null);
+            closeDB();
         } catch (SQLiteException e) {
             Log.d(TAG, e.getMessage());
         }

@@ -27,7 +27,7 @@ public class SplashActivity extends FragmentActivity
         startActivity(intent);
 
         //a SERIOUSLY hacky debug
-//        PatientOpenDBHelper dbHelper = new PatientOpenDBHelper(this);
+//        DBLoaderPatient dbHelper = new DBLoaderPatient(this);
 //        dbHelper.deleteAllPatients();
     }
 }

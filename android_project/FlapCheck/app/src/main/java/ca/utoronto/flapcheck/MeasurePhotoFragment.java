@@ -19,7 +19,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
+import ca.utoronto.flapcheck.MeasurementInterface.MeasurementFragmentListener;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,11 +29,7 @@ public class MeasurePhotoFragment extends Fragment
 {
     private static String TAG ="MeasurePhotoFragment";
 
-    public interface MeasurePhotoFragmentListener {
-        long requestActivePatientId();
-    }
-
-    private MeasurePhotoFragmentListener mMeasurePhotoFragmentListener;
+    private MeasurementFragmentListener mMeasurePhotoFragmentListener;
     private File lastPhoto = null;
 
     private int mCameraId;
@@ -45,7 +41,7 @@ public class MeasurePhotoFragment extends Fragment
     private Camera.PictureCallback mPicture = new Camera.PictureCallback() {
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
-            MeasurePhotoFragmentListener activity = (MeasurePhotoFragmentListener) getActivity();
+            MeasurementFragmentListener activity = (MeasurementFragmentListener) getActivity();
 
             File pictureDir = getActivity().getFilesDir();
             pictureDir.mkdirs();
@@ -83,7 +79,7 @@ public class MeasurePhotoFragment extends Fragment
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        mMeasurePhotoFragmentListener = (MeasurePhotoFragmentListener) activity;
+        mMeasurePhotoFragmentListener = (MeasurementFragmentListener) activity;
     }
 
     @Override
@@ -141,7 +137,7 @@ public class MeasurePhotoFragment extends Fragment
                 //Look up tht patient so we know where to put the photo
                 // ok to do these calls synchronously because we do want the user to be blocked if the
                 // photo cannot be saved
-                PatientOpenDBHelper dbHelper = new PatientOpenDBHelper(getActivity().getApplicationContext());
+                DBLoaderPatient dbHelper = new DBLoaderPatient(getActivity().getApplicationContext());
                 Patient patient = dbHelper.getPatient(patientId);
 
                 File patientPicDir = new File(patient.getPatientPhotoPath());
