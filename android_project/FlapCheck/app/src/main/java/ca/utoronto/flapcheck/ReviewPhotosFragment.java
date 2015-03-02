@@ -90,10 +90,13 @@ public class ReviewPhotosFragment extends Fragment {
             patientOpTime = patient.getPatientOpDateTime();
 
             //TODO get the real path...
-            File pictureDir = new File(getActivity().getFilesDir(), "patient_id");
+            File pictureDir = new File(patient.getPatientPhotoPath());
 
             //Fill the paths into a list
             File[] files = pictureDir.listFiles();
+            if(files == null) {
+                files = new File[0];
+            }
             for(File file : files) {
                 if(file.isFile()) {
                     mImageFiles.add(file);

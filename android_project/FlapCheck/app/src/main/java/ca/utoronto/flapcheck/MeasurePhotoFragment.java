@@ -43,7 +43,7 @@ public class MeasurePhotoFragment extends Fragment
         public void onPictureTaken(byte[] data, Camera camera) {
             MeasurementFragmentListener activity = (MeasurementFragmentListener) getActivity();
 
-            File pictureDir = getActivity().getFilesDir();
+            File pictureDir = getActivity().getExternalCacheDir();
             pictureDir.mkdirs();
             String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
             File pictureFile = new File(pictureDir, "IMG_" + timestamp + ".jpg"); //TODO generate a real filename
