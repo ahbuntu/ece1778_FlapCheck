@@ -29,7 +29,7 @@ public class MeasurmentOpenDBHelper extends SQLiteOpenHelper {
                 + MeasurementEntry.COL_MEASUREMENT_ID+ " INTEGER PRIMARY KEY,"
                 + MeasurementEntry.COL_MEASUREMENT_PATIENT_ID+ " INTEGER,"
                 + MeasurementEntry.COL_MEASUREMENT_TIMESTAMP + " INTEGER,"
-                + MeasurementEntry.COL_MEASUREMENT_TEMP_CELS + " INTEGER,"
+                + MeasurementEntry.COL_MEASUREMENT_TEMP_CELS + " REAL,"
                 + MeasurementEntry.COL_MEASUREMENT_COLOUR_RGB + " TEXT,"
                 + MeasurementEntry.COL_MEASUREMENT_COLOUR_LAB + " TEXT,"
                 + MeasurementEntry.COL_MEASUREMENT_COLOUR_HEX + " TEXT" + ")";
@@ -103,7 +103,7 @@ public class MeasurmentOpenDBHelper extends SQLiteOpenHelper {
                 foundReading = new MeasurementReading(Long.parseLong(cursor.getString(0)), //meas ID
                         Long.parseLong(cursor.getString(1)), //meas patient ID
                         Long.parseLong(cursor.getString(2)), //meas timestamp
-                        Long.parseLong(cursor.getString(3)), //meas temp cels
+                        Float.parseFloat(cursor.getString(3)), //meas temp cels
                         (cursor.getString(4)), //meas colour rgb
                         (cursor.getString(5)), //meas colour lab
                         (cursor.getString(6))); //meas colour hex
@@ -116,7 +116,7 @@ public class MeasurmentOpenDBHelper extends SQLiteOpenHelper {
         return foundReading;
     }
 
-    public Patient findReading(String name, String mrn) {
+    public MeasurementReading findReading(String name, String mrn) {
         //TODO: <if-required> implement findReading by name, mrn, timeofop
         return null;
     }

@@ -8,7 +8,7 @@ public class MeasurementReading {
     private long measurementID = -1; //this will only be populated after being inserted into the db
     private long meas_patientID;
     private long meas_timestamp;
-    private long meas_temperature;
+    private float meas_temperature;
     private String meas_colour_rgb;
     private String meas_colour_lab;
     private String meas_colour_hex;
@@ -25,7 +25,7 @@ public class MeasurementReading {
      * @param timestamp
      * @param temperature
      */
-    public MeasurementReading(long patientID, long timestamp, long temperature,
+    public MeasurementReading(long patientID, long timestamp, float temperature,
                               String colour_rgb, String colour_lab, String colour_hex) {
         meas_patientID = patientID;
         meas_timestamp = timestamp;
@@ -46,7 +46,7 @@ public class MeasurementReading {
      * @param colour_lab
      * @param colour_hex
      */
-    public MeasurementReading(long id, long patientID, long timestamp, long temperature,
+    public MeasurementReading(long id, long patientID, long timestamp, float temperature,
                               String colour_rgb, String colour_lab, String colour_hex) {
         measurementID = id;
         meas_patientID = patientID;
@@ -84,11 +84,11 @@ public class MeasurementReading {
         return meas_timestamp;
     }
 
-    public void setMeas_temperature(long meas_temperature) {
+    public void setMeas_temperature(float meas_temperature) {
         this.meas_temperature = meas_temperature;
     }
 
-    public long getMeas_temperature() {
+    public float getMeas_temperature() {
         return meas_temperature;
     }
 
