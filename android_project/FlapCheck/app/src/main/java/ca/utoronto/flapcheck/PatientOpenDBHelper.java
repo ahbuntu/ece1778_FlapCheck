@@ -29,7 +29,9 @@ public class PatientOpenDBHelper extends SQLiteOpenHelper {
                 + PatientEntry.COL_PATIENT_ID + " INTEGER PRIMARY KEY,"
                 + PatientEntry.COL_PATIENT_NAME + " TEXT,"
                 + PatientEntry.COL_PATIENT_MRN + " TEXT,"
-                + PatientEntry.COL_PATIENT_OPTIME + " INTEGER" + ")";
+                + PatientEntry.COL_PATIENT_OPTIME + " INTEGER,"
+                + PatientEntry.COL_PATIENT_PHOTO_PATH + " TEXT,"
+                + PatientEntry.COL_PATIENT_VIDEO_PATH + " TEXT" + ")";
         db.execSQL(CREATE_PATIENT_TABLE );
     }
 
@@ -61,6 +63,8 @@ public class PatientOpenDBHelper extends SQLiteOpenHelper {
             values.put(PatientEntry.COL_PATIENT_NAME, patient.getPatientName());
             values.put(PatientEntry.COL_PATIENT_MRN, patient.getPatientMRN());
             values.put(PatientEntry.COL_PATIENT_OPTIME, patient.getPatientOpDateTime());
+            values.put(PatientEntry.COL_PATIENT_PHOTO_PATH, patient.getPatientPhotoPath());
+            values.put(PatientEntry.COL_PATIENT_VIDEO_PATH, patient.getPatientVidPath());
 
             // Inserting Row
             id = db.insert(PatientEntry.TABLE_NAME, null, values);
@@ -87,14 +91,20 @@ public class PatientOpenDBHelper extends SQLiteOpenHelper {
                     new String[] {PatientEntry.COL_PATIENT_ID,
                             PatientEntry.COL_PATIENT_NAME,
                             PatientEntry.COL_PATIENT_MRN,
-                            PatientEntry.COL_PATIENT_OPTIME},
+                            PatientEntry.COL_PATIENT_OPTIME,
+                            PatientEntry.COL_PATIENT_PHOTO_PATH,
+                            PatientEntry.COL_PATIENT_VIDEO_PATH},
                     PatientEntry.COL_PATIENT_ID + "=?",
                     new String[] { String.valueOf(id) }, null, null, null, null);
 
             if (cursor != null) {
                 cursor.moveToFirst();
                 foundPatient = new Patient(Long.parseLong(cursor.getString(0)),
-                        cursor.getString(1), cursor.getString(2), Long.parseLong(cursor.getString(3)));
+                        cursor.getString(1),
+                        cursor.getString(2),
+                        Long.parseLong(cursor.getString(3)),
+                        cursor.getString(4),
+                        cursor.getString(5));
             }
             db.close();
 

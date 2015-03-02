@@ -1,5 +1,9 @@
 package ca.utoronto.flapcheck;
 
+import android.os.Environment;
+
+import java.io.File;
+
 /**
  * Created by ahmadul.hassan on 2015-02-19.
  */
@@ -10,6 +14,8 @@ public class Patient {
     private String patientName;
     private String patientMRN;
     private Long patientOpDateTime; //displaying this in human friendly format should be handled at UI level
+    private String patientPhotoPath;
+    private String patientVidPath;
 
     /**
      * create an empty patient object with none of the attributes defined
@@ -26,9 +32,11 @@ public class Patient {
      * @param opDateTime datetime of operation
      */
     public Patient (String name, String mrn, Long opDateTime) {
-         patientName = name;
-         patientMRN = mrn;
-         patientOpDateTime = opDateTime;
+        patientName = name;
+        patientMRN = mrn;
+        patientOpDateTime = opDateTime;
+        patientPhotoPath = createPhotoPath(mrn, opDateTime);
+        patientVidPath = createVideoPath(mrn, opDateTime);
     }
 
     /**
@@ -39,11 +47,47 @@ public class Patient {
      * @param mrn patient MRN number
      * @param opDateTime datetime of operation
      */
-    public Patient (Long id, String name, String mrn, Long opDateTime) {
+    public Patient (Long id, String name, String mrn, Long opDateTime, String imgPath, String vidPath) {
         patientId = id ;
         patientName = name;
         patientMRN = mrn;
         patientOpDateTime = opDateTime;
+        patientPhotoPath = imgPath;
+        patientVidPath = vidPath;
+    }
+
+    /**
+     * follows convention /images/<mrn>/<opTime>
+     * opTime stored as long to make it easier to sort
+     * @param mrn
+     * @param opTime
+     * @return
+     */
+    private String createPhotoPath(String mrn, long opTime) {
+        String uniquePath = "FLAPCHECK" + "/" + "images" + "/" + mrn +"/" + opTime;
+        // Get the directory for the user's public pictures directory.
+        File filePath = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES), uniquePath);
+        filePath.mkdirs();
+
+        return filePath.getAbsolutePath();
+    }
+
+    /**
+     * follows convention /videos/<mrn>/<opTime>
+     * opTime stored as long to make it easier to sort
+     * @param mrn
+     * @param opTime
+     * @return
+     */
+    private String createVideoPath(String mrn, long opTime) {
+        String uniquePath = "FLAPCHECK" + "/" + "videos" + "/" + mrn +"/" + opTime;
+        // Get the directory for the user's public pictures directory.
+        File filePath = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES), uniquePath);
+        filePath.mkdirs();
+
+        return filePath.getAbsolutePath();
     }
 
     //************* Setters & Getters **************
@@ -82,5 +126,21 @@ public class Patient {
 
     public String toString() {
         return String.format("%s (%s)", getPatientName(), getPatientMRN());
+    }
+
+    public void setPatientPhotoPath(String patientPhotoPath) {
+        this.patientPhotoPath = patientPhotoPath;
+    }
+
+    public String getPatientPhotoPath() {
+        return patientPhotoPath;
+    }
+
+    public void setPatientVidPath(String patientVidPath) {
+        this.patientVidPath = patientVidPath;
+    }
+
+    public String getPatientVidPath() {
+        return patientVidPath;
     }
 }
