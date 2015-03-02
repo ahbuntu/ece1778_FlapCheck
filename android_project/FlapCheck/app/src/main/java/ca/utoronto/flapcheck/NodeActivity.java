@@ -1,5 +1,6 @@
 package ca.utoronto.flapcheck;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -8,6 +9,11 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
+
+import com.variable.framework.node.BaseSensor;
+import com.variable.framework.node.NodeDevice;
+import com.variable.framework.node.enums.NodeEnums;
 
 
 public class NodeActivity extends ActionBarActivity
@@ -17,10 +23,10 @@ public class NodeActivity extends ActionBarActivity
     private static final String TAG = NodeActivity.class.getName();
 
     static final String ARG_NODE_ACTION = "node_action";
-    static final String ESTABLISH_CONNECTION = "establish_connection";
     static final String NODE_THERMA = "node_therma";
     static final String NODE_CHROMA = "node_chroma";
 
+    private static String waitingAction = null;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_node);
@@ -31,16 +37,24 @@ public class NodeActivity extends ActionBarActivity
             Bundle bundle = getIntent().getExtras();
             String action_type = bundle.getString(ARG_NODE_ACTION);
             switch (action_type) {
-                case ESTABLISH_CONNECTION:
-                    //TODO: move this establish connection inside as a check prior to measurement
-                    NodeConnectionFragment fragConnect = NodeConnectionFragment.findOrCreate(getSupportFragmentManager());
-                    mFragTransaction.add(R.id.node_container, fragConnect);
-                    break;
                 case NODE_THERMA:
-                    NodeThermaFragment fragTherma = new NodeThermaFragment();
-                    mFragTransaction.add(R.id.node_container, fragTherma);
+                    NodeDevice node = ((FlapCheckApplication) getApplication()).getActiveNode();
+                    if(!isNodeConnected(node))
+                    {
+                        Toast.makeText(this, "No Connected NODE device.", Toast.LENGTH_SHORT).show();
+                        //need to display node establish connection fragment
+                        waitingAction = NODE_THERMA;
+                        NodeConnectionFragment fragConnect = NodeConnectionFragment.findOrCreate(getSupportFragmentManager());
+                        mFragTransaction.add(R.id.node_container, fragConnect);
+                    } else {
+                        if(checkForSensor(node, NodeEnums.ModuleType.THERMA, true)) {
+                            mFragTransaction.add(R.id.node_container, new NodeThermaFragment());
+                        }
+                    }
                     break;
                 case NODE_CHROMA:
+//                    NodeChromaFragment fragChroma = new NodeChromaFragment();
+//                    mFragTransaction.add(R.id.node_container, fragChroma);
                     break;
                 default:
                     break;
@@ -48,7 +62,6 @@ public class NodeActivity extends ActionBarActivity
         }
         mFragTransaction.commit();
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -85,13 +98,49 @@ public class NodeActivity extends ActionBarActivity
         getSupportFragmentManager().popBackStack();
     }
 
+
     @Override
     public void onNodeConnected() {
-        //TODO: need to do a check to see which node measurement needs to be displayed
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.node_container, new NodeThermaFragment())
-                //DO NOT add the connection fragment as a backstack navigation
-                .commit();
+        switch (waitingAction) {
+            case NODE_THERMA:
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.node_container, new NodeThermaFragment())
+                                //DO NOT add the connection fragment as a backstack navigation
+                        .commit();
+                break;
+            case NODE_CHROMA:
+//                getSupportFragmentManager().beginTransaction()
+//                        .replace(R.id.node_container, new NodeChromaFragment())
+//                                //DO NOT add the connection fragment as a backstack navigation
+//                        .commit();
+                break;
+            default:
+                getSupportFragmentManager().popBackStack();
+                break;
+        }
     }
     //endregion
+
+
+    /**
+     * Determines if the node is connected. Null is permitted.
+     * @param node
+     * @return
+     */
+    private boolean isNodeConnected(NodeDevice node) { return node != null && node.isConnected(); }
+
+    /**
+     * Checks for a specific sensor on a node.
+     * @param node - the node
+     * @param type - the module type to check for on the node parameter.
+     * @param displayIfNotFound - allows toasting a message if module is not found on node.
+     * @return true, if the node contains the module
+     */
+    private boolean checkForSensor(NodeDevice node, NodeEnums.ModuleType type, boolean displayIfNotFound){
+        BaseSensor sensor = node.findSensor(type);
+        if(sensor == null && displayIfNotFound){
+            Toast.makeText(this, type.toString() + " not found on " + node.getName(), Toast.LENGTH_SHORT).show();
+        }
+        return sensor != null;
+    }
 }

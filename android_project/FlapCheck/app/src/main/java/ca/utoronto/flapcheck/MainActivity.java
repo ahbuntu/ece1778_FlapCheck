@@ -92,38 +92,14 @@ public class MainActivity extends FragmentActivity
      */
     @Override
     public void onMeasureTemperature() {
-        NodeDevice node = ((FlapCheckApplication) getApplication()).getActiveNode();
-
-        if(!isNodeConnected(node))
-        {
-            //TODO: need to determine when/where the check for connected node devices should take place
-            Toast.makeText(this, "No Connected NODE device.", Toast.LENGTH_SHORT).show();
-            //need to display dialog to pick paired node
-            Intent intent = new Intent(this, NodeActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putString(NodeActivity.ARG_NODE_ACTION, NodeActivity.ESTABLISH_CONNECTION);
-            intent.putExtras(bundle);
-            startActivity(intent);
-        } else {
-            //TODO: determine if the checkforsensor should take place here
-            if(checkForSensor(node, NodeEnums.ModuleType.THERMA, true)) {
-                Intent intent = new Intent(this, NodeActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString(NodeActivity.ARG_NODE_ACTION, NodeActivity.NODE_THERMA);
-                intent.putExtras(bundle);
-                startActivity(intent);
-//                animateToFragment(new ThermaFragment(), ThermaFragment.TAG);
-            }
-        }
+        Intent intent = new Intent(this, NodeActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(NodeActivity.ARG_NODE_ACTION, NodeActivity.NODE_THERMA);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
 
-    /**
-     * Determines if the node is connected. Null is permitted.
-     * @param node
-     * @return
-     */
-    private boolean isNodeConnected(NodeDevice node) { return node != null && node.isConnected(); }
 
     /**
      *
@@ -149,20 +125,7 @@ public class MainActivity extends FragmentActivity
         return true;
     }
 
-    /**
-     * Checks for a specific sensor on a node.
-     * @param node - the node
-     * @param type - the module type to check for on the node parameter.
-     * @param displayIfNotFound - allows toasting a message if module is not found on node.
-     * @return true, if the node contains the module
-     */
-    private boolean checkForSensor(NodeDevice node, NodeEnums.ModuleType type, boolean displayIfNotFound){
-        BaseSensor sensor = node.findSensor(type);
-        if(sensor == null && displayIfNotFound){
-            Toast.makeText(MainActivity.this, type.toString() + " not found on " + node.getName(), Toast.LENGTH_SHORT).show();
-        }
-        return sensor != null;
-    }
+
 
     //region FragmentPagerAdapter implementation
 
