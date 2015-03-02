@@ -31,6 +31,7 @@ public class DialogSelectPatient extends DialogFragment {
 
 
     interface DialogSelectPatientListener {
+        void onAddNewPatient();
         void onDismissSelectPatient();
         void onSetActivePatientId(long patientId);
     }
@@ -90,10 +91,12 @@ public class DialogSelectPatient extends DialogFragment {
         builder.setNeutralButton(R.string.dialog_select_patient_new_patient, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Intent intent = new Intent(getActivity(), PatientEntryActivity.class);
+//                Intent intent = new Intent(getActivity(), PatientEntryActivity.class);
                 //Note we must get the result passed to the activity, since this dialog fragment will
                 //likely be gone by the time the result arrives
-                getActivity().startActivityForResult(intent, Constants.ADD_PATIENT_REQUEST);
+//                getActivity().startActivityForResult(intent, Constants.ADD_PATIENT_REQUEST);
+
+                mListenerCallback.onAddNewPatient();
             }
         });
 

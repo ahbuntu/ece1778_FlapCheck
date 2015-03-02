@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -13,8 +14,10 @@ import android.view.MenuItem;
 public class MeasurementActivity extends FragmentActivity
         implements MainMeasurementFragment.MainMeasurementFragmentListener,
         MeasurePhotoFragment.MeasurePhotoFragmentListener,
-                   DialogSelectPatient.DialogSelectPatientListener
+        DialogSelectPatient.DialogSelectPatientListener,
+        PatientEntryNewFragment.PatientNewEntryListener
 {
+    private static final String TAG = MeasurementActivity.class.getName();
     static final String ARG_MEASUREMENT_TYPE = "measurement_type";
 
     private long mActivePatientId = Patient.INVALID_ID; //Set by dialog
@@ -87,6 +90,29 @@ public class MeasurementActivity extends FragmentActivity
     @Override
     public void onMeasureTemperature() {
         //TODO: need to decide where which activity will actually handle taking measurements     
+    }
+
+    /**
+     * Callback for when the "Add New Patient" button is selected from the DialogSelectPatient
+     */
+    @Override
+    public void onAddNewPatient() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.measure_container, new PatientEntryNewFragment())
+                .addToBackStack(null)
+                .commit();
+    }
+
+    /**
+     * implementation of PatientEntryNewFragment.PatientNewEntryListener.onAddPatientButtonClicked()
+     * @param patientId
+     */
+    @Override
+    public void onAddPatientButtonClicked(long patientId) {
+        mActivePatientId = patientId;
+        //Same as on positive button selection
+        onSetActivePatientId(patientId);
+        getSupportFragmentManager().popBackStack();
     }
 
     @Override

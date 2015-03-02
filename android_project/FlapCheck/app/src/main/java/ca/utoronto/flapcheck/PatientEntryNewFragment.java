@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -13,6 +14,7 @@ import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -38,12 +40,10 @@ public class PatientEntryNewFragment extends Fragment
      * interface definitions
      */
     public interface PatientNewEntryListener {
-        public void onMeasureButtonClicked(long patientId);
         public void onAddPatientButtonClicked(long patientId);
     }
 
     Button button_addPatient;
-    Button button_takeMeasurement;
     EditText edit_name ;
     EditText edit_mrn ;
     EditText edit_opDate;
@@ -114,18 +114,13 @@ public class PatientEntryNewFragment extends Fragment
             }
         });
 
-        button_takeMeasurement.setOnClickListener(new View.OnClickListener() {
+        edit_mrn.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void onClick(View v) {
-                if(addPatientToDB(v)) {
-                    //can't think of anything to do here; leaving it in just incase
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                 }
-
-                /******************DEBUG ONLY************************
-                PatientOpenDBHelper db = new PatientOpenDBHelper(getActivity());
-                db.deleteAllPatients();
-                Toast.makeText(getActivity(), "patients deleted", Toast.LENGTH_SHORT);
-                 ****************************************************/
             }
         });
 
@@ -163,7 +158,6 @@ public class PatientEntryNewFragment extends Fragment
      */
     private void initWidgets(View view) {
         button_addPatient = (Button)  view.findViewById(R.id.button_addPatient);
-        button_takeMeasurement = (Button) view.findViewById(R.id.button_takeMeasurement);
         edit_name = (EditText) view.findViewById(R.id.edit_name);
         edit_mrn = (EditText) view.findViewById(R.id.edit_mrn);
         edit_opDate = (EditText) view.findViewById(R.id.edit_opDate);
@@ -328,21 +322,20 @@ public class PatientEntryNewFragment extends Fragment
         }
     }
 
+    /**
+     * this callback is triggered after the asynchronous db operation has completed
+     *
+     * @param callingView
+     * @param rowId
+     */
     public void onPatientAdded(View callingView, Long rowId) {
         int id = callingView.getId();
         if (rowId != -1) { //means successfully added to the database
             switch (id) {
                 case (R.id.button_addPatient):
-                    //the toast cannot be triggered from here since the db action is async
                     Toast.makeText(getActivity(), "Patient added.", Toast.LENGTH_SHORT)
                             .show();
                     mListener.onAddPatientButtonClicked(rowId);
-                    break;
-                case (R.id.button_takeMeasurement):
-                    //the toast cannot be triggered from here since the db action is async
-                    Toast.makeText(getActivity(), "Patient added.", Toast.LENGTH_SHORT)
-                            .show();
-                    mListener.onMeasureButtonClicked(rowId);
                     break;
                 default:
                     break;

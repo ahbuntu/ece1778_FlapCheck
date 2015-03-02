@@ -71,20 +71,11 @@
             android:layout_toRightOf="@+id/edit_opDate"
             />
 
-        <Button android:id="@+id/button_takeMeasurement"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/edit_opDate"
-            android:layout_centerHorizontal="true"
-            android:text="@string/button_measure"
-            android:textStyle="bold"
-            android:textColor="@color/fc_red"/>
-
         <Button
             android:id="@+id/button_addPatient"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/button_takeMeasurement"
+            android:layout_below="@+id/edit_opTime"
             android:layout_centerHorizontal="true"
             android:text="@string/button_addPatient"
             android:textStyle="bold"

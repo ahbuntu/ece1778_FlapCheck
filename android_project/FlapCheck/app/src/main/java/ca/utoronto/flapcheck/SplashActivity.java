@@ -25,5 +25,9 @@ public class SplashActivity extends FragmentActivity
     public void exitSplashScreen() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+
+        //a SERIOUSLY hacky debug
+//        PatientOpenDBHelper dbHelper = new PatientOpenDBHelper(this);
+//        dbHelper.deleteAllPatients();
     }
 }

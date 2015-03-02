@@ -46,7 +46,6 @@
     <string name="hint_mrn">enter MRN</string>
     <string name="hint_opDate">format current date</string>
     <string name="hint_opTime">format current time</string>
-    <string name="button_measure">TAKE MEASUREMENT</string>
     <string name="button_addPatient">DONE</string>
 
     <!-- PatientEntryNew Fragment -->

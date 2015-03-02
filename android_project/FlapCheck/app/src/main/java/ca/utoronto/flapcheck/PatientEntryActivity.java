@@ -25,8 +25,7 @@ import com.astuetz.PagerSlidingTabStrip;
 
 
 public class PatientEntryActivity extends ActionBarActivity
-                                    implements PatientEntryNewFragment.PatientNewEntryListener,
-                                        PatientEntryArchiveInterac.OnArchiveItemSelected{
+                                    implements PatientEntryArchiveInterac.OnArchiveItemSelected{
 
     SectionsPagerAdapter mSectionsPagerAdapter;
     ViewPager mViewPager;
@@ -75,41 +74,29 @@ public class PatientEntryActivity extends ActionBarActivity
         return super.onOptionsItemSelected(item);
     }
 
-
-    /**
-     * implementation of PatientEntryNewFragment.PatientNewEntryListener.onMeasureButtonClicked()
-     * starts the MeasurementActivity
-     */
-    @Override
-    public void onMeasureButtonClicked(long patientId) {
-        //TODO: pass a patient as part of the bundle
-        Intent intent = new Intent(this, MeasurementActivity.class);
-        startActivity(intent);
-    }
-
     /**
      * implementation of PatientEntryNewFragment.PatientNewEntryListener.onAddPatientButtonClicked()
      * starts the PatientEntryArchiveFragment
      */
-    public void onAddPatientButtonClicked(long patientId) {
-        //BUG: the following code block doesn't work since view pager always displays fragment 0 as current
-//        getSupportFragmentManager().beginTransaction()
-//                .replace(R.id.patient_container, new PatientEntryArchiveFragment())
-//                .addToBackStack(null)
-//                .commit();
-        //WORKAROUND:
-//        mSectionsPagerAdapter.notifyDataSetChanged();
-//        mViewPager.setCurrentItem(1, true);
-
-        //This is somewhat of a hack, since we should probably just call the PatientEntryNewFragment
-        //directly from the measurement activity when we want ot add a patient....
-        //However it currently works since we currently don't use the 'archived' feature of the
-        //PatientEntry activity any longer.
-        Intent resultIntent = new Intent();
-        resultIntent.putExtra(Constants.PATIENT_ENTRY_KEY_ADDED_PATIENT_ID, patientId);
-        setResult(RESULT_OK, resultIntent);
-        finish();
-    }
+//    public void onAddPatientButtonClicked(long patientId) {
+//        //BUG: the following code block doesn't work since view pager always displays fragment 0 as current
+////        getSupportFragmentManager().beginTransaction()
+////                .replace(R.id.patient_container, new PatientEntryArchiveFragment())
+////                .addToBackStack(null)
+////                .commit();
+//        //WORKAROUND:
+////        mSectionsPagerAdapter.notifyDataSetChanged();
+////        mViewPager.setCurrentItem(1, true);
+//
+//        //This is somewhat of a hack, since we should probably just call the PatientEntryNewFragment
+//        //directly from the measurement activity when we want ot add a patient....
+//        //However it currently works since we currently don't use the 'archived' feature of the
+//        //PatientEntry activity any longer.
+//        Intent resultIntent = new Intent();
+//        resultIntent.putExtra(Constants.PATIENT_ENTRY_KEY_ADDED_PATIENT_ID, patientId);
+//        setResult(RESULT_OK, resultIntent);
+//        finish();
+//    }
 
     /**
      * Function invoked when user has made a dialog selection

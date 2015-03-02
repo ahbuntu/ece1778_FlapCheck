@@ -47,15 +47,13 @@ public class MeasurePhotoFragment extends Fragment
         public void onPictureTaken(byte[] data, Camera camera) {
             MeasurePhotoFragmentListener activity = (MeasurePhotoFragmentListener) getActivity();
 
-
-
             File pictureDir = getActivity().getFilesDir();
             pictureDir.mkdirs();
             String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
             File pictureFile = new File(pictureDir, "IMG_" + timestamp + ".jpg"); //TODO generate a real filename
 
-            Toast.makeText(getActivity(), "Saving Image to " + pictureFile, Toast.LENGTH_SHORT).show();
-
+//            Toast.makeText(getActivity(), "Saving Image temporarily to " + pictureFile, Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "Saving Image temporarily to " + pictureFile);
             try {
                 FileOutputStream fos = new FileOutputStream(pictureFile);
                 fos.write(data); //Save the actual data
@@ -133,24 +131,26 @@ public class MeasurePhotoFragment extends Fragment
         moveLastPhotoToPatientDirectory(patientId);
     }
 
+    /**
+     * moves photo from temporary file location to the path specific for the selected patient
+     * @param patientId
+     */
     public void moveLastPhotoToPatientDirectory(long patientId) {
         if(patientId != Patient.INVALID_ID) {
             if(lastPhoto != null) {
                 //Look up tht patient so we know where to put the photo
+                // ok to do these calls synchronously because we do want the user to be blocked if the
+                // photo cannot be saved
                 PatientOpenDBHelper dbHelper = new PatientOpenDBHelper(getActivity().getApplicationContext());
                 Patient patient = dbHelper.getPatient(patientId);
 
-                //TODO: query the DB to find the path to stick the photo in
-                //    e.g.    File patientPicDir = patient.getImageDir();
-                File patientPicDir = new File(getActivity().getFilesDir(), "patient_id");
-                patientPicDir.mkdirs();
+                File patientPicDir = new File(patient.getPatientPhotoPath());
                 File targetFileLocation = new File(patientPicDir, lastPhoto.getName());
-
                 //Move the image to the correct location
                 lastPhoto.renameTo(targetFileLocation);
 
-                Toast.makeText(getActivity(), "Moved Image to " + targetFileLocation, Toast.LENGTH_SHORT).show();
-
+                Toast.makeText(getActivity(), "Picture saved", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "Moved image to " + targetFileLocation);
                 lastPhoto = null;
             } else {
                 Log.e(TAG, "Attempted to move last photo to patient directory, but last photo was null!");
