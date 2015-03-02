@@ -4,7 +4,9 @@
     <!-- Genera/Global -->
     <string name="app_name">flapCHECK</string>
     <string name="button_ok">OK</string>
+    <string name="button_done">DONE</string>
     <string name="button_cancel">Cancel</string>
+    <string name="button_reset">Reset</string>
     <string name="title_activity_measurement">MeasurementActivity</string>
     <string name="title_activity_patient_entry">PatientEntryActivity</string>
 
@@ -58,9 +60,6 @@
     <string name="dialog_select_option2">Review</string>
     <string name="title_activity_node_connection">NodeConnectionActivity</string>
 
-    <!-- SelectItemDialogFragment -->
-    <string name="button_capture_therma">Capture Reading</string>
-
     <!-- DialogSelectPatient -->
     <string name="dialog_select_patient_title">Select a patient</string>
     <string name="dialog_select_patient_spinner_prefix">Patient:</string>
@@ -73,6 +72,12 @@
     <string name="title_activity_review">ReviewActivity</string>
 
     <!-- ReviewPhotosFragment & ReviewPhotosPageFragment -->
+
+    <!-- NodeThermaFragment -->
+    <string name="button_capture_therma">Capture</string>
+    <string name="ir_leds">IR Leds</string>
+    <string name="irToggle_turn_on">IR ON</string>
+    <string name="irToggle_turn_off">IR OFF</string>
 
 
 </resources>

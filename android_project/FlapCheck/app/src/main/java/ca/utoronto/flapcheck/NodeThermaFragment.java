@@ -1,6 +1,7 @@
 /* See http://variableinc.com/terms-use-license for the full license governing this code. */
 package ca.utoronto.flapcheck;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 //import com.variable.demo.api.NodeMessagingConstants;
@@ -32,16 +34,24 @@ import java.text.DecimalFormat;
  */
 public class NodeThermaFragment extends Fragment
         implements ThermaSensor.ThermaListener {
+
+    //TODO: need to handle onBackpressed
+    public interface NodeThermaFragmentListener {
+        public void onTemperatureRecorded(float tempVal);
+    }
     public static final String TAG = NodeThermaFragment.class.getName();
 
     //The Handler of this class primarily demonstrates how to use a NodeDevice isntance with a physical therma attached.
 
     private TextView temperatureText;
+    private boolean tempCaptured = false;
+    private float tempCels = Constants.TEMP_INVALID_MEAS;
     private ToggleButton irLedsSwitch;
     private int temperatureUnit = 0;
 
     private ThermaSensor therma;
     public static final String PREF_EMISSIVITY_NUMBER = "com.variable.demo.api.setting.EMISSIVITY_NUMBER";
+    private NodeThermaFragmentListener mListener = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -66,17 +76,49 @@ public class NodeThermaFragment extends Fragment
             }
         });
 
-        root.findViewById(R.id.button_NT_emissivity).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                buildAndShowEmissivityDialog();
-            }
-        });
+//        root.findViewById(R.id.button_NT_emissivity).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                buildAndShowEmissivityDialog();
+//            }
+//        });
 
         root.findViewById(R.id.button_capture_therma).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO: store measurement in the database
+                nodeThermaUnregister();
+                tempCaptured = true;
+            }
+        });
+
+        root.findViewById(R.id.button_reset_therma).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                nodeThermaRegister();
+                tempCels = Constants.TEMP_INVALID_MEAS;
+                tempCaptured = false;
+            }
+        });
+
+        root.findViewById(R.id.button_cancel_therma).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tempCels = Constants.TEMP_INVALID_MEAS;
+                tempCaptured = false;
+                mListener.onTemperatureRecorded(tempCels);
+            }
+        });
+
+        root.findViewById(R.id.button_done_therma).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (tempCaptured) {
+                    mListener.onTemperatureRecorded(tempCels);
+                } else {
+                    Toast.makeText(getActivity(), "Please take a temperature reading.", Toast.LENGTH_SHORT)
+                            .show();
+                }
+
             }
         });
         return root;
@@ -85,56 +127,67 @@ public class NodeThermaFragment extends Fragment
     @Override
     public void onPause() {
         super.onPause();
-
+        nodeThermaUnregister();
+    }
+    private void nodeThermaUnregister() {
         //Unregister for therma event.
         DefaultNotifier.instance().removeThermaListener(this);
-        therma.stopSensor();
+        if (therma != null) {
+            therma.stopSensor();
+        }
     }
-
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mListener = (NodeThermaFragmentListener) activity;
+    }
     @Override
     public void onResume() {
         super.onResume();
+        nodeThermaRegister();
+    }
+    private void nodeThermaRegister() {
         //Register for Therma Event
         DefaultNotifier.instance().addThermaListener(this);
-
         NodeDevice node = ((FlapCheckApplication) getActivity().getApplication()).getActiveNode();
         if(node != null)
         {
             therma = node.findSensor(NodeEnums.ModuleType.THERMA);
             therma.startSensor();
+        } else {
+            //TODO: should take action if the node gets disconnected
         }
     }
-
     /**
      * Builds a Dialog to ask the user to change the emissivity setting.
      */
-    public void buildAndShowEmissivityDialog(){
-        final EditText text = new EditText(getActivity());
-        text.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-        text.setHint("Enter a number for the emissivity of the surface.");
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Enter an Emissivity Number");
-        builder.setView(text);
-        builder.setPositiveButton("Change", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                String rawText = text.getText().toString();
-                try
-                {
-                    Float emissivity_value = Float.parseFloat(rawText);
-                    PreferenceManager.getDefaultSharedPreferences(getActivity())
-                        .edit()
-                        .putFloat(PREF_EMISSIVITY_NUMBER, emissivity_value)
-                        .commit();
-
-                    mHandler.obtainMessage(NodeMessagingConstants.MESSAGE_EMISSIVITY_NUMBER_UPDATE).sendToTarget();
-
-                }catch(NumberFormatException e){ }
-            }
-        });
-        builder.setNegativeButton("Cancel", null);
-        builder.create().show();
-    }
+//    public void buildAndShowEmissivityDialog(){
+//        final EditText text = new EditText(getActivity());
+//        text.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+//        text.setHint("Enter a number for the emissivity of the surface.");
+//        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+//        builder.setTitle("Enter an Emissivity Number");
+//        builder.setView(text);
+//        builder.setPositiveButton("Change", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialogInterface, int i) {
+//                String rawText = text.getText().toString();
+//                try
+//                {
+//                    Float emissivity_value = Float.parseFloat(rawText);
+//                    PreferenceManager.getDefaultSharedPreferences(getActivity())
+//                        .edit()
+//                        .putFloat(PREF_EMISSIVITY_NUMBER, emissivity_value)
+//                        .commit();
+//
+//                    mHandler.obtainMessage(NodeMessagingConstants.MESSAGE_EMISSIVITY_NUMBER_UPDATE).sendToTarget();
+//
+//                }catch(NumberFormatException e){ }
+//            }
+//        });
+//        builder.setNegativeButton("Cancel", null);
+//        builder.create().show();
+//    }
 
     @Override
     public void onTemperatureReading(ThermaSensor sensor, SensorReading<Float> reading) {
@@ -152,6 +205,7 @@ public class NodeThermaFragment extends Fragment
           switch(msg.what){
               case NodeMessagingConstants.MESSAGE_THERMA_TEMPERATURE:
                   String unitSymbol = " ºC";
+                  tempCels = value;
                   if(temperatureUnit  == 1){
                       value =  value * 1.8000f + 32;
                       unitSymbol = " ºF";

@@ -1,5 +1,6 @@
 package ca.utoronto.flapcheck;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -39,6 +40,13 @@ public class NodeConnectionFragment extends Fragment implements
         NodeDevice.ConnectionListener,
         BluetoothBroadcastReceiver.DiscoveryStartedListener,
         BluetoothBroadcastReceiver.DiscoveryCompletedListener{
+
+
+    public interface NodeConnectionFragmentListener {
+        public void onNodeConnected();
+    }
+    private NodeConnectionFragmentListener mListener;
+
     public static final int REQUEST_ENABLE_BLUETOOTH = 2;
     public static final String FRAGMENT_TAG = NodeConnectionFragment.class.getName();
     private static final int REQUEST_USER_BLUETOOTH_PAIRING = 2000;
@@ -170,6 +178,12 @@ public class NodeConnectionFragment extends Fragment implements
         BluetoothBroadcastReceiver.instance().setOnDiscoveryStartedListener(this);
         BluetoothBroadcastReceiver.instance().setOnDiscoveryCompletedListener(this);
 
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mListener = (NodeConnectionFragmentListener) activity;
     }
 
     @Override
@@ -307,6 +321,8 @@ public class NodeConnectionFragment extends Fragment implements
         this.mNodeDeviceAdapter.notifyDataSetChanged();
         Toast.makeText(getActivity(), nodeDevice.getName() + " is ready to use", Toast.LENGTH_SHORT).show();
         dismissDialog();
+
+        mListener.onNodeConnected();
     }
 
     /**

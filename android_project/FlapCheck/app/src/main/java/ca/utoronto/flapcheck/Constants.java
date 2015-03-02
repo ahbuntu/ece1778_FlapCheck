@@ -20,6 +20,9 @@ public class Constants {
     //***************** Activity Request Codes ****************
     public static final int ADD_PATIENT_REQUEST = 1;
 
+    //***************** NODE measurement default/invalid values **
+    public static final float TEMP_INVALID_MEAS  = 0.0f;
+
     //***************** BUNDlE key names  *********************
     //proposed format:
     // 1. prefix with activity or fragment name

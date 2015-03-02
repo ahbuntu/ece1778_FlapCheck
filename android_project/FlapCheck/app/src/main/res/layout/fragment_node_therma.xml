@@ -49,21 +49,33 @@
         android:padding="15dp"
         android:gravity="bottom">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Therma IR Leds"
-            android:id="@+id/textView2"
-            android:layout_weight="1"
-            android:gravity="bottom" />
-
-        <ToggleButton
-            android:layout_width="match_parent"
+        <Button android:id="@+id/button_capture_therma"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Therma IR Leds"
-            android:id="@+id/irToggle"
-            android:layout_weight="3" />
+            android:text="@string/button_capture_therma"
+            android:layout_weight="1"/>
+
+        <Button android:id="@+id/button_reset_therma"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_reset"
+            android:layout_weight="1"/>
+
+        <!--<TextView android:id="@+id/textView2"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:textAppearance="?android:attr/textAppearanceSmall"-->
+            <!--android:text="@string/ir_leds"-->
+            <!--android:layout_weight="1"-->
+            <!--android:gravity="bottom" />-->
+
+        <ToggleButton android:id="@+id/irToggle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textOn="@string/irToggle_turn_on"
+            android:textOff="@string/irToggle_turn_off"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"/>
 
     </LinearLayout>
 
@@ -74,17 +86,24 @@
         android:padding="15dp"
         android:gravity="bottom">
 
-        <Button android:id="@+id/button_NT_emissivity"
+        <!--<Button android:id="@+id/button_NT_emissivity"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="Change Emissivity"-->
+            <!--android:layout_weight="1"/>-->
+
+        <Button android:id="@+id/button_cancel_therma"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Change Emissivity"
+            android:text="@string/button_cancel"
             android:layout_weight="1"/>
 
-        <Button android:id="@+id/button_capture_therma"
+        <Button android:id="@+id/button_done_therma"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Capture Reading"
+            android:text="@string/button_done"
             android:layout_weight="1"/>
+
     </LinearLayout>
 
 
