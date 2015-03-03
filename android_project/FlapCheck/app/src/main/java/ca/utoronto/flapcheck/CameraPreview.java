@@ -156,9 +156,10 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
                 Toast.makeText(getContext(), String.format("Could not set %d metering areas. Max supported %d", focusRegions.size(), params.getMaxNumMeteringAreas()), Toast.LENGTH_SHORT).show();
             }
 
-            mCamera.setParameters(params);
-
-            mCamera.autoFocus(mAutoFocusCallback);
+            //Temporarily disable auto-focus for Spiral 2 demo
+//            mCamera.setParameters(params);
+//
+//            mCamera.autoFocus(mAutoFocusCallback);
     }
 
     //Touch event
