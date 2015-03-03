@@ -79,7 +79,7 @@
             android:layout_centerHorizontal="true"
             android:text="@string/button_addPatient"
             android:textStyle="bold"
-            android:textColor="@color/fc_red"/>
+            android:textColor="@color/fc_blue"/>
     </RelativeLayout>
 
 </ScrollView>

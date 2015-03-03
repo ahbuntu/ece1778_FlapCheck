@@ -3,6 +3,7 @@ package ca.utoronto.flapcheck;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -43,6 +44,8 @@ public class MeasurementActivity extends FragmentActivity
                     .add(R.id.measure_container, frag)
                     .commit();
         }
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
 

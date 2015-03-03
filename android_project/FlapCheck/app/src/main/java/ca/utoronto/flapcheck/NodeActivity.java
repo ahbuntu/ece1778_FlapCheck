@@ -1,5 +1,6 @@
 package ca.utoronto.flapcheck;
 
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -39,6 +40,8 @@ public class NodeActivity extends ActionBarActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_node);
 
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        
         FragmentManager mFragManager = getSupportFragmentManager();
         FragmentTransaction mFragTransaction = mFragManager.beginTransaction();
         if (savedInstanceState == null) {

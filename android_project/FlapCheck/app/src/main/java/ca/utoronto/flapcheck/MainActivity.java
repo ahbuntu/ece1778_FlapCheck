@@ -2,6 +2,7 @@ package ca.utoronto.flapcheck;
 
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -37,6 +38,8 @@ public class MainActivity extends FragmentActivity
             mViewPager = (ViewPager) findViewById(R.id.main_pager);
             mViewPager.setAdapter(mViewPagerAdapter);
         }
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
     @Override

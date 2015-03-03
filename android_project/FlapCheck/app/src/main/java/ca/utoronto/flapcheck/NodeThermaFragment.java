@@ -104,6 +104,7 @@ public class NodeThermaFragment extends Fragment
             public void onClick(View view) {
                 tempCels = Constants.TEMP_INVALID_MEAS;
                 tempCaptured = false;
+                getActivity().finish();
             }
         });
 
@@ -142,6 +143,7 @@ public class NodeThermaFragment extends Fragment
     @Override
     public void onResume() {
         super.onResume();
+        getActivity().setTitle("NODE Measurement");
         nodeThermaRegister();
     }
     private void nodeThermaRegister() {
