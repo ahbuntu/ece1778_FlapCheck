@@ -4,6 +4,8 @@ package ca.utoronto.flapcheck;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -20,6 +23,9 @@ import java.util.List;
  */
 public class MainReviewFragment extends Fragment {
     private long mPatientId;
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
 
     public MainReviewFragment() {
         // Required empty public constructor
@@ -67,6 +73,22 @@ public class MainReviewFragment extends Fragment {
                 startActivity(intent);
             }
         });
+
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.review_recycler_view);
+
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+//        mRecyclerView.setHasFixedSize(true);
+
+        // use a linear layout manager
+        mLayoutManager = new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        // specify an adapter (see also next example)
+        //TODO: determine if these tags are even required
+        String[] recyclerCardTags = {"TEMPERATURE", "COLOUR", "CAPILLARY REFILL", "PULSE", "PICTURE"};
+        mAdapter = new ReviewRecycleAdapter(recyclerCardTags);
+        mRecyclerView.setAdapter(mAdapter);
 
         return view;
     }

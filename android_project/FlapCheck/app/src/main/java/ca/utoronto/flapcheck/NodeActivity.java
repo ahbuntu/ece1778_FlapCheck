@@ -41,7 +41,7 @@ public class NodeActivity extends ActionBarActivity
         setContentView(R.layout.activity_node);
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        
+
         FragmentManager mFragManager = getSupportFragmentManager();
         FragmentTransaction mFragTransaction = mFragManager.beginTransaction();
         if (savedInstanceState == null) {
