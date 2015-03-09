@@ -150,10 +150,18 @@ public class DBLoaderMeasurement {
     }
 
 
+    /**
+     * Gets all readings for the specified patient
+     *
+     * @param patientID
+     * @return
+     */
     public List<MeasurementReading> getTemperaturesForPatient(long patientID) {
 
         List<MeasurementReading> foundReadings = new ArrayList<MeasurementReading>();
         try {
+            String orderBy = MeasurementEntry.COL_MEASUREMENT_TIMESTAMP + " ASC";
+
             Cursor cursor = activeDB.query(MeasurementEntry.TABLE_NAME,
                     new String[] {MeasurementEntry.COL_MEASUREMENT_ID,
                             MeasurementEntry.COL_MEASUREMENT_PATIENT_ID,
@@ -163,8 +171,8 @@ public class DBLoaderMeasurement {
                             MeasurementEntry.COL_MEASUREMENT_COLOUR_LAB,
                             MeasurementEntry.COL_MEASUREMENT_COLOUR_HEX},
                     MeasurementEntry.COL_MEASUREMENT_PATIENT_ID + "=?",
-                    new String[] { String.valueOf(patientID) }, null, null, null, null);
-            //TODO: sort query based on timestamp, and select only where temp != null
+                    new String[] { String.valueOf(patientID) }, null, null, orderBy, null);
+            //TODO: select only where temp != null
             if (cursor != null && cursor.moveToFirst()) {
                 do {
                     MeasurementReading mReading = new MeasurementReading();
