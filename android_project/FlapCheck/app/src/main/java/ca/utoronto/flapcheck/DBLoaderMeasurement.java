@@ -74,10 +74,10 @@ public class DBLoaderMeasurement {
     /**
      * Gets the reading from the database using the id of the measurement entry
      *
-     * @param id - the row ID of the patient in the database
+     * @param id - the row ID of the measurement in the database
      * @return the patient object if found; null otherwise
      */
-    public MeasurementReading getReading(int id) {
+    public MeasurementReading getReading(long id) {
         MeasurementReading foundReading = null;
         try {
             Cursor cursor = activeDB.query(MeasurementEntry.TABLE_NAME,
@@ -110,9 +110,119 @@ public class DBLoaderMeasurement {
         return foundReading;
     }
 
-    public MeasurementReading findReading(String name, String mrn) {
+    /**
+     * Gets the reading from the database using the patient id
+     *
+     * @param patientID - the row ID of the patient in the database
+     * @return
+     */
+    public MeasurementReading findPatientReading(long patientID) {
         //TODO: <if-required> implement findReading by name, mrn, timeofop
-        return null;
+        MeasurementReading foundReading = null;
+        try {
+            Cursor cursor = activeDB.query(MeasurementEntry.TABLE_NAME,
+                    new String[] {MeasurementEntry.COL_MEASUREMENT_ID,
+                            MeasurementEntry.COL_MEASUREMENT_PATIENT_ID,
+                            MeasurementEntry.COL_MEASUREMENT_TIMESTAMP,
+                            MeasurementEntry.COL_MEASUREMENT_TEMP_CELS,
+                            MeasurementEntry.COL_MEASUREMENT_COLOUR_RGB,
+                            MeasurementEntry.COL_MEASUREMENT_COLOUR_LAB,
+                            MeasurementEntry.COL_MEASUREMENT_COLOUR_HEX},
+                    MeasurementEntry.COL_MEASUREMENT_PATIENT_ID + "=?",
+                    new String[] { String.valueOf(patientID) }, null, null, null, null);
+
+            if (cursor != null && cursor.moveToFirst()) {
+                //use constructor that supports id of the record in the db
+                foundReading = new MeasurementReading(Long.parseLong(cursor.getString(0)), //meas ID
+                        Long.parseLong(cursor.getString(1)), //meas patient ID
+                        Long.parseLong(cursor.getString(2)), //meas timestamp
+                        Float.parseFloat(cursor.getString(3)), //meas temp cels
+                        (cursor.getString(4)), //meas colour rgb
+                        (cursor.getString(5)), //meas colour lab
+                        (cursor.getString(6))); //meas colour hex
+            }
+            closeDB();
+
+        } catch (SQLiteException e) {
+            Log.d(TAG, e.getMessage());
+        }
+        return foundReading;
+    }
+
+
+    public List<MeasurementReading> getTemperaturesForPatient(long patientID) {
+
+        List<MeasurementReading> foundReadings = new ArrayList<MeasurementReading>();
+        try {
+            Cursor cursor = activeDB.query(MeasurementEntry.TABLE_NAME,
+                    new String[] {MeasurementEntry.COL_MEASUREMENT_ID,
+                            MeasurementEntry.COL_MEASUREMENT_PATIENT_ID,
+                            MeasurementEntry.COL_MEASUREMENT_TIMESTAMP,
+                            MeasurementEntry.COL_MEASUREMENT_TEMP_CELS,
+                            MeasurementEntry.COL_MEASUREMENT_COLOUR_RGB,
+                            MeasurementEntry.COL_MEASUREMENT_COLOUR_LAB,
+                            MeasurementEntry.COL_MEASUREMENT_COLOUR_HEX},
+                    MeasurementEntry.COL_MEASUREMENT_PATIENT_ID + "=?",
+                    new String[] { String.valueOf(patientID) }, null, null, null, null);
+            //TODO: sort query based on timestamp, and select only where temp != null
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    MeasurementReading mReading = new MeasurementReading();
+                    mReading.setMeasurementID(Long.parseLong(cursor.getString(0)));
+                    mReading.setMeas_patientID(Long.parseLong(cursor.getString(1)));
+                    mReading.setMeas_timestamp(Long.parseLong(cursor.getString(2)));
+                    mReading.setMeas_temperature(Float.parseFloat(cursor.getString(3)));
+                    mReading.setMeas_colour_rgb(cursor.getString(4));
+                    mReading.setMeas_colour_hex(cursor.getString(5));
+                    mReading.setMeas_colour_lab(cursor.getString(6));
+
+                    foundReadings.add(mReading);
+                } while (cursor.moveToNext());
+            }
+            closeDB();
+
+        } catch (SQLiteException e) {
+            Log.d(TAG, e.getMessage());
+        }
+        return foundReadings;
+    }
+
+    /**
+     * gets all the temperature measurements associated with a single patient
+     *
+     * @return a List<MeasurementReading> collection of all temperature measurements for the patient
+     */
+    public List<MeasurementReading> getAllTempReadings() {
+        List<MeasurementReading> tempReadingList;
+        try {
+            tempReadingList = new ArrayList<MeasurementReading>();
+            // Select All Query
+            String selectQuery = "SELECT  * FROM " + MeasurementEntry.TABLE_NAME;
+
+            Cursor cursor = activeDB.rawQuery(selectQuery, null);
+
+            // looping through all rows and adding to list
+            if (cursor.moveToFirst()) {
+                do {
+                    MeasurementReading mReading = new MeasurementReading();
+                    mReading.setMeasurementID(Long.parseLong(cursor.getString(0)));
+                    mReading.setMeas_patientID(Long.parseLong(cursor.getString(1)));
+                    mReading.setMeas_timestamp(Long.parseLong(cursor.getString(2)));
+                    mReading.setMeas_temperature(Float.parseFloat(cursor.getString(3)));
+                    mReading.setMeas_colour_rgb(cursor.getString(4));
+                    mReading.setMeas_colour_hex(cursor.getString(5));
+                    mReading.setMeas_colour_lab(cursor.getString(6));
+
+                    tempReadingList.add(mReading);
+                } while (cursor.moveToNext());
+            }
+
+            closeDB();
+        } catch (SQLiteException e) {
+            Log.d(TAG, e.getMessage());
+            tempReadingList = null;
+        }
+        return  tempReadingList;
     }
 
     /**

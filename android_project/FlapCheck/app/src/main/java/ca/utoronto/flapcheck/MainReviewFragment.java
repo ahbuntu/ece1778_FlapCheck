@@ -22,10 +22,11 @@ import java.util.List;
  * A simple {@link Fragment} subclass.
  */
 public class MainReviewFragment extends Fragment {
-    private long mPatientId;
+    private long mPatientId = Patient.INVALID_ID;
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+    ArrayAdapter<Patient> patientArrayAdapter;
 
     public MainReviewFragment() {
         // Required empty public constructor
@@ -42,7 +43,7 @@ public class MainReviewFragment extends Fragment {
 
         DBLoaderPatient dbHelper = new DBLoaderPatient(getActivity().getApplicationContext());
         List<Patient> patientList = dbHelper.getAllPatients();
-        ArrayAdapter<Patient> patientArrayAdapter = new ArrayAdapter<Patient>(getActivity(), android.R.layout.simple_spinner_dropdown_item, patientList);
+        patientArrayAdapter = new ArrayAdapter<Patient>(getActivity(), android.R.layout.simple_spinner_dropdown_item, patientList);
         spinner.setAdapter(patientArrayAdapter);
 
         //Register what patient has been selected
@@ -51,6 +52,9 @@ public class MainReviewFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Patient patient = (Patient) parent.getItemAtPosition(position);
                 mPatientId = patient.getPatientId();
+                mAdapter = new ReviewRecycleAdapter(mPatientId, getActivity().getBaseContext());
+                mRecyclerView.swapAdapter(mAdapter,false);
+                mAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -86,10 +90,12 @@ public class MainReviewFragment extends Fragment {
 
         // specify an adapter (see also next example)
         //TODO: determine if these tags are even required
-        String[] recyclerCardTags = {"TEMPERATURE", "COLOUR", "CAPILLARY REFILL", "PULSE", "PICTURE"};
-        mAdapter = new ReviewRecycleAdapter(recyclerCardTags);
-        mRecyclerView.setAdapter(mAdapter);
-
+//        String[] recyclerCardTags = {"TEMPERATURE", "COLOUR", "CAPILLARY REFILL", "PULSE", "PICTURE"};
+        if (patientArrayAdapter != null) {
+            mPatientId = ((Patient) spinner.getAdapter().getItem(0)).getPatientId();
+            mAdapter = new ReviewRecycleAdapter(mPatientId, getActivity().getBaseContext());
+            mRecyclerView.setAdapter(mAdapter);
+        }
         return view;
     }
 
