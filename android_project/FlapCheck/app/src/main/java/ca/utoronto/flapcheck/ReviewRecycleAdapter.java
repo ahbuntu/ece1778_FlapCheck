@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.GridLabelRenderer;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
@@ -172,15 +173,21 @@ public class ReviewRecycleAdapter extends RecyclerView.Adapter<ReviewRecycleAdap
                 int i = 0;
                 for (MeasurementReading mReading : tempReadings) {
                     i++;
-                    Log.d(TAG, "Patient ID: " + mReading.getMeas_patientID() + " Temp: " + mReading.getMeas_temperature());
+//                    Log.d(TAG, "Patient ID: " + mReading.getMeas_patientID() + " Temp: " + mReading.getMeas_temperature());
                     DataPoint point = new DataPoint(i, mReading.getMeas_temperature());
-                    series.appendData(point, false, tempReadings.size());
+
+                    //assume that temperature is returned in ascending timestamp order
+                    if (i == tempReadings.size()) {
+                        graphTemp.setTitle("Last recording " + mReading.getMeas_temperature() + " ºC");
+                    }series.appendData(point, false, tempReadings.size());
                 }
                 graphTemp.addSeries(series);
+                GridLabelRenderer gridStyler =  graphTemp.getGridLabelRenderer();
+                gridStyler.setGridStyle(GridLabelRenderer.GridStyle.NONE);
             }
         } else {
             if (progressTemp != null) {
-                Log.d(TAG, "null progressTemp");
+//                Log.d(TAG, "null progressTemp");
                 progressTemp.setVisibility(View.VISIBLE);
                 graphTemp.setVisibility(View.INVISIBLE);
                 graphTemp.removeAllSeries();
