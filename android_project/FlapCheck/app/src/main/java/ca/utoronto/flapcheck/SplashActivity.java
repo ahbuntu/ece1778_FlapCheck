@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.List;
+
 
 public class SplashActivity extends FragmentActivity
             implements SplashScreenFragment.SplashScreenFragmentListener {
@@ -29,5 +31,9 @@ public class SplashActivity extends FragmentActivity
         //a SERIOUSLY hacky debug
 //        DBLoaderPatient dbHelper = new DBLoaderPatient(this);
 //        dbHelper.deleteAllPatients();
+        DBLoaderMeasurement dbMeasHelper = new DBLoaderMeasurement(this);
+//        dbMeasHelper.deleteAllReadings();
+//        List<MeasurementReading> test = dbMeasHelper.getAllTempReadings();
+//        test.size();
     }
 }
