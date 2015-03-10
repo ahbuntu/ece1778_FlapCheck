@@ -14,10 +14,12 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
         <TextView
-            android:id="@+id/info_text"
-            android:text="TEMPERATURE"
+            android:id="@+id/text_temp_card_heading"
+            android:text="@string/text_temp_card_heading"
+            android:background="@color/fc_card_title"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="wrap_content"
+            android:gravity="center"/>
 
         <RelativeLayout
             android:layout_width="match_parent"

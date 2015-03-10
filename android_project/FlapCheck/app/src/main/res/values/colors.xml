@@ -3,6 +3,7 @@
     <color name="fc_red">#B21212</color>
     <color name="fc_blue">#6D889B</color>
     <color name="fc_dark_gray">#696969</color>
+    <color name="fc_card_title">#D3DCE1</color>
     <color name="fc_background">#F2F2F2</color>
     <color name="fc_white">#FFFFFF</color>
     <color name="node_connect_blue">#2B3C91</color>

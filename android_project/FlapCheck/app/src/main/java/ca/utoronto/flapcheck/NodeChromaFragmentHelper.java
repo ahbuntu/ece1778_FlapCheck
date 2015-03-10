@@ -1,13 +1,11 @@
 /* See http://variableinc.com/terms-use-license for the full license governing this code. */
 package ca.utoronto.flapcheck;
 
-import android.app.Activity;
 import android.graphics.Color;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.widget.Toast;
 
-import ca.utoronto.flapcheck.NodeColorUtils;
 import com.variable.framework.chroma.service.datamodel.ChromaModuleInfo;
 import com.variable.framework.dispatcher.DefaultNotifier;
 import com.variable.framework.node.ChromaDevice;
@@ -90,7 +88,7 @@ public class NodeChromaFragmentHelper extends Fragment implements ChromaDevice.C
     public void  onChromaReadingReceived(ChromaModuleInfo moduleInfo,VTRGBCReading reading) {
         ColorSense sense = reading.getColorSense();
         Log.d(TAG, "SENSE_VALUES: " + sense.getSenseRed().floatValue() + " , " + sense.getSenseGreen() + " , " + sense.getSenseBlue() + " , " + sense.getSenseClear());
-        int color = NodeColorUtils.RGBToColor(reading.getD65srgbR(), reading.getD65srgbG(), reading.getD65srgbB());
+        int color = Utils.RGBToColor(reading.getD65srgbR(), reading.getD65srgbG(), reading.getD65srgbB());
 
         //D50 onLABUpdate(reading.getD50L(), reading.getD50a(), reading.getD50b());
         onLABUpdate(reading.getD65L(), reading.getD65a(), reading.getD65b());

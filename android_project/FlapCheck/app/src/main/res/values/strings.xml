@@ -74,6 +74,7 @@
     <!-- ReviewPhotosFragment & ReviewPhotosPageFragment -->
 
     <!-- NodeThermaFragment -->
+    <string name="text_temp_card_heading">TEMPERATURE</string>
     <string name="button_capture_therma">Capture</string>
     <string name="ir_leds">IR Leds</string>
     <string name="irToggle_turn_on">IR ON</string>
@@ -85,6 +86,7 @@
 
     <!-- ReviewColourCard -->
     <string name="text_latest_colour">Last reading</string>
+    <string name="text_colour_card_heading">COLOUR</string>
 
 
 

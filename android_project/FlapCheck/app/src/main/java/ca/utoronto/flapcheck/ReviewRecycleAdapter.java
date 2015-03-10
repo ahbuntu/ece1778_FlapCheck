@@ -223,10 +223,18 @@ public class ReviewRecycleAdapter extends RecyclerView.Adapter<ReviewRecycleAdap
                 int colorVal = Color.parseColor(mReading.getMeas_colour_hex());
                 i++;
                 if (i == 1) {
+                    TextView mTextDate =  (TextView) cardView.findViewById(R.id.text_first_colour_date);
+                    mTextDate.setText(Utils.prettyDate(mReading.getMeas_timestamp()));
+                    TextView mTextTime =  (TextView) cardView.findViewById(R.id.text_first_colour_time);
+                    mTextTime.setText(Utils.prettyTime(mReading.getMeas_timestamp()));
                     cardView.findViewById(R.id.imageView_first_colour)
                             .setBackgroundColor(colorVal);
                 }
                 if (i == 2) {
+                    TextView mTextDate =  (TextView) cardView.findViewById(R.id.text_second_colour_date);
+                    mTextDate.setText(Utils.prettyDate(mReading.getMeas_timestamp()));
+                    TextView mTextTime =  (TextView) cardView.findViewById(R.id.text_second_colour_time);
+                    mTextTime.setText(Utils.prettyTime(mReading.getMeas_timestamp()));
                     cardView.findViewById(R.id.imageView_second_colour)
                             .setBackgroundColor(colorVal);
                 }
@@ -323,9 +331,6 @@ public class ReviewRecycleAdapter extends RecyclerView.Adapter<ReviewRecycleAdap
         }
     }
 
-    private int convertHexStringToInt(String hexString) {
-        return Integer.parseInt("0x" + hexString.substring(1));
-    }
     private class RetrieveReviewData extends AsyncTask<String, Integer, List<MeasurementReading>> {
 
         private long mRetPatientId = -1;
