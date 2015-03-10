@@ -83,5 +83,9 @@
     <string name="textChromaHeading">Place NODE colour sensor on flap and record</string>
     <string name="button_single_scan">Scan Color</string>
 
+    <!-- ReviewColourCard -->
+    <string name="text_latest_colour">Last reading</string>
+
+
 
 </resources>

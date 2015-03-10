@@ -65,12 +65,14 @@ public class ReviewRecycleAdapter extends RecyclerView.Adapter<ReviewRecycleAdap
                         .inflate(R.layout.card_review_temperature, parent, false);
                 progressTemp = (ProgressBar) v.findViewById(R.id.progress_card_temp);
                 graphTemp = (GraphView) v.findViewById(R.id.graph_temp_summary);
+//                setMargins(v, 0, R.dimen.card_vertical_margin, 0, R.dimen.card_vertical_margin);
                 break;
             case R.id.card_review_colour:
                 v = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.card_review_colour, parent, false);
                 // set the view's size, margins, paddings and layout parameters
                 //        ...
+//                setMargins(v, 0, R.dimen.card_vertical_margin, 0, R.dimen.card_vertical_margin);
                 break;
             case R.id.card_review_cap_refill:
                 v = LayoutInflater.from(parent.getContext())
@@ -192,6 +194,16 @@ public class ReviewRecycleAdapter extends RecyclerView.Adapter<ReviewRecycleAdap
                 graphTemp.setVisibility(View.INVISIBLE);
                 graphTemp.removeAllSeries();
             }
+        }
+    }
+
+    public void setMargins (View v, int l, int t, int r, int b) {
+        if (v.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+//            ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+//            ViewGroup.LayoutParams p = v.getLayoutParams();
+//            p.setMargins(l, t, r, b);
+//            v.req
+//            v.requestLayout();
         }
     }
 

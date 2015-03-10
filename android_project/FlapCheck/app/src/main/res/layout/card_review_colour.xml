@@ -6,11 +6,105 @@
     android:layout_gravity="center"
     android:layout_width="match_parent"
     android:layout_height="200dp"
+    android:layout_margin="@dimen/card_margin"
     card_view:cardCornerRadius="4dp">
 
-    <TextView
-        android:id="@+id/info_text"
-        android:text="COLOUR"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/text_card_heading"
+            android:text="COLOUR"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+                <ProgressBar
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:id="@+id/progress_card_latest_colour"
+                    android:layout_gravity="center_horizontal|center_vertical" />
+
+                <TextView
+                    android:id="@+id/text_latest_colour"
+                    android:text="@string/text_latest_colour"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <ImageView android:id="@+id/imageView_latest_colour"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_toRightOf="@+id/text_latest_colour"
+                    android:background="@color/fc_dark_gray"/>
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_weight="1">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+                    <ProgressBar
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:id="@+id/progress_card_first_colour"
+                        android:layout_gravity="center_horizontal|center_vertical" />
+                    <TextView
+                        android:id="@+id/text_first_colour_date"
+                        android:layout_width="wrap_content"
+                        android:text="fist"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:id="@+id/text_first_colour_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="fist"
+                        android:layout_below="@+id/text_first_colour_date"/>
+                    <ImageView android:id="@+id/imageView_first_colour"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_toRightOf="@+id/text_first_colour_date"
+                        android:background="@color/fc_dark_gray"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+                    <ProgressBar
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:id="@+id/progress_card_second_colour"
+                        android:layout_gravity="center_horizontal|center_vertical" />
+                    <TextView
+                        android:id="@+id/text_second_colour_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="seond"/>
+                    <TextView
+                        android:id="@+id/text_second_colour_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/text_second_colour_date"
+                        android:text="seocnd"/>
+                    <ImageView android:id="@+id/imageView_second_colour"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_toRightOf="@+id/text_second_colour_date"
+                        android:background="@color/fc_dark_gray"/>
+                </RelativeLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
 </android.support.v7.widget.CardView>
