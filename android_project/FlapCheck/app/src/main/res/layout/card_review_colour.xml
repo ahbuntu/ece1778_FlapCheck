@@ -36,13 +36,15 @@
                     android:id="@+id/text_latest_colour"
                     android:text="@string/text_latest_colour"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:visibility="invisible"/>
 
                 <ImageView android:id="@+id/imageView_latest_colour"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_toRightOf="@+id/text_latest_colour"
-                    android:background="@color/fc_dark_gray"/>
+                    android:background="@color/fc_dark_gray"
+                    android:visibility="invisible"/>
             </RelativeLayout>
 
             <LinearLayout
@@ -64,18 +66,21 @@
                         android:id="@+id/text_first_colour_date"
                         android:layout_width="wrap_content"
                         android:text="fist"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:visibility="invisible"/>
                     <TextView
                         android:id="@+id/text_first_colour_time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="fist"
-                        android:layout_below="@+id/text_first_colour_date"/>
+                        android:layout_below="@+id/text_first_colour_date"
+                        android:visibility="invisible"/>
                     <ImageView android:id="@+id/imageView_first_colour"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:layout_toRightOf="@+id/text_first_colour_date"
-                        android:background="@color/fc_dark_gray"/>
+                        android:background="@color/fc_dark_gray"
+                        android:visibility="invisible"/>
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -91,18 +96,21 @@
                         android:id="@+id/text_second_colour_date"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="seond"/>
+                        android:text="seond"
+                        android:visibility="invisible"/>
                     <TextView
                         android:id="@+id/text_second_colour_time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/text_second_colour_date"
-                        android:text="seocnd"/>
+                        android:text="seocnd"
+                        android:visibility="invisible"/>
                     <ImageView android:id="@+id/imageView_second_colour"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:layout_toRightOf="@+id/text_second_colour_date"
-                        android:background="@color/fc_dark_gray"/>
+                        android:background="@color/fc_dark_gray"
+                        android:visibility="invisible"/>
                 </RelativeLayout>
             </LinearLayout>
         </LinearLayout>
