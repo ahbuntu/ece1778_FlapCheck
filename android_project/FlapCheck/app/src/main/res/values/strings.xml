@@ -79,5 +79,9 @@
     <string name="irToggle_turn_on">IR ON</string>
     <string name="irToggle_turn_off">IR OFF</string>
 
+    <!-- NodeChromaFragment -->
+    <string name="textChromaHeading">Place NODE colour sensor on flap and record</string>
+    <string name="button_single_scan">Scan Color</string>
+
 
 </resources>

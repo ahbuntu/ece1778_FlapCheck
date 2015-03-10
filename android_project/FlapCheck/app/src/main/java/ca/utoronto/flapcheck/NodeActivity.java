@@ -31,7 +31,7 @@ public class NodeActivity extends ActionBarActivity
     static final String NODE_CHROMA = "node_chroma";
 
     private NodeThermaFragment mNodeThermaFragment = null;
-//    private NodeChromaFragment mNodeChromaFragment = null;
+    private NodeChromaFragment mNodeChromaFragment = null;
 
     private static String waitingAction = null;
     private long mActivePatientId = Patient.INVALID_ID; //Set by dialog
@@ -47,9 +47,9 @@ public class NodeActivity extends ActionBarActivity
         if (savedInstanceState == null) {
             Bundle bundle = getIntent().getExtras();
             String action_type = bundle.getString(ARG_NODE_ACTION);
+            NodeDevice node = ((FlapCheckApplication) getApplication()).getActiveNode();
             switch (action_type) {
                 case NODE_THERMA:
-                    NodeDevice node = ((FlapCheckApplication) getApplication()).getActiveNode();
                     mNodeThermaFragment = new NodeThermaFragment();
                     if(!isNodeConnected(node))
                     {
@@ -65,8 +65,19 @@ public class NodeActivity extends ActionBarActivity
                     }
                     break;
                 case NODE_CHROMA:
-//                    NodeChromaFragment fragChroma = new NodeChromaFragment();
-//                    mFragTransaction.add(R.id.node_container, fragChroma);
+                    mNodeChromaFragment = new NodeChromaFragment();
+                    if(!isNodeConnected(node))
+                    {
+                        Toast.makeText(this, "No Connected NODE device.", Toast.LENGTH_SHORT).show();
+                        //need to display node establish connection fragment
+                        waitingAction = NODE_CHROMA;
+                        NodeConnectionFragment fragConnect = NodeConnectionFragment.findOrCreate(getSupportFragmentManager());
+                        mFragTransaction.add(R.id.node_container, fragConnect);
+                    } else {
+                        if(checkForSensor(node, NodeEnums.ModuleType.CHROMA, true)) {
+                            mFragTransaction.add(R.id.node_container, mNodeChromaFragment);
+                        }
+                    }
                     break;
                 default:
                     break;
@@ -108,7 +119,6 @@ public class NodeActivity extends ActionBarActivity
     public void onSetActivePatientId(long patientId) {
         mActivePatientId = patientId;
         if(mNodeThermaFragment != null) {
-
             Calendar cal = new GregorianCalendar();
             cal.setTimeZone(TimeZone.getTimeZone("UTC"));
             MeasurementReading reading = new MeasurementReading(patientId, cal.getTimeInMillis(),
@@ -123,7 +133,25 @@ public class NodeActivity extends ActionBarActivity
             } else {
                 Toast.makeText(this, "Measurement saved", Toast.LENGTH_SHORT).show();
             }
+        }
+        if(mNodeChromaFragment != null) {
+            Calendar cal = new GregorianCalendar();
+            cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 
+            MeasurementReading reading = new MeasurementReading(patientId, cal.getTimeInMillis(), 0,
+                    mNodeChromaFragment.getRecordedColourRGB(),
+                    mNodeChromaFragment.getRecordedColourLAB(),
+                    mNodeChromaFragment.getRecordedColourHex());
+
+            // ok to do this synchronously because we want the user to be blocked if the measurement cannot be saved
+            DBLoaderMeasurement measDbHelper = new DBLoaderMeasurement(this);
+            long recordID = measDbHelper.addReading(reading);
+
+            if (recordID == -1) {
+                Toast.makeText(this, "Error while saving measurement", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Measurement saved", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -171,16 +199,18 @@ public class NodeActivity extends ActionBarActivity
     public void onNodeConnected() {
         switch (waitingAction) {
             case NODE_THERMA:
+                setTitle("NODE Temperature Measurement");
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.node_container, mNodeThermaFragment)
                                 //DO NOT add the connection fragment as a backstack navigation
                         .commit();
                 break;
             case NODE_CHROMA:
-//                getSupportFragmentManager().beginTransaction()
-//                        .replace(R.id.node_container, new NodeChromaFragment())
-//                                //DO NOT add the connection fragment as a backstack navigation
-//                        .commit();
+                setTitle("NODE Colour Measurement");
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.node_container, mNodeChromaFragment)
+                                //DO NOT add the connection fragment as a backstack navigation
+                        .commit();
                 break;
             default:
                 getSupportFragmentManager().popBackStack();

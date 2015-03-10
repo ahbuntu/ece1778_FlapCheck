@@ -24,9 +24,8 @@ public class MainMeasurementFragment extends android.support.v4.app.Fragment {
     }
 
     public interface MainMeasurementNODEListener {
-        //TODO: implement the NODE interfaces when the time comes
         void onMeasureTemperature();
-        //        void onMeasureColour();
+        void onMeasureColour();
     }
 
     public MainMeasurementFragment() {
@@ -59,7 +58,8 @@ public class MainMeasurementFragment extends android.support.v4.app.Fragment {
         takeColour.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(), "Colour measurement not yet implemented!", Toast.LENGTH_SHORT).show();
+                MainMeasurementNODEListener activity = (MainMeasurementNODEListener) getActivity();
+                activity.onMeasureColour();
             }
         });
 

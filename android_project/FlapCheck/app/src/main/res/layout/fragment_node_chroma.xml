@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              style="@style/AppTheme">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/textChromaHeading"
+        android:id="@+id/textChromaHeading"
+        android:layout_gravity="center"/>
+
+    <ImageView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/imgScanColor"
+            android:layout_gravity="center"
+            android:layout_weight=".75"
+            android:background="@color/fc_dark_gray"/>
+
+    <TableLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight=".05">
+        <!--android:padding="5dip"-->
+        <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:id="@+id/tableRowRGB"
+                android:layout_weight="1">
+
+            <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_span="1"
+                    android:id="@+id/rgbTextTitle"
+                    android:layout_column="1"
+                    android:text="RGB: "/>
+
+            <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_span="1"
+                    android:id="@+id/txtRGB"
+                    android:layout_column="2"
+                    />
+        </TableRow>
+
+        <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:id="@+id/tableRow"
+                android:layout_weight="1">
+
+            <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_span="1"
+                    android:id="@+id/txtLabTitle"
+                    android:layout_column="1"
+                    android:text="LAB: "
+                    android:padding="2dip"
+                    />
+
+            <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_span="1"
+                    android:id="@+id/txtLab"
+                    android:layout_column="2"/>
+        </TableRow>
+        <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:id="@+id/tableRow2"
+                android:layout_weight="1">
+
+            <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_span="1"
+                    android:id="@+id/txtLabTitle"
+                    android:layout_column="1"
+                    android:text="HEX: "
+                    android:padding="2dip"/>
+
+            <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_span="1"
+                    android:id="@+id/txtHex"
+                    android:layout_column="2"
+                    />
+        </TableRow>
+    </TableLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp">
+
+        <Button android:id="@+id/button_capture_chroma"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_capture_therma"
+            android:textColor="@color/fc_blue"
+            android:layout_weight="1"/>
+
+        <Button android:id="@+id/button_reset_chroma"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_reset"
+            android:textColor="@color/fc_blue"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="15dp"
+        android:layout_gravity="center">
+        <!--android:layout_weight=".05"-->
+        <!--android:weightSum="2"-->
+        <Button android:id="@+id/button_cancel_chroma"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_cancel"
+            android:textColor="@color/fc_blue"
+            android:layout_weight="1"/>
+
+        <Button android:id="@+id/button_done_chroma"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_done"
+            android:textColor="@color/fc_blue"
+            android:layout_weight="1"/>
+        <!--android:layout_weight="1"-->
+        <!--android:layout_marginLeft="40dp"-->
+        <!--android:layout_marginRight="20dp"-->
+
+        <!--<Button-->
+        <!--android:id="@+id/button_calibrate"-->
+        <!--style="?android:attr/buttonStyleSmall"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginLeft="20dp"-->
+        <!--android:layout_marginRight="40dp"-->
+        <!--android:layout_weight="1"-->
+        <!--android:text="Calibrate" />-->
+
+    </LinearLayout>
+</LinearLayout>

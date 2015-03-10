@@ -38,7 +38,7 @@ public class NodeThermaFragment extends Fragment
 
     public static final String TAG = NodeThermaFragment.class.getName();
 
-    //TODO: need to handle onBackpressed
+
     private MeasurementFragmentListener mMeasureListener = null;
 
     //The Handler of this class primarily demonstrates how to use a NodeDevice isntance with a physical therma attached.
@@ -143,7 +143,6 @@ public class NodeThermaFragment extends Fragment
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().setTitle("NODE Measurement");
         nodeThermaRegister();
     }
     private void nodeThermaRegister() {

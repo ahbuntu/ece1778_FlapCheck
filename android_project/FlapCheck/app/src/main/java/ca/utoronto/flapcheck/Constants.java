@@ -23,6 +23,7 @@ public class Constants {
 
     //***************** NODE measurement default/invalid values **
     public static final float TEMP_INVALID_MEAS  = 0.0f;
+    public static final int COLOUR_INVALID_MEAS  = R.color.fc_dark_gray;
 
     //***************** BUNDlE key names  *********************
     //proposed format:

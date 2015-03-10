@@ -89,9 +89,10 @@ public class MainActivity extends FragmentActivity
         startActivity(intent);
     }
 
+    //region MainMeasurementNODEListenener callback implementations
 
     /**
-     * implementation of  MainMeasurementFragment.MainMeasurementSensorListener.onMeasureTemperature()
+     * implementation of  MainMeasurementFragment.MainMeasurementNODEListener.onMeasureTemperature()
      */
     @Override
     public void onMeasureTemperature() {
@@ -102,6 +103,19 @@ public class MainActivity extends FragmentActivity
         startActivity(intent);
     }
 
+    /**
+     * implementation of  MainMeasurementFragment.MainMeasurementNODEListener.onMeasureColour()
+     */
+    @Override
+    public void onMeasureColour() {
+        Intent intent = new Intent(this, NodeActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(NodeActivity.ARG_NODE_ACTION, NodeActivity.NODE_CHROMA);
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
+    //endregion
 
 
     /**
