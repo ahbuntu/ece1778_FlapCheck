@@ -160,6 +160,8 @@ public class DBLoaderMeasurement {
 
         List<MeasurementReading> foundReadings = new ArrayList<MeasurementReading>();
         try {
+            String where = MeasurementEntry.COL_MEASUREMENT_PATIENT_ID + "=? " +
+                    "AND " + MeasurementEntry.COL_MEASUREMENT_TEMP_CELS + "  <> 0.0";
             String orderBy = MeasurementEntry.COL_MEASUREMENT_TIMESTAMP + " ASC";
 
             Cursor cursor = activeDB.query(MeasurementEntry.TABLE_NAME,
@@ -170,9 +172,10 @@ public class DBLoaderMeasurement {
                             MeasurementEntry.COL_MEASUREMENT_COLOUR_RGB,
                             MeasurementEntry.COL_MEASUREMENT_COLOUR_LAB,
                             MeasurementEntry.COL_MEASUREMENT_COLOUR_HEX},
-                    MeasurementEntry.COL_MEASUREMENT_PATIENT_ID + "=?",
-                    new String[] { String.valueOf(patientID) }, null, null, orderBy, null);
-            //TODO: select only where temp != null
+                    where,
+                    new String[] { String.valueOf(patientID) },
+                    null, null, orderBy, null);
+
             if (cursor != null && cursor.moveToFirst()) {
                 do {
                     MeasurementReading mReading = new MeasurementReading();
