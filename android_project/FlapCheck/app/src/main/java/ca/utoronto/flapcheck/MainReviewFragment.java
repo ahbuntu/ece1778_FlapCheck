@@ -92,9 +92,11 @@ public class MainReviewFragment extends Fragment {
         //TODO: determine if these tags are even required
 //        String[] recyclerCardTags = {"TEMPERATURE", "COLOUR", "CAPILLARY REFILL", "PULSE", "PICTURE"};
         if (patientArrayAdapter != null) {
-            mPatientId = ((Patient) spinner.getAdapter().getItem(0)).getPatientId();
-            mAdapter = new ReviewRecycleAdapter(mPatientId, getActivity().getBaseContext());
-            mRecyclerView.setAdapter(mAdapter);
+            if(spinner.getAdapter().getCount() > 0) {
+                mPatientId = ((Patient) spinner.getAdapter().getItem(0)).getPatientId();
+                mAdapter = new ReviewRecycleAdapter(mPatientId, getActivity().getBaseContext());
+                mRecyclerView.setAdapter(mAdapter);
+            }
         }
         return view;
     }
