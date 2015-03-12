@@ -88,6 +88,9 @@
     <string name="text_latest_colour">Last reading</string>
     <string name="text_colour_card_heading">COLOUR</string>
 
+    <!-- ReviewPhotoCard-->
+    <string name="text_picture_card_heading">PHOTOS</string>
+
 
 
 </resources>
