@@ -35,6 +35,9 @@
     <string name="action_settings">Settings</string>
     <string name="take_photo_instructions">Centre flap in green region</string>
 
+    <!-- MeasureVideo Fragment -->
+    <string name="take_video_instructions">Centre flap in video and record.  Keep device steady.</string>
+    <string name="take_video">Take Video</string>
 
     <!-- PatientEntry Activity -->
     <string name="title_PE_new">New</string>
@@ -73,6 +76,7 @@
 
     <!-- ReviewPhotosFragment & ReviewPhotosPageFragment -->
 
+
     <!-- NodeThermaFragment -->
     <string name="text_temp_card_heading">TEMPERATURE</string>
     <string name="button_capture_therma">Capture</string>
@@ -88,9 +92,8 @@
     <string name="text_latest_colour">Last reading</string>
     <string name="text_colour_card_heading">COLOUR</string>
 
-    <!-- ReviewPhotoCard-->
+    <!-- ReviewPhotoCard -->
     <string name="text_picture_card_heading">PHOTOS</string>
-
-
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

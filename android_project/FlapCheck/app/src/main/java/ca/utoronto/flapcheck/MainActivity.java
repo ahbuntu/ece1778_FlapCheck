@@ -3,7 +3,9 @@ package ca.utoronto.flapcheck;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -27,6 +29,9 @@ public class MainActivity extends FragmentActivity
     MainPagerAdapter mViewPagerAdapter;
     ViewPager mViewPager;
     private static final String TAG = "MainActivtiy";
+
+    private static final int REQUEST_VIDEO_CAPTURE = 1;
+    private static final int REQUEST_BLUETOOTH_ON = 200;
 
 
     @Override
@@ -89,6 +94,15 @@ public class MainActivity extends FragmentActivity
         startActivity(intent);
     }
 
+    @Override
+    public void onMeasurePulse() {
+        Intent intent = new Intent(this, MeasurementActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(MeasurementActivity.ARG_MEASUREMENT_TYPE, Constants.MEASUREMENT_PULSE);
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
     //region MainMeasurementNODEListenener callback implementations
 
     /**
@@ -135,8 +149,8 @@ public class MainActivity extends FragmentActivity
         if(!BluetoothAdapter.getDefaultAdapter().isEnabled()){
             Intent btIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             btIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            //requestCode (200) - this code will be returned in onActivityResult() when the activity exits.
-            startActivityForResult(btIntent, 200);
+            //requestCode (REQUEST_BLUETOOTH_ON) - this code will be returned in onActivityResult() when the activity exits.
+            startActivityForResult(btIntent, REQUEST_BLUETOOTH_ON);
             return false;
         }
         return true;

@@ -23,6 +23,7 @@ public class MeasurementActivity extends FragmentActivity
     private long mActivePatientId = Patient.INVALID_ID; //Set by dialog
 
     private MeasurePhotoFragment mMeasurePhotoFragment = null;
+    private MeasureVideoFragment mMeasureVideoFragment = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +39,9 @@ public class MeasurementActivity extends FragmentActivity
             if(measurement_type.equals(Constants.MEASUREMENT_PHOTO)) {
                 mMeasurePhotoFragment = new MeasurePhotoFragment();
                 frag = mMeasurePhotoFragment;
+            } else if (measurement_type.equals(Constants.MEASUREMENT_PULSE)) {
+                mMeasureVideoFragment = new MeasureVideoFragment();
+                frag = mMeasureVideoFragment;
             }
 
             getSupportFragmentManager().beginTransaction()
@@ -129,11 +133,17 @@ public class MeasurementActivity extends FragmentActivity
         if(mMeasurePhotoFragment != null) {
             mMeasurePhotoFragment.moveLastPhotoToPatientDirectory(patientId);
         }
+
+        if(mMeasureVideoFragment != null) {
+            mMeasureVideoFragment.moveLastVideoToPatientDirectory(patientId);
+        }
     }
 
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
         if(requestCode == Constants.ADD_PATIENT_REQUEST) {
             if (resultCode == Activity.RESULT_OK) {
                 Bundle results = data.getExtras();
@@ -142,9 +152,13 @@ public class MeasurementActivity extends FragmentActivity
                 //Same as on positive button selection
                 onSetActivePatientId(addedPatientId);
             }
+        } else if (requestCode == Constants.RECORD_VIDEO_REQUEST) {
+            if(resultCode == Activity.RESULT_OK) {
+                mMeasureVideoFragment.videoRecorded(data.getData());
+            }
         }
 
-        super.onActivityResult(requestCode, resultCode, data);
+
     }
 
 }

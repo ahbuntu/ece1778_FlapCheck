@@ -20,7 +20,7 @@ public class MainMeasurementFragment extends android.support.v4.app.Fragment {
         void onMeasurePhoto();
         //TODO: implement the sensor interfaces when the time comes
 //        void onMeasureCapRefill();
-//        void onMeasurePulse();
+        void onMeasurePulse();
     }
 
     public interface MainMeasurementNODEListener {
@@ -77,7 +77,8 @@ public class MainMeasurementFragment extends android.support.v4.app.Fragment {
         takePulse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(), "Pulse measurement not yet implemented!", Toast.LENGTH_SHORT).show();
+                MainMeasurementSensorListener activity = (MainMeasurementSensorListener) getActivity();
+                activity.onMeasurePulse();
             }
         });
 

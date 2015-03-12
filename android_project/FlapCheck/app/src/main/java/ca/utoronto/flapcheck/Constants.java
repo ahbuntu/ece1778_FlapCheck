@@ -19,6 +19,7 @@ public class Constants {
 
     //***************** Activity Request Codes ****************
     public static final int ADD_PATIENT_REQUEST = 1;
+    public static final int RECORD_VIDEO_REQUEST = 2;
     public static final int GET_TEMPERATURE_REQUEST = 201;
 
     //***************** NODE measurement default/invalid values **
