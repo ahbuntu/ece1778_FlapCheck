@@ -1,5 +1,6 @@
 package ca.utoronto.flapcheck;
 
+import android.content.ClipData;
 import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
@@ -31,6 +32,7 @@ public class ReviewRecycleAdapter extends RecyclerView.Adapter<ReviewRecycleAdap
     private static final String  TAG = "ReviewRecyleAdapter";
     private long mPatientId;
     private Context mContext;
+    private MainReviewFragment.MainReviewFragmentListener mReviewFragmentListener;
 
     private ProgressBar progressTemp;
     private GraphView graphTemp;
@@ -52,9 +54,10 @@ public class ReviewRecycleAdapter extends RecyclerView.Adapter<ReviewRecycleAdap
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public ReviewRecycleAdapter(long patientID, Context context) {
+    public ReviewRecycleAdapter(long patientID, Context context, MainReviewFragment.MainReviewFragmentListener reviewFragmentListener) {
         mPatientId = patientID;
         mContext = context;
+        mReviewFragmentListener = reviewFragmentListener;
     }
 
     //region ViewHolder Lifecycle callbacks
@@ -92,12 +95,6 @@ public class ReviewRecycleAdapter extends RecyclerView.Adapter<ReviewRecycleAdap
                 v = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.card_review_photo, parent, false);
 
-                v.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                    }
-                });
                 break;
             default:
                 break;
@@ -109,7 +106,7 @@ public class ReviewRecycleAdapter extends RecyclerView.Adapter<ReviewRecycleAdap
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        int viewType = holder.getItemViewType();
+        final int viewType = holder.getItemViewType();
         switch (viewType) {
             case R.id.card_review_temp:
                 if (progressTemp == null || graphTemp == null) {
@@ -141,7 +138,12 @@ public class ReviewRecycleAdapter extends RecyclerView.Adapter<ReviewRecycleAdap
             @Override
             public void onClick(View v) {
 //                Log.d(TAG, "onBindViewHolder: itemView type " + holder.getItemViewType());
-                //TODO: implement switch-case statement to launch appropriate review fragment
+            switch(viewType) {
+                case R.id.card_review_photo:
+                    mReviewFragmentListener.onReviewPhoto(mPatientId);
+                default:
+                    break;
+            }
             }
         });
     }

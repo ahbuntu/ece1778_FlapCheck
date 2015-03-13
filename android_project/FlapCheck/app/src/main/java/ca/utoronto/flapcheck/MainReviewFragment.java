@@ -65,7 +65,7 @@ public class MainReviewFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Patient patient = (Patient) parent.getItemAtPosition(position);
                 mPatientId = patient.getPatientId();
-                mAdapter = new ReviewRecycleAdapter(mPatientId, getActivity().getBaseContext());
+                mAdapter = new ReviewRecycleAdapter(mPatientId, getActivity().getBaseContext(), mMainReviewFragmentListener);
                 mRecyclerView.swapAdapter(mAdapter,false);
                 mAdapter.notifyDataSetChanged();
             }
@@ -73,14 +73,6 @@ public class MainReviewFragment extends Fragment {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 mPatientId = Patient.INVALID_ID;
-            }
-        });
-
-        Button photoButton = (Button) view.findViewById(R.id.photo_review_button);
-        photoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mMainReviewFragmentListener.onReviewPhoto(mPatientId);
             }
         });
 
@@ -100,7 +92,7 @@ public class MainReviewFragment extends Fragment {
         if (patientArrayAdapter != null) {
             if(spinner.getAdapter().getCount() > 0) {
                 mPatientId = ((Patient) spinner.getAdapter().getItem(0)).getPatientId();
-                mAdapter = new ReviewRecycleAdapter(mPatientId, getActivity().getBaseContext());
+                mAdapter = new ReviewRecycleAdapter(mPatientId, getActivity().getBaseContext(), mMainReviewFragmentListener);
                 mRecyclerView.setAdapter(mAdapter);
             }
         }

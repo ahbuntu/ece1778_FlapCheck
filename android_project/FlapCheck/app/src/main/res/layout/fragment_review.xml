@@ -38,29 +38,6 @@
             />
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:layout_marginEnd="30dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:clickable="true"
-        >
-        <Button
-            android:id="@+id/photo_review_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/photo_button"
-            android:drawableEnd="@drawable/ic_photo"
-            android:gravity="left|center_vertical"
-            android:textColor="@color/fc_blue"
-            android:textSize="20sp"
-            />
-    </LinearLayout>
-
     <!-- A RecyclerView with some commonly used attributes -->
     <android.support.v7.widget.RecyclerView
         android:id="@+id/review_recycler_view"
