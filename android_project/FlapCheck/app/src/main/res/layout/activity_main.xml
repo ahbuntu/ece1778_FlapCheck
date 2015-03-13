@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="top"
         android:background="@color/fc_blue"
-        android:textColor="@color/fc_white"
+        android:textAppearance="@style/fc_tab_pager_text"
         android:paddingTop="4dp"
         android:paddingBottom="4dp" />
 
