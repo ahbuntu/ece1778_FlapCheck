@@ -2,10 +2,13 @@ package ca.utoronto.flapcheck;
 
 import android.content.ClipData;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.ContactsContract;
+import android.provider.MediaStore;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -20,6 +23,8 @@ import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GridLabelRenderer;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
+
+import org.w3c.dom.Text;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -40,6 +45,7 @@ public class ReviewRecycleAdapter extends RecyclerView.Adapter<ReviewRecycleAdap
     private List<MeasurementReading> tempReadings;
     private List<MeasurementReading> colourReadings;
     private List<File> photoReadings;
+    private List<Bitmap> pulseThumbnails;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -125,11 +131,14 @@ public class ReviewRecycleAdapter extends RecyclerView.Adapter<ReviewRecycleAdap
             case R.id.card_review_cap_refill:
                 break;
             case R.id.card_review_pulse:
+                updateCardPulseProgress(holder.itemView, false);
+                RetrieveReviewVideoThumbnails reviewPulseHelper = new RetrieveReviewVideoThumbnails(mPatientId, holder.itemView);
+                reviewPulseHelper.execute(Constants.MEASUREMENT_PULSE);
                 break;
             case R.id.card_review_photo:
                 updateCardPhotoProgress(holder.itemView, false);
-                RetrieveReviewFileData reviewFileDataHelper = new RetrieveReviewFileData(mPatientId, holder.itemView);
-                reviewFileDataHelper.execute(Constants.MEASUREMENT_PHOTO);
+                RetrieveReviewFileData reviewPhotoHelper = new RetrieveReviewFileData(mPatientId, holder.itemView);
+                reviewPhotoHelper.execute(Constants.MEASUREMENT_PHOTO);
                 break;
             default:
                 break;
@@ -377,6 +386,40 @@ public class ReviewRecycleAdapter extends RecyclerView.Adapter<ReviewRecycleAdap
         } else {
             img1.setVisibility(View.INVISIBLE);
             img2.setVisibility(View.INVISIBLE);
+            info.setText("Loading...");
+        }
+    }
+
+    private void updateCardPulseProgress(View cardView, boolean loadFinished) {
+        ImageView img1 = (ImageView) cardView.findViewById(R.id.img1_pulse_card);
+        ImageView img2 = (ImageView) cardView.findViewById(R.id.img2_pulse_card);
+        TextView info = (TextView) cardView.findViewById(R.id.text_pulse_card_info);
+        if(loadFinished) {
+            info.setText(String.format("%d Measurement(s)", pulseThumbnails.size()));
+            if (pulseThumbnails.size() < 1) {
+                //No measurements
+
+            } else {
+                if (pulseThumbnails.size() > 0) {
+                    //One measurement
+                    img1.setImageBitmap(pulseThumbnails.get(0));
+                    img1.setVisibility(View.VISIBLE);
+                }
+
+                if (pulseThumbnails.size() > 1) {
+                    //Two or more measurements
+
+                    //Set the second to the last taken image
+                    int last_idx = pulseThumbnails.size() - 1;
+                    img2.setImageBitmap(pulseThumbnails.get(last_idx));
+
+                    img2.setVisibility(View.VISIBLE);
+                }
+            }
+        } else {
+            img1.setVisibility(View.INVISIBLE);
+            img2.setVisibility(View.INVISIBLE);
+            info.setText("Loading...");
         }
     }
 
@@ -458,26 +501,15 @@ public class ReviewRecycleAdapter extends RecyclerView.Adapter<ReviewRecycleAdap
             Patient patient = dbLoaderPatient.getPatient(mRetPatientId);
             File sourceDir = null;
             switch (measType) {
-                case Constants.MEASUREMENT_CAP_REFILL:
-                    //Explicit fallthrough
-
-                case Constants.MEASUREMENT_PULSE:
-                    sourceDir = new File(patient.getPatientVidPath());
-                    break;
-
                 case Constants.MEASUREMENT_PHOTO:
                     sourceDir = new File(patient.getPatientPhotoPath());
+                    for (File file : sourceDir.listFiles()) {
+                        readings.add(file);
+                    }
                     break;
 
                 default:
                     break;
-            }
-
-            if(sourceDir != null) {
-                //Collect the files
-                for (File file : sourceDir.listFiles()) {
-                    readings.add(file);
-                }
             }
 
             return readings;
@@ -487,13 +519,66 @@ public class ReviewRecycleAdapter extends RecyclerView.Adapter<ReviewRecycleAdap
         protected void onPostExecute(List<File> result) {
             super.onPostExecute(result);
             switch (measType) {
-                case Constants.MEASUREMENT_CAP_REFILL:
-                    break;
-                case Constants.MEASUREMENT_PULSE:
-                    break;
                 case Constants.MEASUREMENT_PHOTO:
                     photoReadings = result;
                     updateCardPhotoProgress(cardView, true);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    private class RetrieveReviewVideoThumbnails extends AsyncTask<String, Integer, List<Bitmap>> {
+
+        private long mRetPatientId = -1;
+        private String measType;
+        private View cardView;
+
+        public RetrieveReviewVideoThumbnails(long patientID, View view) {
+            mRetPatientId = patientID;
+            cardView = view;
+        }
+
+        @Override
+        protected List<Bitmap> doInBackground(String... measurements) {
+            measType = measurements[0];
+            List<File> vidFiles = new ArrayList<File>();
+            List<Bitmap> thumbnails = new ArrayList<Bitmap>();
+            DBLoaderPatient dbLoaderPatient = new DBLoaderPatient(mContext);
+            Patient patient = dbLoaderPatient.getPatient(mRetPatientId);
+            File sourceDir = null;
+            switch (measType) {
+                case Constants.MEASUREMENT_CAP_REFILL:
+                    //Explicit fallthrough
+
+                case Constants.MEASUREMENT_PULSE:
+                    sourceDir = new File(patient.getPatientVidPath());
+                    break;
+
+                default:
+                    break;
+            }
+
+            if(sourceDir != null) {
+                for (File vidFile : sourceDir.listFiles()) {
+                    Bitmap thumbnail = ThumbnailUtils.createVideoThumbnail(vidFile.getPath(), MediaStore.Images.Thumbnails.MINI_KIND);
+                    thumbnails.add(thumbnail);
+                }
+            }
+
+            return thumbnails;
+        }
+
+        @Override
+        protected void onPostExecute(List<Bitmap> result) {
+            super.onPostExecute(result);
+            switch (measType) {
+                case Constants.MEASUREMENT_CAP_REFILL:
+                    break;
+                case Constants.MEASUREMENT_PULSE:
+                    pulseThumbnails = result;
+                    updateCardPulseProgress(cardView, true);
                     break;
                 default:
                     break;

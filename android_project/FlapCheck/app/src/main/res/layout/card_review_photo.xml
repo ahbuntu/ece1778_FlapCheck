@@ -43,6 +43,7 @@
                 android:layout_weight="1"
                 android:layout_gravity="center"
                 android:orientation="vertical"
+                android:layout_marginRight="6dp"
                 >
                 <ImageView
                     android:id="@+id/img1_picture_card"
@@ -64,6 +65,7 @@
                 android:layout_weight="1"
                 android:layout_gravity="center"
                 android:orientation="vertical"
+                android:layout_marginLeft="6dp"
                 >
                 <ImageView
                     android:id="@+id/img2_picture_card"

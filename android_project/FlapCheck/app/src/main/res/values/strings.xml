@@ -94,7 +94,11 @@
 
     <!-- ReviewPhotoCard -->
     <string name="text_picture_card_heading">PHOTOS</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="text_picture_card_img1_caption">Original</string>
     <string name="text_picture_card_img2_caption">Latest</string>
+
+    <!-- ReviewPulseCard -->
+    <string name="text_pulse_card_heading">PULSE</string>
+    <string name="text_pulse_card_img1_caption">Original</string>
+    <string name="text_pulse_card_img2_caption">Latest</string>
 </resources>
