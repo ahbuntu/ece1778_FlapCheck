@@ -24,7 +24,8 @@ import com.variable.framework.node.enums.NodeEnums;
 public class MainActivity extends FragmentActivity
             implements MainFragment.MainFragmentListener,
         MainMeasurementFragment.MainMeasurementSensorListener,
-        MainMeasurementFragment.MainMeasurementNODEListener
+        MainMeasurementFragment.MainMeasurementNODEListener,
+        MainReviewFragment.MainReviewFragmentListener
 {
     MainPagerAdapter mViewPagerAdapter;
     ViewPager mViewPager;
@@ -126,6 +127,17 @@ public class MainActivity extends FragmentActivity
         Bundle bundle = new Bundle();
         bundle.putString(NodeActivity.ARG_NODE_ACTION, NodeActivity.NODE_CHROMA);
         intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
+    public void onReviewPhoto(long patientId) {
+        Intent intent = new Intent(this, ReviewActivity.class);
+        Bundle args = new Bundle();
+        args.putLong(ReviewActivity.ARG_PATIENT_ID, patientId);
+        args.putString(ReviewActivity.ARG_MEASUREMENT_TYPE, Constants.MEASUREMENT_PHOTO);
+
+        intent.putExtras(args);
+
         startActivity(intent);
     }
 

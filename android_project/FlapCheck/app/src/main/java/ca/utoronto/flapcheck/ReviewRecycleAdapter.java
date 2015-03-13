@@ -2,6 +2,7 @@ package ca.utoronto.flapcheck;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.ContactsContract;
 import android.support.v7.widget.CardView;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -18,6 +20,8 @@ import com.jjoe64.graphview.GridLabelRenderer;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,6 +37,7 @@ public class ReviewRecycleAdapter extends RecyclerView.Adapter<ReviewRecycleAdap
 
     private List<MeasurementReading> tempReadings;
     private List<MeasurementReading> colourReadings;
+    private List<File> photoReadings;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -86,6 +91,13 @@ public class ReviewRecycleAdapter extends RecyclerView.Adapter<ReviewRecycleAdap
             case R.id.card_review_photo:
                 v = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.card_review_photo, parent, false);
+
+                v.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
                 break;
             default:
                 break;
@@ -118,6 +130,9 @@ public class ReviewRecycleAdapter extends RecyclerView.Adapter<ReviewRecycleAdap
             case R.id.card_review_pulse:
                 break;
             case R.id.card_review_photo:
+                updateCardPhotoProgress(holder.itemView, false);
+                RetrieveReviewFileData reviewFileDataHelper = new RetrieveReviewFileData(mPatientId, holder.itemView);
+                reviewFileDataHelper.execute(Constants.MEASUREMENT_PHOTO);
                 break;
             default:
                 break;
@@ -331,6 +346,38 @@ public class ReviewRecycleAdapter extends RecyclerView.Adapter<ReviewRecycleAdap
         }
     }
 
+    private void updateCardPhotoProgress(View cardView, boolean loadFinished) {
+        ImageView img1 = (ImageView) cardView.findViewById(R.id.img1_picture_card);
+        ImageView img2 = (ImageView) cardView.findViewById(R.id.img2_picture_card);
+        TextView info = (TextView) cardView.findViewById(R.id.text_picture_card_info);
+        if(loadFinished) {
+            info.setText(String.format("%d Measurement(s)", photoReadings.size()));
+            if (photoReadings.size() < 1) {
+                //No measurements
+
+            } else {
+                if (photoReadings.size() > 0) {
+                    //One measurement
+                    img1.setImageURI(Uri.fromFile(photoReadings.get(0)));
+                    img1.setVisibility(View.VISIBLE);
+                }
+
+                if (photoReadings.size() > 1) {
+                    //Two or more measurements
+
+                    //Set the second to the last taken image
+                    int last_idx = photoReadings.size() - 1;
+                    img2.setImageURI(Uri.fromFile(photoReadings.get(last_idx)));
+
+                    img2.setVisibility(View.VISIBLE);
+                }
+            }
+        } else {
+            img1.setVisibility(View.INVISIBLE);
+            img2.setVisibility(View.INVISIBLE);
+        }
+    }
+
     private class RetrieveReviewData extends AsyncTask<String, Integer, List<MeasurementReading>> {
 
         private long mRetPatientId = -1;
@@ -359,7 +406,6 @@ public class ReviewRecycleAdapter extends RecyclerView.Adapter<ReviewRecycleAdap
                 case Constants.MEASUREMENT_PULSE:
                     break;
                 case Constants.MEASUREMENT_PHOTO:
-//                    List<Patient> patients = patientsDB.getAllPatients();
                     break;
                 default:
                     break;
@@ -384,6 +430,68 @@ public class ReviewRecycleAdapter extends RecyclerView.Adapter<ReviewRecycleAdap
                 case Constants.MEASUREMENT_PULSE:
                     break;
                 case Constants.MEASUREMENT_PHOTO:
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    private class RetrieveReviewFileData extends AsyncTask<String, Integer, List<File>> {
+
+        private long mRetPatientId = -1;
+        private String measType;
+        private View cardView;
+
+        public RetrieveReviewFileData(long patientID, View view) {
+            mRetPatientId = patientID;
+            cardView = view;
+        }
+
+        @Override
+        protected List<File> doInBackground(String... measurements) {
+            measType = measurements[0];
+            List<File> readings = new ArrayList<File>();
+            DBLoaderPatient dbLoaderPatient = new DBLoaderPatient(mContext);
+            Patient patient = dbLoaderPatient.getPatient(mRetPatientId);
+            File sourceDir = null;
+            switch (measType) {
+                case Constants.MEASUREMENT_CAP_REFILL:
+                    //Explicit fallthrough
+
+                case Constants.MEASUREMENT_PULSE:
+                    sourceDir = new File(patient.getPatientVidPath());
+                    break;
+
+                case Constants.MEASUREMENT_PHOTO:
+                    sourceDir = new File(patient.getPatientPhotoPath());
+                    break;
+
+                default:
+                    break;
+            }
+
+            if(sourceDir != null) {
+                //Collect the files
+                for (File file : sourceDir.listFiles()) {
+                    readings.add(file);
+                }
+            }
+
+            return readings;
+        }
+
+        @Override
+        protected void onPostExecute(List<File> result) {
+            super.onPostExecute(result);
+            switch (measType) {
+                case Constants.MEASUREMENT_CAP_REFILL:
+                    break;
+                case Constants.MEASUREMENT_PULSE:
+                    break;
+                case Constants.MEASUREMENT_PHOTO:
+                    photoReadings = result;
+                    updateCardPhotoProgress(cardView, true);
                     break;
                 default:
                     break;

@@ -1,6 +1,7 @@
 package ca.utoronto.flapcheck;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -28,10 +29,22 @@ public class MainReviewFragment extends Fragment {
     private RecyclerView.LayoutManager mLayoutManager;
     ArrayAdapter<Patient> patientArrayAdapter;
 
+    private MainReviewFragmentListener mMainReviewFragmentListener;
+
+    interface MainReviewFragmentListener {
+        void onReviewPhoto(long patientId);
+    }
+
+
     public MainReviewFragment() {
         // Required empty public constructor
     }
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mMainReviewFragmentListener = (MainReviewFragmentListener) activity;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -67,14 +80,7 @@ public class MainReviewFragment extends Fragment {
         photoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), ReviewActivity.class);
-                Bundle args = new Bundle();
-                args.putLong(ReviewActivity.ARG_PATIENT_ID, mPatientId);
-                args.putString(ReviewActivity.ARG_MEASUREMENT_TYPE, Constants.MEASUREMENT_PHOTO);
-
-                intent.putExtras(args);
-
-                startActivity(intent);
+                mMainReviewFragmentListener.onReviewPhoto(mPatientId);
             }
         });
 
