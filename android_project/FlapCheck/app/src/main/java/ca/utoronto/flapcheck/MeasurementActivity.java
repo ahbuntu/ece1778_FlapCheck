@@ -7,8 +7,10 @@ import android.content.pm.ActivityInfo;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 
 public class MeasurementActivity extends FragmentActivity
@@ -154,7 +156,11 @@ public class MeasurementActivity extends FragmentActivity
             }
         } else if (requestCode == Constants.RECORD_VIDEO_REQUEST) {
             if(resultCode == Activity.RESULT_OK) {
+                Log.d(TAG, "Recorded video " + data.getDataString());
                 mMeasureVideoFragment.videoRecorded(data.getData());
+            } else {
+                Toast.makeText(this, "No video was recorded!", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "Failed to record video!");
             }
         }
 

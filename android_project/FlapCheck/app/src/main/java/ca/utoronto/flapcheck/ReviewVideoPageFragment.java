@@ -84,7 +84,7 @@ public class ReviewVideoPageFragment extends Fragment {
                 if(video_ready_count == 2) {
                     Log.d(TAG, "Starting videos");
                     rawVideoView.start();
-                    processedVideoView.start();
+//                    processedVideoView.start();
                 }
             }
         });
