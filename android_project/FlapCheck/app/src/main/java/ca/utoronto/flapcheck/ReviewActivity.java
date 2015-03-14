@@ -7,7 +7,8 @@ import android.os.Bundle;
 
 
 public class ReviewActivity extends FragmentActivity implements
-        ReviewPhotosFragment.ReviewPhotoFragmentListener
+        ReviewPhotosFragment.ReviewPhotoFragmentListener,
+        ReviewVideoFragment.ReviewVideoFragmentListener
 {
     public static String ARG_MEASUREMENT_TYPE = "measurement_type";
     public static String ARG_PATIENT_ID = "patient_id";
@@ -16,6 +17,7 @@ public class ReviewActivity extends FragmentActivity implements
     private String mMeasurementType;
 
     private ReviewPhotosFragment mReviewPhotosFragment;
+    private ReviewVideoFragment mReviewVideoFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +36,12 @@ public class ReviewActivity extends FragmentActivity implements
             if(mMeasurementType.equals(Constants.MEASUREMENT_PHOTO)) {
                 mReviewPhotosFragment = new ReviewPhotosFragment();
                 frag = mReviewPhotosFragment;
+            } else if (mMeasurementType.equals(Constants.MEASUREMENT_CAP_REFILL)) {
+                mReviewVideoFragment = new ReviewVideoFragment();
+                frag = mReviewVideoFragment;
+            } else if (mMeasurementType.equals(Constants.MEASUREMENT_PULSE)) {
+                mReviewVideoFragment = new ReviewVideoFragment();
+                frag = mReviewVideoFragment;
             }
 
             getSupportFragmentManager().beginTransaction()

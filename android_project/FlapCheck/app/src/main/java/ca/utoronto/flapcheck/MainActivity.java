@@ -130,11 +130,11 @@ public class MainActivity extends FragmentActivity
         startActivity(intent);
     }
 
-    public void onReviewPhoto(long patientId) {
+    public void onReview(long patientId, String measurementType) {
         Intent intent = new Intent(this, ReviewActivity.class);
         Bundle args = new Bundle();
         args.putLong(ReviewActivity.ARG_PATIENT_ID, patientId);
-        args.putString(ReviewActivity.ARG_MEASUREMENT_TYPE, Constants.MEASUREMENT_PHOTO);
+        args.putString(ReviewActivity.ARG_MEASUREMENT_TYPE, measurementType);
 
         intent.putExtras(args);
 

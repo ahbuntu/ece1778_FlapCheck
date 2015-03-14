@@ -32,7 +32,7 @@ public class MainReviewFragment extends Fragment {
     private MainReviewFragmentListener mMainReviewFragmentListener;
 
     interface MainReviewFragmentListener {
-        void onReviewPhoto(long patientId);
+        void onReview(long patientId, String measurementType);
     }
 
 

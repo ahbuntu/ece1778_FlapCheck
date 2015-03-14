@@ -149,7 +149,14 @@ public class ReviewRecycleAdapter extends RecyclerView.Adapter<ReviewRecycleAdap
 //                Log.d(TAG, "onBindViewHolder: itemView type " + holder.getItemViewType());
             switch(viewType) {
                 case R.id.card_review_photo:
-                    mReviewFragmentListener.onReviewPhoto(mPatientId);
+                    mReviewFragmentListener.onReview(mPatientId, Constants.MEASUREMENT_PHOTO);
+                    break;
+                case R.id.card_review_cap_refill:
+                    mReviewFragmentListener.onReview(mPatientId, Constants.MEASUREMENT_CAP_REFILL);
+                    break;
+                case R.id.card_review_pulse:
+                    mReviewFragmentListener.onReview(mPatientId, Constants.MEASUREMENT_PULSE);
+                    break;
                 default:
                     break;
             }
