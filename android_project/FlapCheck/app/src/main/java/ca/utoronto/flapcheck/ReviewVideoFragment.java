@@ -126,8 +126,8 @@ public class ReviewVideoFragment extends Fragment {
 
         @Override
         public int getCount() {
-            return 1;
-//            return mRawVideoFiles.size();
+//            return 1;
+            return mRawVideoFiles.size();
         }
     }
 
