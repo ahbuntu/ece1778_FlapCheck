@@ -228,7 +228,7 @@ public class ReviewRecycleAdapter extends RecyclerView.Adapter<ReviewRecycleAdap
 
                     //assume that temperature is returned in ascending timestamp order
                     if (i == tempReadings.size()) {
-                        graphTemp.setTitle("Last recording " + mReading.getMeas_temperature() + " ºC");
+                        graphTemp.setTitle("Last recording " + Utils.prettyTempCelsius(mReading.getMeas_temperature()));
                     }series.appendData(point, false, tempReadings.size());
                 }
                 graphTemp.addSeries(series);

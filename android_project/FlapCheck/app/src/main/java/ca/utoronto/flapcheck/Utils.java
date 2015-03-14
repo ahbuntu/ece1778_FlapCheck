@@ -44,4 +44,7 @@ public class Utils {
         return dateTimeFormat.format(cal.getTime());
     }
 
+    public static String prettyTempCelsius(float temp) {
+        return String.valueOf(temp) + " ºC";
+    }
 }
