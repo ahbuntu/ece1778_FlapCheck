@@ -1,13 +1,11 @@
 package ca.utoronto.flapcheck;
 
-import android.content.ClipData;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -18,13 +16,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GridLabelRenderer;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
-
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -118,14 +115,22 @@ public class ReviewRecycleAdapter extends RecyclerView.Adapter<ReviewRecycleAdap
                 if (progressTemp == null || graphTemp == null) {
                     progressTemp = (ProgressBar) holder.itemView.findViewById(R.id.progress_card_temp);
                     graphTemp = (GraphView) holder.itemView.findViewById(R.id.graph_temp_summary);
+                    graphTemp.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            //launch Review Activity/Fragment for Temperature
+                            mReviewFragmentListener.onReview(mPatientId, Constants.MEASUREMENT_TEMP);
+                            return;
+                        }
+                    });
                 }
                 updateCardTempProgress(false);
-                RetrieveReviewData reviewDataHelper = new RetrieveReviewData(mPatientId, holder.itemView);
-                reviewDataHelper.execute(Constants.MEASUREMENT_TEMP);
+                RetrieveReviewNODEData reviewTempHelper = new RetrieveReviewNODEData(mPatientId, holder.itemView);
+                reviewTempHelper.execute(Constants.MEASUREMENT_TEMP);
                 break;
             case R.id.card_review_colour:
                 updateCardColourProgress(holder.itemView, false);
-                RetrieveReviewData reviewColourHelper = new RetrieveReviewData(mPatientId, holder.itemView);
+                RetrieveReviewNODEData reviewColourHelper = new RetrieveReviewNODEData(mPatientId, holder.itemView);
                 reviewColourHelper.execute(Constants.MEASUREMENT_COLOUR);
                 break;
             case R.id.card_review_cap_refill:
@@ -148,6 +153,12 @@ public class ReviewRecycleAdapter extends RecyclerView.Adapter<ReviewRecycleAdap
             public void onClick(View v) {
 //                Log.d(TAG, "onBindViewHolder: itemView type " + holder.getItemViewType());
             switch(viewType) {
+                case R.id.card_review_temp:
+                    mReviewFragmentListener.onReview(mPatientId, Constants.MEASUREMENT_TEMP);
+                    break;
+                case R.id.card_review_colour:
+                    mReviewFragmentListener.onReview(mPatientId, Constants.MEASUREMENT_COLOUR);
+                    break;
                 case R.id.card_review_photo:
                     mReviewFragmentListener.onReview(mPatientId, Constants.MEASUREMENT_PHOTO);
                     break;
@@ -430,13 +441,13 @@ public class ReviewRecycleAdapter extends RecyclerView.Adapter<ReviewRecycleAdap
         }
     }
 
-    private class RetrieveReviewData extends AsyncTask<String, Integer, List<MeasurementReading>> {
+    private class RetrieveReviewNODEData extends AsyncTask<String, Integer, List<MeasurementReading>> {
 
         private long mRetPatientId = -1;
         private String measType;
         private View cardView;
 
-        public RetrieveReviewData(long patientID, View view) {
+        public RetrieveReviewNODEData(long patientID, View view) {
             mRetPatientId = patientID;
             cardView = view;
         }

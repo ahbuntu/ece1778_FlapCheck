@@ -86,9 +86,6 @@ public class MainReviewFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        // specify an adapter (see also next example)
-        //TODO: determine if these tags are even required
-//        String[] recyclerCardTags = {"TEMPERATURE", "COLOUR", "CAPILLARY REFILL", "PULSE", "PICTURE"};
         if (patientArrayAdapter != null) {
             if(spinner.getAdapter().getCount() > 0) {
                 mPatientId = ((Patient) spinner.getAdapter().getItem(0)).getPatientId();

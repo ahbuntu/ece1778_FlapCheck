@@ -1,6 +1,5 @@
 package ca.utoronto.flapcheck;
 
-import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -8,7 +7,8 @@ import android.os.Bundle;
 
 public class ReviewActivity extends FragmentActivity implements
         ReviewPhotosFragment.ReviewPhotoFragmentListener,
-        ReviewVideoFragment.ReviewVideoFragmentListener
+        ReviewVideoFragment.ReviewVideoFragmentListener,
+        ReviewThermaFragment.ReviewThermaFragmentListener
 {
     public static String ARG_MEASUREMENT_TYPE = "measurement_type";
     public static String ARG_PATIENT_ID = "patient_id";
@@ -18,6 +18,8 @@ public class ReviewActivity extends FragmentActivity implements
 
     private ReviewPhotosFragment mReviewPhotosFragment;
     private ReviewVideoFragment mReviewVideoFragment;
+    private ReviewThermaFragment mReviewThermaFragment;
+//    private mReviewChromaFragment mReviewChromaFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +44,13 @@ public class ReviewActivity extends FragmentActivity implements
             } else if (mMeasurementType.equals(Constants.MEASUREMENT_PULSE)) {
                 mReviewVideoFragment = new ReviewVideoFragment();
                 frag = mReviewVideoFragment;
+            } else if (mMeasurementType.equals(Constants.MEASUREMENT_TEMP)) {
+                mReviewThermaFragment = new ReviewThermaFragment();
+                frag = mReviewThermaFragment;
+            } else if (mMeasurementType.equals(Constants.MEASUREMENT_COLOUR)) {
+                //TODO: launch chroma fragment
+//                mReviewChromaFragment = new ReviewChromaFragment();
+//                frag = mReviewChromaFragment;
             }
 
             getSupportFragmentManager().beginTransaction()
