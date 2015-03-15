@@ -3,9 +3,14 @@ package ca.utoronto.flapcheck;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 
 
-public class ReviewActivity extends FragmentActivity implements
+public class ReviewActivity extends ActionBarActivity implements
         ReviewPhotosFragment.ReviewPhotoFragmentListener,
         ReviewVideoFragment.ReviewVideoFragmentListener,
         ReviewThermaFragment.ReviewThermaFragmentListener
@@ -26,7 +31,8 @@ public class ReviewActivity extends FragmentActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_review);
 
-
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setTitle("Patient details go here");
 
         if(savedInstanceState == null) {
             Bundle bundle = getIntent().getExtras();
@@ -59,6 +65,17 @@ public class ReviewActivity extends FragmentActivity implements
         }
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
     @Override
     public Patient getPatient() {
         DBLoaderPatient dbHelper = new DBLoaderPatient(getApplicationContext());

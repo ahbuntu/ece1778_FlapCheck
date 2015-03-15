@@ -11,6 +11,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -71,10 +74,10 @@ public class ReviewThermaFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_review_therma, container, false);
 
+        setHasOptionsMenu(true);
+
         Patient patient = mListenerCallback.getPatient();
-        TextView patientHeader = (TextView) view.findViewById(R.id.text_review_therma_patient);
-        patientHeader.setText(patient.getPatientName() + " " +
-                                "(" + patient.getPatientMRN() + ")");
+        getActivity().setTitle(patient.getPatientName() + " " + "(" + patient.getPatientMRN() + ")");
 
         DBLoaderMeasurement dbLoaderMeasurement = new DBLoaderMeasurement(getActivity());
         List<MeasurementReading> tempReadings = dbLoaderMeasurement.getTemperaturesForPatient(patient.getPatientId());
@@ -95,9 +98,8 @@ public class ReviewThermaFragment extends Fragment {
         }
         graphTemp.addSeries(lineSeries);
         graphTemp.addSeries(pointSeries);
-        graphTemp.setTitle("TEMPERATURE");
         graphTemp.setTitleColor(getResources().getColor(R.color.fc_dark_gray));
-        graphTemp.setTitleTextSize(24);
+        graphTemp.setTitleTextSize(64);
         GridLabelRenderer gridStyler =  graphTemp.getGridLabelRenderer();
         gridStyler.setGridStyle(GridLabelRenderer.GridStyle.BOTH);
         spinner.setVisibility(View.GONE);
@@ -107,6 +109,15 @@ public class ReviewThermaFragment extends Fragment {
         mListView.setAdapter(mAdapter);
 
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_review, menu);
+        MenuItem item = menu.findItem(R.id.action_logo);
+        item.setIcon(R.drawable.ic_temperature);
+
+        super.onCreateOptionsMenu(menu,inflater);
     }
 
     private class ReviewTemperatureListAdapter extends BaseAdapter {
@@ -155,7 +166,7 @@ public class ReviewThermaFragment extends Fragment {
             TextView textViewTemp = (TextView) convertView.findViewById(R.id.text_review_therma_list_temp);
 
             // object item based on the position
-            Log.d(TAG, "pos to inflate: " + position);
+//            Log.d(TAG, "pos to inflate: " + position);
 
             if (readingsList == null) {
                 textViewDate.setText("");
