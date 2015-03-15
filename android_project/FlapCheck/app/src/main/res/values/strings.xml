@@ -106,5 +106,14 @@
     <!-- ReviewThermaFragment -->
     <string name="text_review_therma_heading">TEMPERATURE</string>
 
+    <!-- ReviewChromaFragment -->
+    <string name="text_review_chroma_heading">COLOUR</string>
+
+    <!-- ReviewCapRefillFragment -->
+    <string name="text_review_caprefill_heading">CAPILLARY REFILL</string>
+
+    <!-- ReviewPhotoFragment -->
+    <string name="text_review_photo_heading">PHOTO</string>
+
 
 </resources>

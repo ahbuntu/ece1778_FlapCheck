@@ -13,7 +13,8 @@ import android.view.MenuItem;
 public class ReviewActivity extends ActionBarActivity implements
         ReviewPhotosFragment.ReviewPhotoFragmentListener,
         ReviewVideoFragment.ReviewVideoFragmentListener,
-        ReviewThermaFragment.ReviewThermaFragmentListener
+        ReviewThermaFragment.ReviewThermaFragmentListener,
+        ReviewChromaFragment.ReviewChromaFragmentListener
 {
     public static String ARG_MEASUREMENT_TYPE = "measurement_type";
     public static String ARG_PATIENT_ID = "patient_id";
@@ -24,7 +25,7 @@ public class ReviewActivity extends ActionBarActivity implements
     private ReviewPhotosFragment mReviewPhotosFragment;
     private ReviewVideoFragment mReviewVideoFragment;
     private ReviewThermaFragment mReviewThermaFragment;
-//    private mReviewChromaFragment mReviewChromaFragment;
+    private ReviewChromaFragment mReviewChromaFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,9 +55,8 @@ public class ReviewActivity extends ActionBarActivity implements
                 mReviewThermaFragment = new ReviewThermaFragment();
                 frag = mReviewThermaFragment;
             } else if (mMeasurementType.equals(Constants.MEASUREMENT_COLOUR)) {
-                //TODO: launch chroma fragment
-//                mReviewChromaFragment = new ReviewChromaFragment();
-//                frag = mReviewChromaFragment;
+                mReviewChromaFragment = new ReviewChromaFragment();
+                frag = mReviewChromaFragment;
             }
 
             getSupportFragmentManager().beginTransaction()
