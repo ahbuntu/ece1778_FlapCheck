@@ -115,7 +115,7 @@ public class ReviewThermaFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_review, menu);
         MenuItem item = menu.findItem(R.id.action_logo);
-        item.setIcon(R.drawable.ic_temperature);
+        item.setIcon(R.drawable.ic_temperature_grey);
 
         super.onCreateOptionsMenu(menu,inflater);
     }
