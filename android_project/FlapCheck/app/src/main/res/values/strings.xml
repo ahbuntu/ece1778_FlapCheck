@@ -112,8 +112,12 @@
     <!-- ReviewCapRefillFragment -->
     <string name="text_review_caprefill_heading">CAPILLARY REFILL</string>
 
+    <!-- ReviewPulseFragment -->
+    <string name="text_review_pulse_heading">PULSE</string>
+
     <!-- ReviewPhotoFragment -->
     <string name="text_review_photo_heading">PHOTO</string>
+
 
 
 </resources>

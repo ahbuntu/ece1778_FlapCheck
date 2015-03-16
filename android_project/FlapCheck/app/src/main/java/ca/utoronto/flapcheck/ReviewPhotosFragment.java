@@ -11,6 +11,9 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -61,10 +64,16 @@ public class ReviewPhotosFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_review_photos, container, false);
 
         Patient patient = mListenerCallback.getPatient();
-        TextView patientName = (TextView) view.findViewById(R.id.photo_review_patient_name);
-        TextView patientMrn = (TextView) view.findViewById(R.id.photo_review_patient_mrn);
-        patientName.setText(patient.getPatientName());
-        patientMrn.setText(patient.getPatientMRN());
+
+        ///////TODO: delete these if we're ok with the new layout
+//        TextView patientName = (TextView) view.findViewById(R.id.photo_review_patient_name);
+//        TextView patientMrn = (TextView) view.findViewById(R.id.photo_review_patient_mrn);
+//        patientName.setText(patient.getPatientName());
+//        patientMrn.setText(patient.getPatientMRN());
+        /////////////////////////////
+
+        getActivity().setTitle(patient.getPatientName() + " " + "(" + patient.getPatientMRN() + ")");
+        setHasOptionsMenu(true);
 
         mPager1 = (ViewPager) view.findViewById(R.id.image_pager_1);
         mPager2 = (ViewPager) view.findViewById(R.id.image_pager_2);
@@ -75,6 +84,16 @@ public class ReviewPhotosFragment extends Fragment {
         mPager2.setAdapter(mPagerAdapter);
 
         return view;
+    }
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_review, menu);
+        MenuItem item = menu.findItem(R.id.action_logo);
+        item.setIcon(R.drawable.ic_photo_grey);
+
+        super.onCreateOptionsMenu(menu,inflater);
     }
 
     private class PhotoPagerAdapter extends FragmentPagerAdapter {
