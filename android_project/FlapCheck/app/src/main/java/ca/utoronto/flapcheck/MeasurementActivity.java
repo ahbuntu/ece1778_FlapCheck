@@ -41,7 +41,7 @@ public class MeasurementActivity extends FragmentActivity
             if(measurement_type.equals(Constants.MEASUREMENT_PHOTO)) {
                 mMeasurePhotoFragment = new MeasurePhotoFragment();
                 frag = mMeasurePhotoFragment;
-            } else if (measurement_type.equals(Constants.MEASUREMENT_PULSE)) {
+            } else if (measurement_type.equals(Constants.MEASUREMENT_PULSE) || measurement_type.equals(Constants.MEASUREMENT_CAP_REFILL)) {
                 mMeasureVideoFragment = new MeasureVideoFragment();
                 frag = mMeasureVideoFragment;
             }

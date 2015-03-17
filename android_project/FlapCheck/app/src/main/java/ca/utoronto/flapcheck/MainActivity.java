@@ -104,6 +104,15 @@ public class MainActivity extends FragmentActivity
         startActivity(intent);
     }
 
+    @Override
+    public void onMeasureCapRefill() {
+        Intent intent = new Intent(this, MeasurementActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(MeasurementActivity.ARG_MEASUREMENT_TYPE, Constants.MEASUREMENT_CAP_REFILL);
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
     //region MainMeasurementNODEListenener callback implementations
 
     /**

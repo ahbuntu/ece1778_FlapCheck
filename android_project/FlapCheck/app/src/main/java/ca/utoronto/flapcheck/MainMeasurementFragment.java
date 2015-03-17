@@ -18,8 +18,7 @@ public class MainMeasurementFragment extends android.support.v4.app.Fragment {
 
     public interface MainMeasurementSensorListener {
         void onMeasurePhoto();
-        //TODO: implement the sensor interfaces when the time comes
-//        void onMeasureCapRefill();
+        void onMeasureCapRefill();
         void onMeasurePulse();
     }
 
@@ -68,7 +67,8 @@ public class MainMeasurementFragment extends android.support.v4.app.Fragment {
         takeCapRefill.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(), "Capillary refill measurement not yet implemented!", Toast.LENGTH_SHORT).show();
+                MainMeasurementSensorListener activity = (MainMeasurementSensorListener) getActivity();
+                activity.onMeasureCapRefill();
             }
         });
 
