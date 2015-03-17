@@ -101,7 +101,10 @@ public class MainReviewFragment extends Fragment {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
-            mAdapter.notifyDataSetChanged();
+
+            if(mAdapter != null) {
+                mAdapter.notifyDataSetChanged();
+            }
         }
     }
 
