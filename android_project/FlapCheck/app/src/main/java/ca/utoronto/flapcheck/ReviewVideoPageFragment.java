@@ -12,6 +12,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.VideoView;
 
+import java.io.File;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -40,17 +42,15 @@ public class ReviewVideoPageFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_review_video_page, container, false);
 
         rawVideoView = (VideoView) view.findViewById(R.id.video_view_raw);
-        processedVideoView = (VideoView) view.findViewById(R.id.video_view_processed);
+//        processedVideoView = (VideoView) view.findViewById(R.id.video_view_processed);
         progressBar = (ProgressBar) view.findViewById(R.id.video_load_progress_bar);
         text_overlay = (TextView) view.findViewById(R.id.video_page_time);
 
-        //Initially videos ar hidden while they load
-//        rawVideoView.setVisibility(View.INVISIBLE);
-//        processedVideoView.setVisibility(View.INVISIBLE);
 
 
         Bundle args = getArguments();
-        text_overlay.setText(args.getString(ARG_RAW_VIDEO_PATH));
+        File rawVidFile = new File(args.getString(ARG_RAW_VIDEO_PATH));
+        text_overlay.setText(rawVidFile.getName());
 
         video_ready_count = 0;
         rawVideoView.setVideoPath(args.getString(ARG_RAW_VIDEO_PATH));
@@ -59,29 +59,29 @@ public class ReviewVideoPageFragment extends Fragment {
             public void onPrepared(MediaPlayer mp) {
                 Log.d(TAG, "Raw Video Loaded");
                 video_ready_count += 1;
-                if(video_ready_count == 2) {
+                if(video_ready_count == 1) {
                     onVideosLoaded();
                 }
             }
         });
 
-        processedVideoView.setVideoPath(args.getString(ARG_PROCESSED_VIDEO_PATH));
-        processedVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-                Log.d(TAG, "Processed Video Loaded");
-                video_ready_count += 1;
-                if(video_ready_count == 2) {
-                    onVideosLoaded();
-                }
-            }
-        });
+//        processedVideoView.setVideoPath(args.getString(ARG_PROCESSED_VIDEO_PATH));
+//        processedVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+//            @Override
+//            public void onPrepared(MediaPlayer mp) {
+//                Log.d(TAG, "Processed Video Loaded");
+//                video_ready_count += 1;
+//                if(video_ready_count == 2) {
+//                    onVideosLoaded();
+//                }
+//            }
+//        });
 
         view.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "Clicked page");
-                if(video_ready_count == 2) {
+                if(video_ready_count == 1) {
                     Log.d(TAG, "Starting videos");
                     rawVideoView.start();
 //                    processedVideoView.start();
@@ -95,7 +95,7 @@ public class ReviewVideoPageFragment extends Fragment {
     public void onVideosLoaded() {
         progressBar.setVisibility(View.INVISIBLE);
         rawVideoView.setVisibility(View.VISIBLE);
-        processedVideoView.setVisibility(View.VISIBLE);
+//        processedVideoView.setVisibility(View.VISIBLE);
     }
 
 

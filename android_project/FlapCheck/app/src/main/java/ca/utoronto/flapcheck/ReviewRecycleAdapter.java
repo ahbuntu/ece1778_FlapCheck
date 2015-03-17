@@ -84,12 +84,7 @@ public class ReviewRecycleAdapter extends RecyclerView.Adapter<ReviewRecycleAdap
                         .inflate(R.layout.card_review_colour, parent, false);
                 break;
             case R.id.card_review_cap_refill:
-                v = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.card_review_cap_refill, parent, false);
-                // set the view's size, margins, paddings and layout parameters
-                //        ...
-
-                break;
+                //XXX HACK: fall through to the pulse review case
             case R.id.card_review_pulse:
                 v = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.card_review_pulse, parent, false);
@@ -134,7 +129,7 @@ public class ReviewRecycleAdapter extends RecyclerView.Adapter<ReviewRecycleAdap
                 reviewColourHelper.execute(Constants.MEASUREMENT_COLOUR);
                 break;
             case R.id.card_review_cap_refill:
-                break;
+                //XXX HACK: fall through to the pulse review case
             case R.id.card_review_pulse:
                 updateCardPulseProgress(holder.itemView, false);
                 RetrieveReviewVideoThumbnails reviewPulseHelper = new RetrieveReviewVideoThumbnails(mPatientId, holder.itemView);
