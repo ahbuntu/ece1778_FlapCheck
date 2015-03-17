@@ -43,6 +43,7 @@ public class ReviewRecycleAdapter extends RecyclerView.Adapter<ReviewRecycleAdap
     private List<MeasurementReading> colourReadings;
     private List<File> photoReadings;
     private List<Bitmap> pulseThumbnails;
+    private List<Bitmap> capRefillThumbnails;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -84,7 +85,9 @@ public class ReviewRecycleAdapter extends RecyclerView.Adapter<ReviewRecycleAdap
                         .inflate(R.layout.card_review_colour, parent, false);
                 break;
             case R.id.card_review_cap_refill:
-                //XXX HACK: fall through to the pulse review case
+                v = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.card_review_cap_refill, parent, false);
+                break;
             case R.id.card_review_pulse:
                 v = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.card_review_pulse, parent, false);
@@ -129,7 +132,10 @@ public class ReviewRecycleAdapter extends RecyclerView.Adapter<ReviewRecycleAdap
                 reviewColourHelper.execute(Constants.MEASUREMENT_COLOUR);
                 break;
             case R.id.card_review_cap_refill:
-                //XXX HACK: fall through to the pulse review case
+                updateCardCapRefillProgress(holder.itemView, false);
+                RetrieveReviewVideoThumbnails reviewCapRefillHelper = new RetrieveReviewVideoThumbnails(mPatientId, holder.itemView);
+                reviewCapRefillHelper.execute(Constants.MEASUREMENT_CAP_REFILL);
+                break;
             case R.id.card_review_pulse:
                 updateCardPulseProgress(holder.itemView, false);
                 RetrieveReviewVideoThumbnails reviewPulseHelper = new RetrieveReviewVideoThumbnails(mPatientId, holder.itemView);
@@ -436,6 +442,39 @@ public class ReviewRecycleAdapter extends RecyclerView.Adapter<ReviewRecycleAdap
         }
     }
 
+    private void updateCardCapRefillProgress(View cardView, boolean loadFinished) {
+        ImageView img1 = (ImageView) cardView.findViewById(R.id.img1_cap_refill_card);
+        ImageView img2 = (ImageView) cardView.findViewById(R.id.img2_cap_refill_card);
+        TextView info = (TextView) cardView.findViewById(R.id.text_cap_refill_card_info);
+        if(loadFinished) {
+            info.setText(String.format("%d Measurement(s)", capRefillThumbnails.size()));
+            if (capRefillThumbnails.size() < 1) {
+                //No measurements
+
+            } else {
+                if (capRefillThumbnails.size() > 0) {
+                    //One measurement
+                    img1.setImageBitmap(capRefillThumbnails.get(0));
+                    img1.setVisibility(View.VISIBLE);
+                }
+
+                if (capRefillThumbnails.size() > 1) {
+                    //Two or more measurements
+
+                    //Set the second to the last taken image
+                    int last_idx = capRefillThumbnails.size() - 1;
+                    img2.setImageBitmap(capRefillThumbnails.get(last_idx));
+
+                    img2.setVisibility(View.VISIBLE);
+                }
+            }
+        } else {
+            img1.setVisibility(View.INVISIBLE);
+            img2.setVisibility(View.INVISIBLE);
+            info.setText("Loading...");
+        }
+    }
+
     private class RetrieveReviewNODEData extends AsyncTask<String, Integer, List<MeasurementReading>> {
 
         private long mRetPatientId = -1;
@@ -588,6 +627,8 @@ public class ReviewRecycleAdapter extends RecyclerView.Adapter<ReviewRecycleAdap
             super.onPostExecute(result);
             switch (measType) {
                 case Constants.MEASUREMENT_CAP_REFILL:
+                    capRefillThumbnails = result;
+                    updateCardCapRefillProgress(cardView, true);
                     break;
                 case Constants.MEASUREMENT_PULSE:
                     pulseThumbnails = result;
