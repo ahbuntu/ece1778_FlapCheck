@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by coreymann on 7/2/13.
@@ -44,6 +45,15 @@ public class Utils {
         return dateTimeFormat.format(cal.getTime());
     }
 
+    public static String prettyTimeDiffHrs(long startTime, long endTime) {
+        long postOpTimeDeltaMs = endTime - startTime;
+        long postOpTimeDeltaHrs = TimeUnit.MILLISECONDS.toHours(postOpTimeDeltaMs);
+        long postOpTimeDeltaMin = TimeUnit.MILLISECONDS.toMinutes(postOpTimeDeltaMs) - TimeUnit.HOURS.toMinutes(postOpTimeDeltaHrs);
+        long postOpTimeDeltaSec = TimeUnit.MILLISECONDS.toSeconds(postOpTimeDeltaMs) - TimeUnit.MINUTES.toSeconds(postOpTimeDeltaMin) - TimeUnit.HOURS.toSeconds(postOpTimeDeltaHrs);
+
+        float hrsPostOp = postOpTimeDeltaHrs + postOpTimeDeltaMin / 60f + postOpTimeDeltaSec / 3600f;
+        return (String.format("%+.1f hrs", hrsPostOp));
+    }
     public static String prettyTempCelsius(float temp) {
         return String.valueOf(temp) + " ºC";
     }

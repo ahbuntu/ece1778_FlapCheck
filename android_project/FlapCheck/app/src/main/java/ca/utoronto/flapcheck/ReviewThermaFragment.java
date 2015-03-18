@@ -45,7 +45,7 @@ public class ReviewThermaFragment extends Fragment {
     private static String TAG = "ReviewThermaFragment";
 
     private ReviewTemperatureListAdapter mAdapter;
-
+    private Patient mPatient;
     public interface ReviewThermaFragmentListener {
         Patient getPatient();
     }
@@ -76,11 +76,11 @@ public class ReviewThermaFragment extends Fragment {
 
         setHasOptionsMenu(true);
 
-        Patient patient = mListenerCallback.getPatient();
-        getActivity().setTitle(patient.getPatientName() + " " + "(" + patient.getPatientMRN() + ")");
+        mPatient = mListenerCallback.getPatient();
+        getActivity().setTitle(mPatient.getPatientName() + " " + "(" + mPatient.getPatientMRN() + ")");
 
         DBLoaderMeasurement dbLoaderMeasurement = new DBLoaderMeasurement(getActivity());
-        List<MeasurementReading> tempReadings = dbLoaderMeasurement.getTemperaturesForPatient(patient.getPatientId());
+        List<MeasurementReading> tempReadings = dbLoaderMeasurement.getTemperaturesForPatient(mPatient.getPatientId());
 
         ProgressBar spinner = (ProgressBar) view.findViewById(R.id.progress_review_temp);
         GraphView graphTemp = (GraphView) view.findViewById(R.id.graph_review_therma);
@@ -175,7 +175,7 @@ public class ReviewThermaFragment extends Fragment {
             } else {
                 MeasurementReading mReading = readingsList.get(position);
                 textViewDate.setText(Utils.prettyDate(mReading.getMeas_timestamp()));
-                textViewTime.setText(Utils.prettyTime(mReading.getMeas_timestamp()));
+                textViewTime.setText(Utils.prettyTimeDiffHrs(mPatient.getPatientOpDateTime(), mReading.getMeas_timestamp()));
                 textViewTemp.setText(Utils.prettyTempCelsius(mReading.getMeas_temperature()));
             }
             return convertView;

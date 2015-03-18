@@ -28,6 +28,7 @@ public class ReviewChromaFragment extends Fragment {
     private static String TAG = "ReviewChromaFragment";
 
     private ReviewColourListAdapter mAdapter;
+    private Patient mPatient;
 
     public interface ReviewChromaFragmentListener {
         Patient getPatient();
@@ -59,11 +60,11 @@ public class ReviewChromaFragment extends Fragment {
 
         setHasOptionsMenu(true);
 
-        Patient patient = mListenerCallback.getPatient();
-        getActivity().setTitle(patient.getPatientName() + " " + "(" + patient.getPatientMRN() + ")");
+        mPatient = mListenerCallback.getPatient();
+        getActivity().setTitle(mPatient.getPatientName() + " " + "(" + mPatient.getPatientMRN() + ")");
 
         DBLoaderMeasurement dbLoaderMeasurement = new DBLoaderMeasurement(getActivity());
-        List<MeasurementReading> colourReadings = dbLoaderMeasurement.getColoursForPatient(patient.getPatientId());
+        List<MeasurementReading> colourReadings = dbLoaderMeasurement.getColoursForPatient(mPatient.getPatientId());
 
         mAdapter = new ReviewColourListAdapter(getActivity(),R.layout.review_chroma_list_item, colourReadings);
         AbsListView mListView = (AbsListView) view.findViewById(R.id.list_review_chroma);
@@ -137,7 +138,7 @@ public class ReviewChromaFragment extends Fragment {
             } else {
                 MeasurementReading mReading = readingsList.get(position);
                 textViewDate.setText(Utils.prettyDate(mReading.getMeas_timestamp()));
-                textViewTime.setText(Utils.prettyTime(mReading.getMeas_timestamp()));
+                textViewTime.setText(Utils.prettyTimeDiffHrs(mPatient.getPatientOpDateTime(), mReading.getMeas_timestamp()));
                 imageViewColour.setBackgroundColor(Color.parseColor(mReading.getMeas_colour_hex()));
             }
             return convertView;
