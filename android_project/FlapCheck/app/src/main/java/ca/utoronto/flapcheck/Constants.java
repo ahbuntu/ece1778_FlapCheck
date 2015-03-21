@@ -32,5 +32,6 @@ public class Constants {
     // 1. prefix with activity or fragment name
     // 2. followed by KEY_
     public static final String PATIENT_ENTRY_KEY_ADDED_PATIENT_ID = "Added_Patient_ID";
-    public static final String ARG_PHOTO_MISSING_REQUESTER = "Photo_Missing";
+    public static final String ARG_PHOTO_MISSING_REQUESTER = "Photo_Missing_Requester";
+    public static final String ARG_PHOTO_MISSING_PATIENT = "Photo_Missing_Patient";
 }

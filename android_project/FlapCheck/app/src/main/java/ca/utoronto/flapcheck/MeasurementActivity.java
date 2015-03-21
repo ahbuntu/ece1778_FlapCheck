@@ -159,8 +159,8 @@ public class MeasurementActivity extends FragmentActivity
         Log.d(TAG, "onPhotoMissing called");
         mMeasurePhotoFragment = new MeasurePhotoFragment();
         Bundle args = new Bundle();
-        //TODO: need to send the patient id as a parameter as well
         args.putString(Constants.ARG_PHOTO_MISSING_REQUESTER, Constants.MEASUREMENT_TEMP);
+        args.putLong(Constants.ARG_PHOTO_MISSING_PATIENT, mActivePatientId);
         mMeasurePhotoFragment.setArguments(args);
 
         getSupportFragmentManager().beginTransaction()

@@ -38,6 +38,9 @@ public class MeasurePhotoFragment extends Fragment
     private CameraFocusOverlay mFocusOverlay;
     private CameraFlapOverlay mFlapOverlay;
 
+    private String photoMissing_Requester = null;
+    private long photoMissing_PatientID;
+
     private Camera.PictureCallback mPicture = new Camera.PictureCallback() {
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
@@ -90,6 +93,10 @@ public class MeasurePhotoFragment extends Fragment
 
         mCameraId = 0; //TODO pick this properly
 
+        //default to null value if missing
+        photoMissing_Requester = getArguments().getString(Constants.ARG_PHOTO_MISSING_REQUESTER, null);
+        photoMissing_PatientID = getArguments().getLong(Constants.ARG_PHOTO_MISSING_PATIENT);
+
         Button captureButton = (Button) view.findViewById(R.id.capture_photo_button);
         captureButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,7 +127,9 @@ public class MeasurePhotoFragment extends Fragment
         //Take the picture
         mCamera.takePicture(null, null, mPicture);
 
-        mMeasurePhotoFragmentListener.requestActivePatientId();
+        if (photoMissing_Requester != null) {
+            mMeasurePhotoFragmentListener.requestActivePatientId();
+        }
     }
 
     public void onReceiveActivePatientId(long patientId) {
@@ -148,6 +157,11 @@ public class MeasurePhotoFragment extends Fragment
                 Toast.makeText(getActivity(), "Picture saved", Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "Moved image to " + targetFileLocation);
                 lastPhoto = null;
+
+                if (photoMissing_Requester != null) {
+                    // take back to flap measurement mapping screen
+                    getFragmentManager().popBackStack();
+                }
             } else {
                 Log.e(TAG, "Attempted to move last photo to patient directory, but last photo was null!");
             }
