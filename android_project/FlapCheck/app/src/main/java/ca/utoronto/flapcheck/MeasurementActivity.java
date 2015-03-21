@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -17,7 +18,8 @@ public class MeasurementActivity extends FragmentActivity
         implements
         MeasurementInterface.MeasurementFragmentListener,
         DialogSelectPatient.DialogSelectPatientListener,
-        PatientEntryNewFragment.PatientNewEntryListener
+        PatientEntryNewFragment.PatientNewEntryListener,
+        MeasureOverlayFragment.PhotoMissingListener
 {
     private static final String TAG = MeasurementActivity.class.getName();
     static final String ARG_MEASUREMENT_TYPE = "measurement_type";
@@ -26,6 +28,7 @@ public class MeasurementActivity extends FragmentActivity
 
     private MeasurePhotoFragment mMeasurePhotoFragment = null;
     private MeasureVideoFragment mMeasureVideoFragment = null;
+    private MeasureOverlayFragment mMeasureOverlayFragment = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +47,9 @@ public class MeasurementActivity extends FragmentActivity
             } else if (measurement_type.equals(Constants.MEASUREMENT_PULSE) || measurement_type.equals(Constants.MEASUREMENT_CAP_REFILL)) {
                 mMeasureVideoFragment = new MeasureVideoFragment();
                 frag = mMeasureVideoFragment;
+            } else if (measurement_type.equals(Constants.MEASUREMENT_TEMP) || measurement_type.equals(Constants.MEASUREMENT_COLOUR)) {
+                mMeasureOverlayFragment = new MeasureOverlayFragment();
+                frag = mMeasureOverlayFragment;
             }
 
             getSupportFragmentManager().beginTransaction()
@@ -139,8 +145,29 @@ public class MeasurementActivity extends FragmentActivity
         if(mMeasureVideoFragment != null) {
             mMeasureVideoFragment.moveLastVideoToPatientDirectory(patientId);
         }
+
+        if(mMeasureOverlayFragment != null) {
+            mMeasureOverlayFragment.setmPatient(mActivePatientId);
+        }
     }
 
+    /**
+     * implementation of MeasureOverlayFragment.PhotoMissingListener.onPhotoMissing()
+     */
+    @Override
+    public void onPhotoMissing() {
+        Log.d(TAG, "onPhotoMissing called");
+        mMeasurePhotoFragment = new MeasurePhotoFragment();
+        Bundle args = new Bundle();
+        //TODO: need to send the patient id as a parameter as well
+        args.putString(Constants.ARG_PHOTO_MISSING_REQUESTER, Constants.MEASUREMENT_TEMP);
+        mMeasurePhotoFragment.setArguments(args);
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.measure_container, mMeasurePhotoFragment)
+                .addToBackStack(null)
+                .commit();
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -162,8 +189,13 @@ public class MeasurementActivity extends FragmentActivity
                 Toast.makeText(this, "No video was recorded!", Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "Failed to record video!");
             }
-        }
+        } else if (requestCode == Constants.TAKE_PHOTO_REQUEST) {
+            if (resultCode == Activity.RESULT_OK) {
 
+            } else {
+
+            }
+        }
 
     }
 

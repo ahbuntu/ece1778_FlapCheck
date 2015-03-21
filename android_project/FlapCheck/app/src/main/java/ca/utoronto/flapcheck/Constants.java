@@ -20,6 +20,7 @@ public class Constants {
     //***************** Activity Request Codes ****************
     public static final int ADD_PATIENT_REQUEST = 1;
     public static final int RECORD_VIDEO_REQUEST = 2;
+    public static final int TAKE_PHOTO_REQUEST = 3;
     public static final int GET_TEMPERATURE_REQUEST = 201;
 
     //***************** NODE measurement default/invalid values **
@@ -31,4 +32,5 @@ public class Constants {
     // 1. prefix with activity or fragment name
     // 2. followed by KEY_
     public static final String PATIENT_ENTRY_KEY_ADDED_PATIENT_ID = "Added_Patient_ID";
+    public static final String ARG_PHOTO_MISSING_REQUESTER = "Photo_Missing";
 }

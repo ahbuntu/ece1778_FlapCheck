@@ -124,6 +124,9 @@
     <!-- ReviewPhotoFragment -->
     <string name="text_review_photo_heading">PHOTO</string>
 
-
+    <!-- MeasureOverlayFragment -->
+    <string name="image_overlay_heading_measure">Tap on the photo to place a marker</string>
+    <string name="image_overlay_heading_patient">You must first select a patient</string>
+    <string name="image_overlay_heading_photo">You must take a photo</string>
 
 </resources>

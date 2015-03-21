@@ -120,9 +120,14 @@ public class MainActivity extends FragmentActivity
      */
     @Override
     public void onMeasureTemperature() {
-        Intent intent = new Intent(this, NodeActivity.class);
+//        Intent intent = new Intent(this, NodeActivity.class);
+//        Bundle bundle = new Bundle();
+//        bundle.putString(NodeActivity.ARG_NODE_ACTION, NodeActivity.NODE_THERMA);
+//        intent.putExtras(bundle);
+
+        Intent intent = new Intent(this, MeasurementActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString(NodeActivity.ARG_NODE_ACTION, NodeActivity.NODE_THERMA);
+        bundle.putString(MeasurementActivity.ARG_MEASUREMENT_TYPE, Constants.MEASUREMENT_TEMP);
         intent.putExtras(bundle);
         startActivity(intent);
     }
