@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -94,8 +95,10 @@ public class MeasurePhotoFragment extends Fragment
         mCameraId = 0; //TODO pick this properly
 
         //default to null value if missing
-        photoMissing_Requester = getArguments().getString(Constants.ARG_PHOTO_MISSING_REQUESTER, null);
-        photoMissing_PatientID = getArguments().getLong(Constants.ARG_PHOTO_MISSING_PATIENT);
+        if (getArguments() != null) {
+            photoMissing_Requester = getArguments().getString(Constants.ARG_PHOTO_MISSING_REQUESTER, null);
+            photoMissing_PatientID = getArguments().getLong(Constants.ARG_PHOTO_MISSING_PATIENT);
+        }
 
         Button captureButton = (Button) view.findViewById(R.id.capture_photo_button);
         captureButton.setOnClickListener(new View.OnClickListener() {
@@ -127,14 +130,14 @@ public class MeasurePhotoFragment extends Fragment
         //Take the picture
         mCamera.takePicture(null, null, mPicture);
 
-        if (photoMissing_Requester != null) {
+        if (photoMissing_Requester == null) {
             mMeasurePhotoFragmentListener.requestActivePatientId();
         }
     }
 
-    public void onReceiveActivePatientId(long patientId) {
-        moveLastPhotoToPatientDirectory(patientId);
-    }
+//    public void onReceiveActivePatientId(long patientId) {
+//        moveLastPhotoToPatientDirectory(patientId);
+//    }
 
     /**
      * moves photo from temporary file location to the path specific for the selected patient
@@ -197,6 +200,8 @@ public class MeasurePhotoFragment extends Fragment
         //Add the flap overlay
         frame.addView(mFlapOverlay);
 
+        MeasurePhotoFragment.setCameraDisplayOrientation(getActivity(), mCameraId, mCamera);
+
     }
 
     protected void releaseCamera() {
@@ -229,4 +234,33 @@ public class MeasurePhotoFragment extends Fragment
         mFocusOverlay.invalidate(); //Force re-draw
     }
 
+    public static void setCameraDisplayOrientation(Activity activity, int cameraID,
+                                                   Camera camera) {
+        Camera.CameraInfo info = new Camera.CameraInfo();
+        Camera.getCameraInfo(cameraID, info);
+
+        int rotation = activity.getWindowManager().getDefaultDisplay().getRotation();
+        int degrees = 0;
+        switch (rotation) {
+            case Surface.ROTATION_0: degrees = 0; break;
+            case Surface.ROTATION_90: degrees = 90; break;
+            case Surface.ROTATION_180: degrees = 180; break;
+            case Surface.ROTATION_270: degrees = 270; break;
+        }
+
+        int result;
+        if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+            result = (info.orientation + degrees) % 360;
+            result = (360 - result) % 360;  // compensate the mirror
+        } else {
+            // back-facing
+            result = (info.orientation - degrees + 360) % 360;
+        }
+        camera.setDisplayOrientation(result);
+
+        Camera.Parameters parameters = camera.getParameters();
+        parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+        parameters.setRotation(result); //set rotation to save the picture
+        camera.setParameters(parameters);
+    }
 }
