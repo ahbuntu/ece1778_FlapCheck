@@ -36,6 +36,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 + DBMeasurementContract.MeasurementEntry.COL_MEASUREMENT_ID+ " INTEGER PRIMARY KEY,"
                 + DBMeasurementContract.MeasurementEntry.COL_MEASUREMENT_PATIENT_ID+ " INTEGER,"
                 + DBMeasurementContract.MeasurementEntry.COL_MEASUREMENT_TIMESTAMP + " INTEGER,"
+                + DBMeasurementContract.MeasurementEntry.COL_MEASUREMENT_POSITION + " INTEGER,"
                 + DBMeasurementContract.MeasurementEntry.COL_MEASUREMENT_TEMP_CELS + " REAL,"
                 + DBMeasurementContract.MeasurementEntry.COL_MEASUREMENT_COLOUR_RGB + " TEXT,"
                 + DBMeasurementContract.MeasurementEntry.COL_MEASUREMENT_COLOUR_LAB + " TEXT,"

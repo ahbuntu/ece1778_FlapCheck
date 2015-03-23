@@ -16,6 +16,7 @@ public class DBMeasurementContract {
         public static final String COL_MEASUREMENT_ID = "id";
         public static final String COL_MEASUREMENT_PATIENT_ID = "pId";
         public static final String COL_MEASUREMENT_TIMESTAMP = "timestamp";
+        public static final String COL_MEASUREMENT_POSITION = "position";
         public static final String COL_MEASUREMENT_TEMP_CELS = "temperatureCels";
         public static final String COL_MEASUREMENT_COLOUR_RGB = "colourRGB";
         public static final String COL_MEASUREMENT_COLOUR_LAB = "colourLAB";

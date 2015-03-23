@@ -56,6 +56,7 @@ public class DBLoaderMeasurement {
             ContentValues values = new ContentValues();
             values.put(MeasurementEntry.COL_MEASUREMENT_PATIENT_ID, reading.getMeas_patientID());
             values.put(MeasurementEntry.COL_MEASUREMENT_TIMESTAMP, reading.getMeas_timestamp());
+            values.put(MeasurementEntry.COL_MEASUREMENT_POSITION, reading.getMeas_position());
             values.put(MeasurementEntry.COL_MEASUREMENT_TEMP_CELS, reading.getMeas_temperature());
             values.put(MeasurementEntry.COL_MEASUREMENT_COLOUR_RGB, reading.getMeas_colour_rgb());
             values.put(MeasurementEntry.COL_MEASUREMENT_COLOUR_LAB, reading.getMeas_colour_lab());
@@ -85,6 +86,7 @@ public class DBLoaderMeasurement {
                     new String[] {MeasurementEntry.COL_MEASUREMENT_ID,
                             MeasurementEntry.COL_MEASUREMENT_PATIENT_ID,
                             MeasurementEntry.COL_MEASUREMENT_TIMESTAMP,
+                            MeasurementEntry.COL_MEASUREMENT_POSITION,
                             MeasurementEntry.COL_MEASUREMENT_TEMP_CELS,
                             MeasurementEntry.COL_MEASUREMENT_COLOUR_RGB,
                             MeasurementEntry.COL_MEASUREMENT_COLOUR_LAB,
@@ -98,10 +100,11 @@ public class DBLoaderMeasurement {
                 foundReading = new MeasurementReading(Long.parseLong(cursor.getString(0)), //meas ID
                         Long.parseLong(cursor.getString(1)), //meas patient ID
                         Long.parseLong(cursor.getString(2)), //meas timestamp
-                        Float.parseFloat(cursor.getString(3)), //meas temp cels
-                        (cursor.getString(4)), //meas colour rgb
-                        (cursor.getString(5)), //meas colour lab
-                        (cursor.getString(6))); //meas colour hex
+                        Integer.parseInt(cursor.getString(3)), //meas position
+                        Float.parseFloat(cursor.getString(4)), //meas temp cels
+                        (cursor.getString(5)), //meas colour rgb
+                        (cursor.getString(6)), //meas colour lab
+                        (cursor.getString(7))); //meas colour hex
             }
             closeDB();
 
@@ -125,6 +128,7 @@ public class DBLoaderMeasurement {
                     new String[] {MeasurementEntry.COL_MEASUREMENT_ID,
                             MeasurementEntry.COL_MEASUREMENT_PATIENT_ID,
                             MeasurementEntry.COL_MEASUREMENT_TIMESTAMP,
+                            MeasurementEntry.COL_MEASUREMENT_POSITION,
                             MeasurementEntry.COL_MEASUREMENT_TEMP_CELS,
                             MeasurementEntry.COL_MEASUREMENT_COLOUR_RGB,
                             MeasurementEntry.COL_MEASUREMENT_COLOUR_LAB,
@@ -137,10 +141,11 @@ public class DBLoaderMeasurement {
                 foundReading = new MeasurementReading(Long.parseLong(cursor.getString(0)), //meas ID
                         Long.parseLong(cursor.getString(1)), //meas patient ID
                         Long.parseLong(cursor.getString(2)), //meas timestamp
-                        Float.parseFloat(cursor.getString(3)), //meas temp cels
-                        (cursor.getString(4)), //meas colour rgb
-                        (cursor.getString(5)), //meas colour lab
-                        (cursor.getString(6))); //meas colour hex
+                        Integer.parseInt(cursor.getString(3)), //meas position
+                        Float.parseFloat(cursor.getString(4)), //meas temp cels
+                        (cursor.getString(5)), //meas colour rgb
+                        (cursor.getString(6)), //meas colour lab
+                        (cursor.getString(7))); //meas colour hex
             }
             closeDB();
 
@@ -169,6 +174,7 @@ public class DBLoaderMeasurement {
                     new String[] {MeasurementEntry.COL_MEASUREMENT_ID,
                             MeasurementEntry.COL_MEASUREMENT_PATIENT_ID,
                             MeasurementEntry.COL_MEASUREMENT_TIMESTAMP,
+                            MeasurementEntry.COL_MEASUREMENT_POSITION,
                             MeasurementEntry.COL_MEASUREMENT_TEMP_CELS,
                             MeasurementEntry.COL_MEASUREMENT_COLOUR_RGB,
                             MeasurementEntry.COL_MEASUREMENT_COLOUR_LAB,
@@ -183,10 +189,11 @@ public class DBLoaderMeasurement {
                     mReading.setMeasurementID(Long.parseLong(cursor.getString(0)));
                     mReading.setMeas_patientID(Long.parseLong(cursor.getString(1)));
                     mReading.setMeas_timestamp(Long.parseLong(cursor.getString(2)));
-                    mReading.setMeas_temperature(Float.parseFloat(cursor.getString(3)));
-                    mReading.setMeas_colour_rgb(cursor.getString(4));
-                    mReading.setMeas_colour_lab(cursor.getString(5));
-                    mReading.setMeas_colour_hex(cursor.getString(6));
+                    mReading.setMeas_position(Integer.parseInt(cursor.getString(3)));
+                    mReading.setMeas_temperature(Float.parseFloat(cursor.getString(4)));
+                    mReading.setMeas_colour_rgb(cursor.getString(5));
+                    mReading.setMeas_colour_lab(cursor.getString(6));
+                    mReading.setMeas_colour_hex(cursor.getString(7));
 
                     foundReadings.add(mReading);
                 } while (cursor.moveToNext());
@@ -218,6 +225,7 @@ public class DBLoaderMeasurement {
                     new String[] {MeasurementEntry.COL_MEASUREMENT_ID,
                             MeasurementEntry.COL_MEASUREMENT_PATIENT_ID,
                             MeasurementEntry.COL_MEASUREMENT_TIMESTAMP,
+                            MeasurementEntry.COL_MEASUREMENT_POSITION,
                             MeasurementEntry.COL_MEASUREMENT_TEMP_CELS,
                             MeasurementEntry.COL_MEASUREMENT_COLOUR_RGB,
                             MeasurementEntry.COL_MEASUREMENT_COLOUR_LAB,
@@ -230,10 +238,11 @@ public class DBLoaderMeasurement {
                     mReading.setMeasurementID(Long.parseLong(cursor.getString(0)));
                     mReading.setMeas_patientID(Long.parseLong(cursor.getString(1)));
                     mReading.setMeas_timestamp(Long.parseLong(cursor.getString(2)));
-                    mReading.setMeas_temperature(Float.parseFloat(cursor.getString(3)));
-                    mReading.setMeas_colour_rgb(cursor.getString(4));
-                    mReading.setMeas_colour_lab(cursor.getString(5));
-                    mReading.setMeas_colour_hex(cursor.getString(6));
+                    mReading.setMeas_position(Integer.parseInt(cursor.getString(3)));
+                    mReading.setMeas_temperature(Float.parseFloat(cursor.getString(4)));
+                    mReading.setMeas_colour_rgb(cursor.getString(5));
+                    mReading.setMeas_colour_lab(cursor.getString(6));
+                    mReading.setMeas_colour_hex(cursor.getString(7));
 
                     foundReadings.add(mReading);
                 } while (cursor.moveToNext());
@@ -268,10 +277,11 @@ public class DBLoaderMeasurement {
                     mReading.setMeasurementID(Long.parseLong(cursor.getString(0)));
                     mReading.setMeas_patientID(Long.parseLong(cursor.getString(1)));
                     mReading.setMeas_timestamp(Long.parseLong(cursor.getString(2)));
-                    mReading.setMeas_temperature(Float.parseFloat(cursor.getString(3)));
-                    mReading.setMeas_colour_rgb(cursor.getString(4));
-                    mReading.setMeas_colour_hex(cursor.getString(5));
-                    mReading.setMeas_colour_lab(cursor.getString(6));
+                    mReading.setMeas_position(Integer.parseInt(cursor.getString(3)));
+                    mReading.setMeas_temperature(Float.parseFloat(cursor.getString(4)));
+                    mReading.setMeas_colour_rgb(cursor.getString(5));
+                    mReading.setMeas_colour_hex(cursor.getString(6));
+                    mReading.setMeas_colour_lab(cursor.getString(7));
 
                     tempReadingList.add(mReading);
                 } while (cursor.moveToNext());

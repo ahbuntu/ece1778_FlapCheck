@@ -121,7 +121,8 @@ public class NodeActivity extends ActionBarActivity
         if(mNodeThermaFragment != null) {
             Calendar cal = new GregorianCalendar();
             cal.setTimeZone(TimeZone.getTimeZone("UTC"));
-            MeasurementReading reading = new MeasurementReading(patientId, cal.getTimeInMillis(),
+            //TODO: need to provide the position - default to 0 for now
+            MeasurementReading reading = new MeasurementReading(patientId, cal.getTimeInMillis(), 0,
                     mNodeThermaFragment.getRecordedTemperature(), "", "", "");
 
             // ok to do this synchronously because we want the user to be blocked if the measurement cannot be saved
@@ -138,7 +139,8 @@ public class NodeActivity extends ActionBarActivity
             Calendar cal = new GregorianCalendar();
             cal.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-            MeasurementReading reading = new MeasurementReading(patientId, cal.getTimeInMillis(), 0,
+            //TODO: need to provide the position - default to 0 for now
+            MeasurementReading reading = new MeasurementReading(patientId, cal.getTimeInMillis(), 0, 0,
                     mNodeChromaFragment.getRecordedColourRGB(),
                     mNodeChromaFragment.getRecordedColourLAB(),
                     mNodeChromaFragment.getRecordedColourHex());

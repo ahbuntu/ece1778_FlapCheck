@@ -8,6 +8,7 @@ public class MeasurementReading {
     private long measurementID = -1; //this will only be populated after being inserted into the db
     private long meas_patientID;
     private long meas_timestamp;
+    private int meas_position;
     private float meas_temperature;
     private String meas_colour_rgb;
     private String meas_colour_lab;
@@ -25,11 +26,12 @@ public class MeasurementReading {
      * @param timestamp
      * @param temperature
      */
-    public MeasurementReading(long patientID, long timestamp, float temperature,
+    public MeasurementReading(long patientID, long timestamp, int position, float temperature,
                               String colour_rgb, String colour_lab, String colour_hex) {
         meas_patientID = patientID;
         meas_timestamp = timestamp;
         meas_temperature = temperature;
+        meas_position = position;
         meas_colour_rgb = colour_rgb;
         meas_colour_lab = colour_lab;
         meas_colour_hex = colour_hex;
@@ -46,11 +48,12 @@ public class MeasurementReading {
      * @param colour_lab
      * @param colour_hex
      */
-    public MeasurementReading(long id, long patientID, long timestamp, float temperature,
+    public MeasurementReading(long id, long patientID, long timestamp, int position, float temperature,
                               String colour_rgb, String colour_lab, String colour_hex) {
         measurementID = id;
         meas_patientID = patientID;
         meas_timestamp = timestamp;
+        meas_position = position;
         meas_temperature = temperature;
         meas_colour_rgb = colour_rgb;
         meas_colour_lab = colour_lab;
@@ -82,6 +85,14 @@ public class MeasurementReading {
 
     public long getMeas_timestamp() {
         return meas_timestamp;
+    }
+
+    public int getMeas_position() {
+        return meas_position;
+    }
+
+    public void setMeas_position(int meas_position) {
+        this.meas_position = meas_position;
     }
 
     public void setMeas_temperature(float meas_temperature) {
