@@ -37,6 +37,8 @@ public class MeasureOverlayFragment extends Fragment implements
         TapSelectOverlay.TapSelectOverlayListener
 {
     private static String TAG ="MeasureOverlayFragment";
+    private static final int MAX_POINTS = 3;
+    List<Point> pointToMeasureList = new ArrayList<>();
 
     private MeasurementFragmentListener mMeasureOverlayFragmentListener;
     private File lastPhoto = null;
@@ -85,9 +87,9 @@ public class MeasureOverlayFragment extends Fragment implements
         File[] files = sourceDir.listFiles();
         Arrays.sort(files, new Comparator() {
             public int compare(Object o1, Object o2) {
-                if (((File) o1).lastModified() > ((File) o2).lastModified()) {
+                if (((File) o1).lastModified() < ((File) o2).lastModified()) {
                     return -1;
-                } else if (((File) o1).lastModified() < ((File) o2).lastModified()) {
+                } else if (((File) o1).lastModified() > ((File) o2).lastModified()) {
                     return +1;
                 } else {
                     return 0;
@@ -100,7 +102,8 @@ public class MeasureOverlayFragment extends Fragment implements
             imagePhotoOverlay.setImageURI(Uri.fromFile(photoReadings.get(0))); //using the very first picture
             imagePhotoOverlay.setVisibility(View.VISIBLE);
 
-            setActionToCaptureMeasurement();
+//            setActionToCaptureMeasurement();
+            setActionToSavePointsToMeasure();
         } else {
             //no images - prompt to take a picture
             setActionToTakePhoto();
@@ -145,14 +148,6 @@ public class MeasureOverlayFragment extends Fragment implements
         photoFrame.addView(tapSelectOverlay);
 
         //TODO: Load the real point list from the DB
-        Point a = new Point(100, 500);
-        Point b = new Point(500, 500);
-        ArrayList<Point> pointList = new ArrayList<Point>();
-        pointList.add(a);
-        pointList.add(b);
-        //pointList is the location of the regions of interest on the image
-        //A circle is drawn at each point in the list, which can then be selected by tapping
-        tapSelectOverlay.setPointList(pointList);
 
         return view;
     }
@@ -170,9 +165,9 @@ public class MeasureOverlayFragment extends Fragment implements
             setImagePhotoOverlay();
             // can only have a patient
             if (imagePhotoOverlay.getVisibility() == View.VISIBLE) {
-                //means photo already exists - take measurement
-                setActionToCaptureMeasurement();
-
+                //means photo already exists - save the points
+//                setActionToCaptureMeasurement();
+                setActionToSavePointsToMeasure();
             } else {
                 //means photo missing - take photo
                 setActionToTakePhoto();
@@ -187,13 +182,27 @@ public class MeasureOverlayFragment extends Fragment implements
      */
     @Override
     public void onTap(float x, float y) {
-        //Are we near a region?
-        mPointIdx = tapSelectOverlay.findPointIndex(x, y);
+        if (pointToMeasureList.size() < MAX_POINTS) {
+            //can draw additional points
+            actionButton.setEnabled(false);
+            Point p = new Point(new Float(x).intValue(), new Float(y).intValue());
 
-        tapSelectOverlay.clearSelection();
-        if(mPointIdx != -1) {
-            //Found a close region, visually mark it
-            tapSelectOverlay.addSelection(mPointIdx);
+            pointToMeasureList.add(p);
+//            pointList is the location of the regions of interest on the image
+//            A circle is drawn at each point in the list, which can then be selected by tapping
+            tapSelectOverlay.setPointList(pointToMeasureList);
+            //TODO: might be better to save to the db right away?
+        } else {
+            //cannot add more points
+            actionButton.setEnabled(true);
+            //Are we near a region?
+            mPointIdx = tapSelectOverlay.findPointIndex(x, y);
+
+            tapSelectOverlay.clearSelection();
+            if(mPointIdx != -1) {
+                //Found a close region, visually mark it
+                tapSelectOverlay.addSelection(mPointIdx);
+            }
         }
         tapSelectOverlay.invalidate(); //Re-draw
     }
@@ -244,6 +253,28 @@ public class MeasureOverlayFragment extends Fragment implements
             }
         });
     }
+
+    /**
+     * change the text and action button to save the points to measure
+     */
+    private void setActionToSavePointsToMeasure() {
+        textOverlayHeading.setText(R.string.image_overlay_heading_points);
+        actionButton.setText("Save Points");
+        actionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO: save the point list to the DB and enable option to take measurements
+//                if(mPointIdx != -1) {
+//                    //Launch the appropriate measurement passing in the index of the region we are interested in.
+//                    mMeasurementLaunchListener.onMeasureTemperature(mPointIdx);
+//                } else {
+//                    Toast.makeText(getActivity(), "You must select a measurement region.", Toast.LENGTH_SHORT).show();
+//                }
+            }
+        });
+    }
+
+
 
     @Override
     public void onPause() {
