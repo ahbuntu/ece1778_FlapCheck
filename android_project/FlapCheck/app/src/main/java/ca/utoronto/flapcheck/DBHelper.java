@@ -49,7 +49,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 + DBPointToMeasureContract.PointToMeasureEntry.COL_POINT_INDEX + " INTEGER,"
                 + DBPointToMeasureContract.PointToMeasureEntry.COL_POINT_X + " INTEGER,"
                 + DBPointToMeasureContract.PointToMeasureEntry.COL_POINT_Y + " INTEGER" + ")";
-        db.execSQL(CREATE_MEASUREMENTS_TABLE  );
+        db.execSQL(CREATE_POINTTOMEASURE_TABLE  );
     }
 
     @Override

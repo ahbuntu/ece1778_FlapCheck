@@ -38,10 +38,9 @@ public class MeasureOverlayFragment extends Fragment implements
 {
     private static String TAG ="MeasureOverlayFragment";
     private static final int MAX_POINTS = 3;
-    List<Point> pointToMeasureList = new ArrayList<>();
+
 
     private MeasurementFragmentListener mMeasureOverlayFragmentListener;
-    private File lastPhoto = null;
 
     private Patient mPatient;
     private List<File> photoReadings = new ArrayList<>();
@@ -50,6 +49,7 @@ public class MeasureOverlayFragment extends Fragment implements
     Button actionButton;
     TextView textOverlayHeading;
     TapSelectOverlay tapSelectOverlay;
+    List<Point> pointToMeasureList = new ArrayList<>();
 
     private int resumeCounter = -1;
 
@@ -102,7 +102,17 @@ public class MeasureOverlayFragment extends Fragment implements
             imagePhotoOverlay.setImageURI(Uri.fromFile(photoReadings.get(0))); //using the very first picture
             imagePhotoOverlay.setVisibility(View.VISIBLE);
 
-//            setActionToCaptureMeasurement();
+            DBLoaderPointToMeasure dbPointsLoader = new DBLoaderPointToMeasure(getActivity());
+            List<PointToMeasure> pointsOverlayList =  dbPointsLoader.getPointsToMeasureForPatient(mPatient.getPatientId());
+            for (PointToMeasure pointOverlay : pointsOverlayList) {
+                Point p = new Point(pointOverlay.getPointX(), pointOverlay.getPointY());
+                pointToMeasureList.add(p);
+//            pointList is the location of the regions of interest on the image
+//            A circle is drawn at each point in the list, which can then be selected by tapping
+                tapSelectOverlay.setPointList(pointToMeasureList);
+            }
+            tapSelectOverlay.invalidate();
+            
             setActionToSavePointsToMeasure();
         } else {
             //no images - prompt to take a picture
@@ -147,8 +157,6 @@ public class MeasureOverlayFragment extends Fragment implements
         photoFrame.addView(imagePhotoOverlay);
         photoFrame.addView(tapSelectOverlay);
 
-        //TODO: Load the real point list from the DB
-
         return view;
     }
 
@@ -182,9 +190,10 @@ public class MeasureOverlayFragment extends Fragment implements
      */
     @Override
     public void onTap(float x, float y) {
+
         if (pointToMeasureList.size() < MAX_POINTS) {
             //can draw additional points
-            actionButton.setEnabled(false);
+
             Point p = new Point(new Float(x).intValue(), new Float(y).intValue());
 
             pointToMeasureList.add(p);
@@ -194,7 +203,7 @@ public class MeasureOverlayFragment extends Fragment implements
             //TODO: might be better to save to the db right away?
         } else {
             //cannot add more points
-            actionButton.setEnabled(true);
+
             //Are we near a region?
             mPointIdx = tapSelectOverlay.findPointIndex(x, y);
 
@@ -205,6 +214,12 @@ public class MeasureOverlayFragment extends Fragment implements
             }
         }
         tapSelectOverlay.invalidate(); //Re-draw
+
+        if (pointToMeasureList.size() == MAX_POINTS) {
+            actionButton.setEnabled(true);
+        } else {
+            actionButton.setEnabled(false);
+        }
     }
 
     /**
@@ -258,22 +273,32 @@ public class MeasureOverlayFragment extends Fragment implements
      * change the text and action button to save the points to measure
      */
     private void setActionToSavePointsToMeasure() {
+        if (pointToMeasureList.size() == MAX_POINTS) {
+            setActionToCaptureMeasurement();
+            return;
+        }
         textOverlayHeading.setText(R.string.image_overlay_heading_points);
         actionButton.setText("Save Points");
         actionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: save the point list to the DB and enable option to take measurements
-//                if(mPointIdx != -1) {
-//                    //Launch the appropriate measurement passing in the index of the region we are interested in.
-//                    mMeasurementLaunchListener.onMeasureTemperature(mPointIdx);
-//                } else {
-//                    Toast.makeText(getActivity(), "You must select a measurement region.", Toast.LENGTH_SHORT).show();
-//                }
+                int pointIndex = 0;
+                for (Point point : pointToMeasureList) {
+                    DBLoaderPointToMeasure dbLoader = new DBLoaderPointToMeasure(getActivity());
+                    long pointToMeasureID = dbLoader.addPointToMeasure(
+                            new PointToMeasure(mPatient.getPatientId(),pointIndex,point.x, point.y));
+                    if (pointToMeasureID == PointToMeasure.INVALID_ID) {
+                        Toast.makeText(getActivity(), "Error trying to save the points.", Toast.LENGTH_SHORT)
+                                .show();
+                        return;
+                    }
+                    pointIndex++;
+                }
+                Toast.makeText(getActivity(), "Points saved.", Toast.LENGTH_SHORT).show();
+                setActionToCaptureMeasurement();
             }
         });
     }
-
 
 
     @Override
