@@ -207,6 +207,7 @@ public class MeasurementActivity extends FragmentActivity
         Bundle args = new Bundle();
         args.putInt(Constants.ARG_MEASUREMENT_LOCATION, location_idx);
 
+        //I don't think this is the correct way to enter the temperature measurement (should go through Node connection?)
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.measure_container, mNodeThermaFragment)
                 .addToBackStack(null)

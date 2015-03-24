@@ -150,6 +150,8 @@ public class MeasureOverlayFragment extends Fragment implements
         ArrayList<Point> pointList = new ArrayList<Point>();
         pointList.add(a);
         pointList.add(b);
+        //pointList is the location of the regions of interest on the image
+        //A circle is drawn at each point in the list, which can then be selected by tapping
         tapSelectOverlay.setPointList(pointList);
 
         return view;
@@ -181,14 +183,16 @@ public class MeasureOverlayFragment extends Fragment implements
 
 
     /*
-     * Callback from photo overlay when tapped
+     * Callback from region overlay when tapped
      */
     @Override
     public void onTap(float x, float y) {
-        mPointIdx = tapSelectOverlay.findPointIndex(x, y); //Add new point
+        //Are we near a region?
+        mPointIdx = tapSelectOverlay.findPointIndex(x, y);
 
         tapSelectOverlay.clearSelection();
         if(mPointIdx != -1) {
+            //Found a close region, visually mark it
             tapSelectOverlay.addSelection(mPointIdx);
         }
         tapSelectOverlay.invalidate(); //Re-draw
@@ -232,6 +236,7 @@ public class MeasureOverlayFragment extends Fragment implements
             @Override
             public void onClick(View v) {
                 if(mPointIdx != -1) {
+                    //Launch the appropriate measurement passing in the index of the region we are interested in.
                     mMeasurementLaunchListener.onMeasureTemperature(mPointIdx);
                 } else {
                     Toast.makeText(getActivity(), "You must select a measurement region.", Toast.LENGTH_SHORT).show();
