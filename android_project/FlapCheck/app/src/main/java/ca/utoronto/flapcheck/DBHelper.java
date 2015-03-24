@@ -42,6 +42,14 @@ public class DBHelper extends SQLiteOpenHelper {
                 + DBMeasurementContract.MeasurementEntry.COL_MEASUREMENT_COLOUR_LAB + " TEXT,"
                 + DBMeasurementContract.MeasurementEntry.COL_MEASUREMENT_COLOUR_HEX + " TEXT" + ")";
         db.execSQL(CREATE_MEASUREMENTS_TABLE  );
+
+        String CREATE_POINTTOMEASURE_TABLE = "CREATE TABLE " + DBPointToMeasureContract.PointToMeasureEntry.TABLE_NAME + "("
+                + DBPointToMeasureContract.PointToMeasureEntry.COL_POINT_ID+ " INTEGER PRIMARY KEY,"
+                + DBPointToMeasureContract.PointToMeasureEntry.COL_POINT_PATIENT_ID+ " INTEGER,"
+                + DBPointToMeasureContract.PointToMeasureEntry.COL_POINT_INDEX + " INTEGER,"
+                + DBPointToMeasureContract.PointToMeasureEntry.COL_POINT_X + " INTEGER,"
+                + DBPointToMeasureContract.PointToMeasureEntry.COL_POINT_Y + " INTEGER" + ")";
+        db.execSQL(CREATE_MEASUREMENTS_TABLE  );
     }
 
     @Override
@@ -49,6 +57,7 @@ public class DBHelper extends SQLiteOpenHelper {
         // Drop older tables if existed
         db.execSQL("DROP TABLE IF EXISTS " + DBPatientContract.PatientEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + DBMeasurementContract.MeasurementEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + DBPointToMeasureContract.PointToMeasureEntry.TABLE_NAME);
         // Create tables again
         onCreate(db);
     }
