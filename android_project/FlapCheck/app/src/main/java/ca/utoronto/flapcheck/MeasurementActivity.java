@@ -19,7 +19,8 @@ public class MeasurementActivity extends FragmentActivity
         MeasurementInterface.MeasurementFragmentListener,
         DialogSelectPatient.DialogSelectPatientListener,
         PatientEntryNewFragment.PatientNewEntryListener,
-        MeasureOverlayFragment.PhotoMissingListener
+        MeasureOverlayFragment.PhotoMissingListener,
+        MeasureOverlayFragment.MeasurementLaunchListener
 {
     private static final String TAG = MeasurementActivity.class.getName();
     static final String ARG_MEASUREMENT_TYPE = "measurement_type";
@@ -29,6 +30,7 @@ public class MeasurementActivity extends FragmentActivity
     private MeasurePhotoFragment mMeasurePhotoFragment = null;
     private MeasureVideoFragment mMeasureVideoFragment = null;
     private MeasureOverlayFragment mMeasureOverlayFragment = null;
+    private NodeThermaFragment mNodeThermaFragment = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -199,4 +201,15 @@ public class MeasurementActivity extends FragmentActivity
 
     }
 
+    @Override
+    public void onMeasureTemperature(int location_idx) {
+        mNodeThermaFragment = new NodeThermaFragment();
+        Bundle args = new Bundle();
+        args.putInt(Constants.ARG_MEASUREMENT_LOCATION, location_idx);
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.measure_container, mNodeThermaFragment)
+                .addToBackStack(null)
+                .commit();
+    }
 }

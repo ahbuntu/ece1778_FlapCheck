@@ -2,6 +2,7 @@ package ca.utoronto.flapcheck;
 
 
 import android.app.Activity;
+import android.graphics.Point;
 import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Bundle;
@@ -32,7 +33,8 @@ import ca.utoronto.flapcheck.MeasurementInterface.MeasurementFragmentListener;
 /**
  * A simple {@link android.support.v4.app.Fragment} subclass.
  */
-public class MeasureOverlayFragment extends Fragment
+public class MeasureOverlayFragment extends Fragment implements
+        TapSelectOverlay.TapSelectOverlayListener
 {
     private static String TAG ="MeasureOverlayFragment";
 
@@ -45,10 +47,19 @@ public class MeasureOverlayFragment extends Fragment
     ImageView imagePhotoOverlay;
     Button actionButton;
     TextView textOverlayHeading;
+    TapSelectOverlay tapSelectOverlay;
 
     private int resumeCounter = -1;
 
     private PhotoMissingListener mPhotoMissingListener = null;
+    private MeasurementLaunchListener mMeasurementLaunchListener = null;
+
+    private int mPointIdx = -1; //The index of the selected point on the image
+
+    public interface MeasurementLaunchListener {
+        public void onMeasureTemperature(int location_idx);
+    }
+
     public interface PhotoMissingListener {
         public void onPhotoMissing();
     }
@@ -88,6 +99,7 @@ public class MeasureOverlayFragment extends Fragment
             photoReadings.add(files[0]);
             imagePhotoOverlay.setImageURI(Uri.fromFile(photoReadings.get(0))); //using the very first picture
             imagePhotoOverlay.setVisibility(View.VISIBLE);
+
             setActionToCaptureMeasurement();
         } else {
             //no images - prompt to take a picture
@@ -110,6 +122,7 @@ public class MeasureOverlayFragment extends Fragment
         mMeasureOverlayFragmentListener = (MeasurementFragmentListener) activity;
         mMeasureOverlayFragmentListener.requestActivePatientId();
         mPhotoMissingListener = (PhotoMissingListener) activity;
+        mMeasurementLaunchListener = (MeasurementLaunchListener) activity;
     }
 
     @Override
@@ -122,7 +135,22 @@ public class MeasureOverlayFragment extends Fragment
 
         textOverlayHeading = (TextView) view.findViewById(R.id.image_overlay_heading);
         actionButton = (Button) view.findViewById(R.id.action_button);
-        imagePhotoOverlay = (ImageView) view.findViewById(R.id.image_overlay_photo);
+
+
+        FrameLayout photoFrame = (FrameLayout) view.findViewById(R.id.image_overlay_photo);
+
+        imagePhotoOverlay = new ImageView(getActivity());
+        tapSelectOverlay = new TapSelectOverlay(getActivity(), this);
+        photoFrame.addView(imagePhotoOverlay);
+        photoFrame.addView(tapSelectOverlay);
+
+        //TODO: Load the real point list from the DB
+        Point a = new Point(100, 500);
+        Point b = new Point(500, 500);
+        ArrayList<Point> pointList = new ArrayList<Point>();
+        pointList.add(a);
+        pointList.add(b);
+        tapSelectOverlay.setPointList(pointList);
 
         return view;
     }
@@ -149,6 +177,21 @@ public class MeasureOverlayFragment extends Fragment
             }
 
         }
+    }
+
+
+    /*
+     * Callback from photo overlay when tapped
+     */
+    @Override
+    public void onTap(float x, float y) {
+        mPointIdx = tapSelectOverlay.findPointIndex(x, y); //Add new point
+
+        tapSelectOverlay.clearSelection();
+        if(mPointIdx != -1) {
+            tapSelectOverlay.addSelection(mPointIdx);
+        }
+        tapSelectOverlay.invalidate(); //Re-draw
     }
 
     /**
@@ -188,7 +231,11 @@ public class MeasureOverlayFragment extends Fragment
         actionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG,"need to figure out what to do here");
+                if(mPointIdx != -1) {
+                    mMeasurementLaunchListener.onMeasureTemperature(mPointIdx);
+                } else {
+                    Toast.makeText(getActivity(), "You must select a measurement region.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

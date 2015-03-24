@@ -20,11 +20,17 @@
         android:layout_height="match_parent"
         android:layout_weight="1">
 
-        <ImageView android:id="@+id/image_overlay_photo"
+        <FrameLayout
+            android:id="@+id/image_overlay_photo"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:visibility="invisible"/>
+            android:layout_weight="1">
+        </FrameLayout>
+        <!--<ImageView android:id="@+id/image_overlay_photo"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:visibility="invisible"/>-->
     </RelativeLayout>
 
     <LinearLayout
