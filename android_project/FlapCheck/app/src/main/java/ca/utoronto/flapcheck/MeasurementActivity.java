@@ -20,7 +20,7 @@ public class MeasurementActivity extends FragmentActivity
         DialogSelectPatient.DialogSelectPatientListener,
         PatientEntryNewFragment.PatientNewEntryListener,
         MeasureOverlayFragment.PhotoMissingListener,
-        MeasureOverlayFragment.MeasurementLaunchListener
+        MeasureOverlayFragment.PointMeasurementListener
 {
     private static final String TAG = MeasurementActivity.class.getName();
     static final String ARG_MEASUREMENT_TYPE = "measurement_type";
@@ -51,6 +51,9 @@ public class MeasurementActivity extends FragmentActivity
                 frag = mMeasureVideoFragment;
             } else if (measurement_type.equals(Constants.MEASUREMENT_TEMP) || measurement_type.equals(Constants.MEASUREMENT_COLOUR)) {
                 mMeasureOverlayFragment = new MeasureOverlayFragment();
+                Bundle overlayBundle = new Bundle();
+                overlayBundle.putString(MeasurementActivity.ARG_MEASUREMENT_TYPE, Constants.MEASUREMENT_TEMP);
+                mMeasureOverlayFragment.setArguments(overlayBundle);
                 frag = mMeasureOverlayFragment;
             }
 
@@ -202,15 +205,21 @@ public class MeasurementActivity extends FragmentActivity
     }
 
     @Override
-    public void onMeasureTemperature(int location_idx) {
-        mNodeThermaFragment = new NodeThermaFragment();
-        Bundle args = new Bundle();
-        args.putInt(Constants.ARG_MEASUREMENT_LOCATION, location_idx);
-
-        //I don't think this is the correct way to enter the temperature measurement (should go through Node connection?)
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.measure_container, mNodeThermaFragment)
-                .addToBackStack(null)
-                .commit();
+    public void onPointMeasure(String measureTypeNODE, int location_idx) {
+        switch (measureTypeNODE) {
+            case Constants.MEASUREMENT_TEMP:
+                Intent intent = new Intent(this, NodeActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString(NodeActivity.ARG_NODE_ACTION, NodeActivity.NODE_THERMA);
+                bundle.putInt(NodeActivity.ARG_NODE_POINT_INDEX, location_idx);
+                bundle.putLong(NodeActivity.ARG_NODE_PATIENT_ID, mActivePatientId);
+                intent.putExtras(bundle);
+                startActivity(intent);
+                break;
+            case Constants.MEASUREMENT_COLOUR:
+                break;
+            default:
+                break;
+        }
     }
 }

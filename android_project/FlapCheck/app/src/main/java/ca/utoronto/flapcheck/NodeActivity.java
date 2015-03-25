@@ -29,6 +29,8 @@ public class NodeActivity extends ActionBarActivity
     static final String ARG_NODE_ACTION = "node_action";
     static final String NODE_THERMA = "node_therma";
     static final String NODE_CHROMA = "node_chroma";
+    static final String ARG_NODE_POINT_INDEX = "pointIndex";
+    static final String ARG_NODE_PATIENT_ID = "patientID";
 
     private NodeThermaFragment mNodeThermaFragment = null;
     private NodeChromaFragment mNodeChromaFragment = null;

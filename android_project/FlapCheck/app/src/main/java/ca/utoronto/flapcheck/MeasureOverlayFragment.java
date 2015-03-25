@@ -3,7 +3,6 @@ package ca.utoronto.flapcheck;
 
 import android.app.Activity;
 import android.graphics.Point;
-import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -18,14 +17,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 
 import ca.utoronto.flapcheck.MeasurementInterface.MeasurementFragmentListener;
@@ -38,6 +32,7 @@ public class MeasureOverlayFragment extends Fragment implements
 {
     private static String TAG ="MeasureOverlayFragment";
     private static final int MAX_POINTS = 3;
+
 
 
     private MeasurementFragmentListener mMeasureOverlayFragmentListener;
@@ -54,12 +49,13 @@ public class MeasureOverlayFragment extends Fragment implements
     private int resumeCounter = -1;
 
     private PhotoMissingListener mPhotoMissingListener = null;
-    private MeasurementLaunchListener mMeasurementLaunchListener = null;
+    private PointMeasurementListener mPointMeasurementListener = null;
 
     private int mPointIdx = -1; //The index of the selected point on the image
+    private String measurementType;
 
-    public interface MeasurementLaunchListener {
-        public void onMeasureTemperature(int location_idx);
+    public interface PointMeasurementListener {
+        public void onPointMeasure(String measureTypeNODE, int location_idx);
     }
 
     public interface PhotoMissingListener {
@@ -112,7 +108,7 @@ public class MeasureOverlayFragment extends Fragment implements
                 tapSelectOverlay.setPointList(pointToMeasureList);
             }
             tapSelectOverlay.invalidate();
-            
+
             setActionToSavePointsToMeasure();
         } else {
             //no images - prompt to take a picture
@@ -135,13 +131,16 @@ public class MeasureOverlayFragment extends Fragment implements
         mMeasureOverlayFragmentListener = (MeasurementFragmentListener) activity;
         mMeasureOverlayFragmentListener.requestActivePatientId();
         mPhotoMissingListener = (PhotoMissingListener) activity;
-        mMeasurementLaunchListener = (MeasurementLaunchListener) activity;
+        mPointMeasurementListener = (PointMeasurementListener) activity;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView called");
+
+        Bundle bundle = getArguments();
+        measurementType = bundle.getString(MeasurementActivity.ARG_MEASUREMENT_TYPE);
 
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_measure_overlay, container, false);
@@ -261,7 +260,14 @@ public class MeasureOverlayFragment extends Fragment implements
             public void onClick(View v) {
                 if(mPointIdx != -1) {
                     //Launch the appropriate measurement passing in the index of the region we are interested in.
-                    mMeasurementLaunchListener.onMeasureTemperature(mPointIdx);
+                    switch (measurementType) {
+                        case Constants.MEASUREMENT_TEMP:
+                        case Constants.MEASUREMENT_COLOUR:
+                            mPointMeasurementListener.onPointMeasure(measurementType, mPointIdx);
+                            break;
+                        default:
+                            break;
+                    }
                 } else {
                     Toast.makeText(getActivity(), "You must select a measurement region.", Toast.LENGTH_SHORT).show();
                 }
