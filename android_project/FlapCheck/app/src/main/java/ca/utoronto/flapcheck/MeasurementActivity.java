@@ -52,7 +52,7 @@ public class MeasurementActivity extends FragmentActivity
             } else if (measurement_type.equals(Constants.MEASUREMENT_TEMP) || measurement_type.equals(Constants.MEASUREMENT_COLOUR)) {
                 mMeasureOverlayFragment = new MeasureOverlayFragment();
                 Bundle overlayBundle = new Bundle();
-                overlayBundle.putString(MeasurementActivity.ARG_MEASUREMENT_TYPE, Constants.MEASUREMENT_TEMP);
+                overlayBundle.putString(MeasurementActivity.ARG_MEASUREMENT_TYPE, measurement_type);
                 mMeasureOverlayFragment.setArguments(overlayBundle);
                 frag = mMeasureOverlayFragment;
             }
@@ -206,23 +206,21 @@ public class MeasurementActivity extends FragmentActivity
 
     @Override
     public void onPointMeasure(String measureTypeNODE, int location_idx) {
+        Bundle bundle = new Bundle();
+        bundle.putInt(NodeActivity.ARG_NODE_POINT_INDEX, location_idx);
+        bundle.putLong(NodeActivity.ARG_NODE_PATIENT_ID, mActivePatientId);
+
         switch (measureTypeNODE) {
             case Constants.MEASUREMENT_TEMP:
                 Intent tempIntent = new Intent(this, NodeActivity.class);
-                Bundle tempBundle = new Bundle();
-                tempBundle.putString(NodeActivity.ARG_NODE_ACTION, NodeActivity.NODE_THERMA);
-                tempBundle.putInt(NodeActivity.ARG_NODE_POINT_INDEX, location_idx);
-                tempBundle.putLong(NodeActivity.ARG_NODE_PATIENT_ID, mActivePatientId);
-                tempIntent.putExtras(tempBundle);
+                bundle.putString(NodeActivity.ARG_NODE_ACTION, NodeActivity.NODE_THERMA);
+                tempIntent.putExtras(bundle);
                 startActivity(tempIntent);
                 break;
             case Constants.MEASUREMENT_COLOUR:
                 Intent colourIntent = new Intent(this, NodeActivity.class);
-                Bundle colourBundle = new Bundle();
-                colourBundle.putString(NodeActivity.ARG_NODE_ACTION, NodeActivity.NODE_CHROMA);
-                colourBundle.putInt(NodeActivity.ARG_NODE_POINT_INDEX, location_idx);
-                colourBundle.putLong(NodeActivity.ARG_NODE_PATIENT_ID, mActivePatientId);
-                colourIntent.putExtras(colourBundle);
+                bundle.putString(NodeActivity.ARG_NODE_ACTION, NodeActivity.NODE_CHROMA);
+                colourIntent.putExtras(bundle);
                 startActivity(colourIntent);
                 break;
             default:

@@ -55,9 +55,6 @@ public class NodeActivity extends ActionBarActivity
             switch (action_type) {
                 case NODE_THERMA:
                     mNodeThermaFragment = new NodeThermaFragment();
-//                    Bundle tempBundle = new Bundle();
-//                    tempBundle.putLong(NodeActivity.ARG_NODE_PATIENT_ID, mActivePatientId);
-//                    tempBundle.putInt(NodeActivity.ARG_NODE_POINT_INDEX, mPointIndex);
                     mNodeThermaFragment.setArguments(bundle);
 
                     if(!isNodeConnected(node))
@@ -75,10 +72,7 @@ public class NodeActivity extends ActionBarActivity
                     break;
                 case NODE_CHROMA:
                     mNodeChromaFragment = new NodeChromaFragment();
-//                    Bundle colourBundle = new Bundle();
-//                    colourBundle.putLong(NodeActivity.ARG_NODE_PATIENT_ID, mActivePatientId);
-//                    colourBundle.putInt(NodeActivity.ARG_NODE_POINT_INDEX, mPointIndex);
-                    mNodeThermaFragment.setArguments(bundle);
+                    mNodeChromaFragment.setArguments(bundle);
 
                     if(!isNodeConnected(node))
                     {

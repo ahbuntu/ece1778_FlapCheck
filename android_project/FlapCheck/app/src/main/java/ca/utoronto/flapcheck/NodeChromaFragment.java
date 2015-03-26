@@ -16,6 +16,9 @@ import com.variable.framework.node.NodeDevice;
 import com.variable.framework.node.enums.NodeEnums;
 
 import java.text.DecimalFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 /**
 * Created by Corey Mann on 8/28/13.
@@ -26,8 +29,10 @@ public class NodeChromaFragment extends NodeChromaFragmentHelper {
     public static final String TAG = "NodeChromaFragment";
     private final DecimalFormat formatter = new DecimalFormat("###.##");
     private ChromaDevice chroma;
-    private MeasurementInterface.MeasurementFragmentListener mMeasureListener = null;
     private boolean colourCaptured = false;
+
+    private long mActivePatientId = Patient.INVALID_ID; //Passed in as part of bundle
+    private int mPointIndex = 0;
 
     private String colourRGB = "";
     private String colourLAB = "";
@@ -36,6 +41,9 @@ public class NodeChromaFragment extends NodeChromaFragmentHelper {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup view, Bundle savedInstanced){
         super.onCreateView(inflater,view, savedInstanced);
+
+        mActivePatientId = getArguments().getLong(NodeActivity.ARG_NODE_PATIENT_ID);
+        mPointIndex = getArguments().getInt(NodeActivity.ARG_NODE_POINT_INDEX);
 
         final View rootView = inflater.inflate(R.layout.fragment_node_chroma, null, false);
 
@@ -65,8 +73,7 @@ public class NodeChromaFragment extends NodeChromaFragmentHelper {
             @Override
             public void onClick(View view) {
                 if (colourCaptured) {
-                    mMeasureListener = (MeasurementInterface.MeasurementFragmentListener) getActivity();
-                    mMeasureListener.requestActivePatientId();
+                    storeColourReading();
                 } else {
                     Toast.makeText(getActivity(), "Please take a colour measurement.", Toast.LENGTH_SHORT)
                             .show();
@@ -98,6 +105,27 @@ public class NodeChromaFragment extends NodeChromaFragmentHelper {
         }
 
         return rootView;
+    }
+
+    private void storeColourReading() {
+            Calendar cal = new GregorianCalendar();
+            cal.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+            MeasurementReading reading = new MeasurementReading(mActivePatientId, cal.getTimeInMillis(), mPointIndex, 0,
+                    getRecordedColourRGB(),
+                    getRecordedColourLAB(),
+                    getRecordedColourHex());
+
+            // ok to do this synchronously because we want the user to be blocked if the measurement cannot be saved
+            DBLoaderMeasurement measDbHelper = new DBLoaderMeasurement(getActivity());
+            long recordID = measDbHelper.addReading(reading);
+
+            if (recordID == -1) {
+                Toast.makeText(getActivity(), "Error while saving measurement", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getActivity(), "Measurement saved", Toast.LENGTH_SHORT).show();
+            }
+
     }
 
     @Override
