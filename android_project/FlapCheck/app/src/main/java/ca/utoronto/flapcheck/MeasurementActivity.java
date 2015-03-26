@@ -161,17 +161,6 @@ public class MeasurementActivity extends FragmentActivity
 
 
     /**
-     * implementation of MeasurementInterface.MeasurementListener.setOverlayPhotoPatientId()
-     */
-    @Override
-    public void setOverlayPhotoPatientId(long patientId) {
-        mActivePatientId = patientId;
-
-        if(mMeasurePhotoFragment != null) {
-            mMeasurePhotoFragment.moveLastPhotoToPatientDirectory(patientId);
-        }
-    }
-    /**
      * implementation of MeasureOverlayFragment.PhotoMissingListener.onPhotoMissing()
      */
     @Override
