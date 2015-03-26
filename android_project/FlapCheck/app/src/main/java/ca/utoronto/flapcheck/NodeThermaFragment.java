@@ -28,6 +28,10 @@ import com.variable.framework.node.enums.NodeEnums;
 import com.variable.framework.node.reading.SensorReading;
 
 import java.text.DecimalFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
+
 import ca.utoronto.flapcheck.MeasurementInterface.MeasurementFragmentListener;
 
 /**
@@ -38,8 +42,9 @@ public class NodeThermaFragment extends Fragment
 
     public static final String TAG = NodeThermaFragment.class.getName();
 
-
-    private MeasurementFragmentListener mMeasureListener = null;
+//    private MeasurementFragmentListener mMeasureListener = null;
+    private long mActivePatientId = Patient.INVALID_ID; //Passed in as part of bundle
+    private int mPointIndex = 0;
 
     //The Handler of this class primarily demonstrates how to use a NodeDevice isntance with a physical therma attached.
 
@@ -55,6 +60,9 @@ public class NodeThermaFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
+
+        mActivePatientId = getArguments().getLong(NodeActivity.ARG_NODE_PATIENT_ID);
+        mPointIndex = getArguments().getInt(NodeActivity.ARG_NODE_POINT_INDEX);
 
         View root = inflater.inflate(R.layout.fragment_node_therma, null, false);
         temperatureText = (TextView) root.findViewById(R.id.txtTherma);
@@ -112,7 +120,8 @@ public class NodeThermaFragment extends Fragment
             @Override
             public void onClick(View view) {
                 if (tempCaptured) {
-                    mMeasureListener.requestActivePatientId();
+//                    mMeasureListener.requestActivePatientId();
+                    storeTempReading();
                 } else {
                     Toast.makeText(getActivity(), "Please take a temperature reading.", Toast.LENGTH_SHORT)
                             .show();
@@ -123,6 +132,22 @@ public class NodeThermaFragment extends Fragment
         return root;
     }
 
+    private void storeTempReading() {
+        Calendar cal = new GregorianCalendar();
+        cal.setTimeZone(TimeZone.getTimeZone("UTC"));
+        MeasurementReading reading = new MeasurementReading(mActivePatientId, cal.getTimeInMillis(), mPointIndex,
+                getRecordedTemperature(), "", "", "");
+
+        // ok to do this synchronously because we want the user to be blocked if the measurement cannot be saved
+        DBLoaderMeasurement measDbHelper = new DBLoaderMeasurement(getActivity());
+        long recordID = measDbHelper.addReading(reading);
+
+        if (recordID == -1) {
+            Toast.makeText(getActivity(), "Error while saving measurement", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getActivity(), "Measurement saved", Toast.LENGTH_SHORT).show();
+        }
+    }
     @Override
     public void onPause() {
         super.onPause();
@@ -138,7 +163,7 @@ public class NodeThermaFragment extends Fragment
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        mMeasureListener = (MeasurementFragmentListener) activity;
+//        mMeasureListener = (MeasurementFragmentListener) activity;
     }
     @Override
     public void onResume() {

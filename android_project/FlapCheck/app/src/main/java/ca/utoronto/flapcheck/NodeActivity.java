@@ -19,10 +19,12 @@ import java.util.TimeZone;
 
 
 public class NodeActivity extends ActionBarActivity
-                implements NodeConnectionFragment.NodeConnectionFragmentListener,
-                MeasurementInterface.MeasurementFragmentListener,
-                DialogSelectPatient.DialogSelectPatientListener,
-                PatientEntryNewFragment.PatientNewEntryListener{
+                implements NodeConnectionFragment.NodeConnectionFragmentListener {
+//    ,
+//                MeasurementInterface.MeasurementFragmentListener
+//    ,
+//                DialogSelectPatient.DialogSelectPatientListener,
+//                PatientEntryNewFragment.PatientNewEntryListener{
 
     private static final String TAG = NodeActivity.class.getName();
 
@@ -36,7 +38,6 @@ public class NodeActivity extends ActionBarActivity
     private NodeChromaFragment mNodeChromaFragment = null;
 
     private static String waitingAction = null;
-    private long mActivePatientId = Patient.INVALID_ID; //Set by dialog
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,10 +50,16 @@ public class NodeActivity extends ActionBarActivity
         if (savedInstanceState == null) {
             Bundle bundle = getIntent().getExtras();
             String action_type = bundle.getString(ARG_NODE_ACTION);
+
             NodeDevice node = ((FlapCheckApplication) getApplication()).getActiveNode();
             switch (action_type) {
                 case NODE_THERMA:
                     mNodeThermaFragment = new NodeThermaFragment();
+//                    Bundle tempBundle = new Bundle();
+//                    tempBundle.putLong(NodeActivity.ARG_NODE_PATIENT_ID, mActivePatientId);
+//                    tempBundle.putInt(NodeActivity.ARG_NODE_POINT_INDEX, mPointIndex);
+                    mNodeThermaFragment.setArguments(bundle);
+
                     if(!isNodeConnected(node))
                     {
                         Toast.makeText(this, "No Connected NODE device.", Toast.LENGTH_SHORT).show();
@@ -68,6 +75,11 @@ public class NodeActivity extends ActionBarActivity
                     break;
                 case NODE_CHROMA:
                     mNodeChromaFragment = new NodeChromaFragment();
+//                    Bundle colourBundle = new Bundle();
+//                    colourBundle.putLong(NodeActivity.ARG_NODE_PATIENT_ID, mActivePatientId);
+//                    colourBundle.putInt(NodeActivity.ARG_NODE_POINT_INDEX, mPointIndex);
+                    mNodeThermaFragment.setArguments(bundle);
+
                     if(!isNodeConnected(node))
                     {
                         Toast.makeText(this, "No Connected NODE device.", Toast.LENGTH_SHORT).show();
@@ -110,90 +122,91 @@ public class NodeActivity extends ActionBarActivity
         return super.onOptionsItemSelected(item);
     }
 
-    //region Callbacks triggered from DialogSelectPatient
 
-    @Override
-    public void onDismissSelectPatient() {
-        //The user didn't record a measurement, so do nothing
-    }
-
-    @Override
-    public void onSetActivePatientId(long patientId) {
-        mActivePatientId = patientId;
-        if(mNodeThermaFragment != null) {
-            Calendar cal = new GregorianCalendar();
-            cal.setTimeZone(TimeZone.getTimeZone("UTC"));
-            //TODO: need to provide the position - default to 0 for now
-            MeasurementReading reading = new MeasurementReading(patientId, cal.getTimeInMillis(), 0,
-                    mNodeThermaFragment.getRecordedTemperature(), "", "", "");
-
-            // ok to do this synchronously because we want the user to be blocked if the measurement cannot be saved
-            DBLoaderMeasurement measDbHelper = new DBLoaderMeasurement(this);
-            long recordID = measDbHelper.addReading(reading);
-
-            if (recordID == -1) {
-                Toast.makeText(this, "Error while saving measurement", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "Measurement saved", Toast.LENGTH_SHORT).show();
-            }
-        }
-        if(mNodeChromaFragment != null) {
-            Calendar cal = new GregorianCalendar();
-            cal.setTimeZone(TimeZone.getTimeZone("UTC"));
-
-            //TODO: need to provide the position - default to 0 for now
-            MeasurementReading reading = new MeasurementReading(patientId, cal.getTimeInMillis(), 0, 0,
-                    mNodeChromaFragment.getRecordedColourRGB(),
-                    mNodeChromaFragment.getRecordedColourLAB(),
-                    mNodeChromaFragment.getRecordedColourHex());
-
-            // ok to do this synchronously because we want the user to be blocked if the measurement cannot be saved
-            DBLoaderMeasurement measDbHelper = new DBLoaderMeasurement(this);
-            long recordID = measDbHelper.addReading(reading);
-
-            if (recordID == -1) {
-                Toast.makeText(this, "Error while saving measurement", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "Measurement saved", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    /**
-     * Callback for when the "Add New Patient" button is selected from the DialogSelectPatient
-     */
-    @Override
-    public void onAddNewPatient() {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.node_container, new PatientEntryNewFragment())
-                .addToBackStack(null)
-                .commit();
-    }
-
-    /**
-     * implementation of PatientEntryNewFragment.PatientNewEntryListener.onAddPatientButtonClicked()
-     * @param patientId
-     */
-    @Override
-    public void onAddPatientButtonClicked(long patientId) {
-        mActivePatientId = patientId;
-        //Same as on positive button selection
-        onSetActivePatientId(patientId);
-        getSupportFragmentManager().popBackStack();
-    }
-
-    //endregion
-
-    //region Callbacks triggered from NODE fragments
-
-    /**
-     * Callback for when any kind of measurement is taken.
-     */
-    @Override
-    public void requestActivePatientId() {
-        DialogSelectPatient frag = new DialogSelectPatient();
-        frag.show(getSupportFragmentManager(), null);
-    }
+//    //region Callbacks triggered from DialogSelectPatient
+//
+//    @Override
+//    public void onDismissSelectPatient() {
+//        //The user didn't record a measurement, so do nothing
+//    }
+//
+//    @Override
+//    public void onSetActivePatientId(long patientId) {
+//        mActivePatientId = patientId;
+//        if(mNodeThermaFragment != null) {
+//            Calendar cal = new GregorianCalendar();
+//            cal.setTimeZone(TimeZone.getTimeZone("UTC"));
+//            //TODO: need to provide the position - default to 0 for now
+//            MeasurementReading reading = new MeasurementReading(patientId, cal.getTimeInMillis(), 0,
+//                    mNodeThermaFragment.getRecordedTemperature(), "", "", "");
+//
+//            // ok to do this synchronously because we want the user to be blocked if the measurement cannot be saved
+//            DBLoaderMeasurement measDbHelper = new DBLoaderMeasurement(this);
+//            long recordID = measDbHelper.addReading(reading);
+//
+//            if (recordID == -1) {
+//                Toast.makeText(this, "Error while saving measurement", Toast.LENGTH_SHORT).show();
+//            } else {
+//                Toast.makeText(this, "Measurement saved", Toast.LENGTH_SHORT).show();
+//            }
+//        }
+//        if(mNodeChromaFragment != null) {
+//            Calendar cal = new GregorianCalendar();
+//            cal.setTimeZone(TimeZone.getTimeZone("UTC"));
+//
+//            //TODO: need to provide the position - default to 0 for now
+//            MeasurementReading reading = new MeasurementReading(patientId, cal.getTimeInMillis(), 0, 0,
+//                    mNodeChromaFragment.getRecordedColourRGB(),
+//                    mNodeChromaFragment.getRecordedColourLAB(),
+//                    mNodeChromaFragment.getRecordedColourHex());
+//
+//            // ok to do this synchronously because we want the user to be blocked if the measurement cannot be saved
+//            DBLoaderMeasurement measDbHelper = new DBLoaderMeasurement(this);
+//            long recordID = measDbHelper.addReading(reading);
+//
+//            if (recordID == -1) {
+//                Toast.makeText(this, "Error while saving measurement", Toast.LENGTH_SHORT).show();
+//            } else {
+//                Toast.makeText(this, "Measurement saved", Toast.LENGTH_SHORT).show();
+//            }
+//        }
+//    }
+//
+//    /**
+//     * Callback for when the "Add New Patient" button is selected from the DialogSelectPatient
+//     */
+//    @Override
+//    public void onAddNewPatient() {
+//        getSupportFragmentManager().beginTransaction()
+//                .replace(R.id.node_container, new PatientEntryNewFragment())
+//                .addToBackStack(null)
+//                .commit();
+//    }
+//
+//    /**
+//     * implementation of PatientEntryNewFragment.PatientNewEntryListener.onAddPatientButtonClicked()
+//     * @param patientId
+//     */
+//    @Override
+//    public void onAddPatientButtonClicked(long patientId) {
+//        mActivePatientId = patientId;
+//        //Same as on positive button selection
+//        onSetActivePatientId(patientId);
+//        getSupportFragmentManager().popBackStack();
+//    }
+//
+//    //endregion
+//
+//    //region Callbacks triggered from NODE fragments
+//
+//    /**
+//     * Callback for when any kind of measurement is taken.
+//     */
+//    @Override
+//    public void requestActivePatientId() {
+//        DialogSelectPatient frag = new DialogSelectPatient();
+//        frag.show(getSupportFragmentManager(), null);
+//    }
 
 
     /**
