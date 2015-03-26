@@ -118,7 +118,10 @@ public class MeasurementActivity extends FragmentActivity
         mActivePatientId = patientId;
         //Same as on positive button selection
         onSetActivePatientId(patientId);
-        getSupportFragmentManager().popBackStack();
+        if (mMeasureOverlayFragment == null) {
+            //only do this for video, pulse and picture NOT overlay
+            getSupportFragmentManager().popBackStack();
+        }
     }
 
     /**
@@ -156,6 +159,18 @@ public class MeasurementActivity extends FragmentActivity
         }
     }
 
+
+    /**
+     * implementation of MeasurementInterface.MeasurementListener.setOverlayPhotoPatientId()
+     */
+    @Override
+    public void setOverlayPhotoPatientId(long patientId) {
+        mActivePatientId = patientId;
+
+        if(mMeasurePhotoFragment != null) {
+            mMeasurePhotoFragment.moveLastPhotoToPatientDirectory(patientId);
+        }
+    }
     /**
      * implementation of MeasureOverlayFragment.PhotoMissingListener.onPhotoMissing()
      */
@@ -168,6 +183,7 @@ public class MeasurementActivity extends FragmentActivity
         args.putLong(Constants.ARG_PHOTO_MISSING_PATIENT, mActivePatientId);
         mMeasurePhotoFragment.setArguments(args);
 
+        getSupportFragmentManager().popBackStack();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.measure_container, mMeasurePhotoFragment)
                 .addToBackStack(null)

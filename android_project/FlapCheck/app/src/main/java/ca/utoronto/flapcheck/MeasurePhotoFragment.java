@@ -70,6 +70,9 @@ public class MeasurePhotoFragment extends Fragment
 
             lastPhoto = pictureFile;
 
+            if (photoMissing_Requester != null) {
+                moveLastPhotoToPatientDirectory(photoMissing_PatientID);
+            }
             //Restart the preview once the image has been saved
             camera.startPreview();
         }
@@ -135,9 +138,9 @@ public class MeasurePhotoFragment extends Fragment
         }
     }
 
-//    public void onReceiveActivePatientId(long patientId) {
-//        moveLastPhotoToPatientDirectory(patientId);
-//    }
+    public void onReceiveActivePatientId(long patientId) {
+        moveLastPhotoToPatientDirectory(patientId);
+    }
 
     /**
      * moves photo from temporary file location to the path specific for the selected patient

@@ -10,5 +10,6 @@ import java.util.List;
 public class MeasurementInterface {
     public interface MeasurementFragmentListener {
         void requestActivePatientId();
+        void setOverlayPhotoPatientId(long patientId);
     }
 }
