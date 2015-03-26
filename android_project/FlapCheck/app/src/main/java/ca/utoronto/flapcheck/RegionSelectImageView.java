@@ -139,7 +139,7 @@ public class RegionSelectImageView extends ImageView {
 
                 float[] screen_coords = getScreenCoords(bmp_coords);
 
-                Log.d(TAG, String.format("Drawing Circle %d at Pnt (%f,%f) BMP (%f,%f), Screen (%f,%f)", i, pnt.x, pnt.y, bmp_coords[0], bmp_coords[1], screen_coords[0], screen_coords[1]));
+//                Log.d(TAG, String.format("Drawing Circle %d at Pnt (%f,%f) BMP (%f,%f), Screen (%f,%f)", i, pnt.x, pnt.y, bmp_coords[0], bmp_coords[1], screen_coords[0], screen_coords[1]));
                 if(mSelection.contains(i)) {
                     canvas.drawCircle(screen_coords[0], screen_coords[1], getDiameterScreen() / 2, mSelectedPaint);
                 } else {
