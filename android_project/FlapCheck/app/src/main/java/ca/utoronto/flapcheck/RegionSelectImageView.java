@@ -6,13 +6,11 @@ import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
@@ -20,8 +18,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-class TapSelectOverlay extends View {
-    private static String TAG = "TapSelectOverlay";
+/**
+ * Created by kmurray on 26/03/15.
+ */
+public class RegionSelectImageView extends ImageView {
+    private String TAG = "RegionSelectImageView";
     private Paint mCirclePaint;
     private Paint mSelectedPaint;
     private float mDiameter;
@@ -29,25 +30,29 @@ class TapSelectOverlay extends View {
     private Set<Integer> mSelection;
     private static float mSelectionMargin = 1.5f;
 
-    private TapSelectOverlayListener mTapListener;
+    private RectF imagePos = new RectF();
 
-    public interface TapSelectOverlayListener {
+    private TapListener mTapListener;
+
+    public interface TapListener {
         public void onTap(float x, float y);
     }
 
-    public TapSelectOverlay(Context context, TapSelectOverlayListener tapListener) {
+
+    public RegionSelectImageView(Context context) {
         super(context);
 
-        mTapListener = tapListener;
-        mPointList = new ArrayList<PointFloat>();
-        mSelection = new HashSet<Integer>();
         init();
     }
 
-    public TapSelectOverlay(Context context, AttributeSet attrs) {
+    public RegionSelectImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         init();
+    }
+
+    public void setTapListener(TapListener listener) {
+        mTapListener = listener;
     }
 
     public void setPointList(List<PointFloat> pointList) {
@@ -59,8 +64,7 @@ class TapSelectOverlay extends View {
     }
 
     public void addPoint(float x, float y) {
-
-        mPointList.add(new PointFloat(x, y));
+        PointFloat p = new PointFloat(x, y);
     }
 
     public void setDiameter(float dim) {
@@ -68,6 +72,7 @@ class TapSelectOverlay extends View {
     }
 
     public int findPointIndex(float x, float y) {
+
         for(int i = 0; i < mPointList.size(); i++) {
             PointFloat pnt = mPointList.get(i);
             float xdist = x - pnt.x;
@@ -75,7 +80,10 @@ class TapSelectOverlay extends View {
             float xpow = (float) Math.pow(xdist, 2);
             float ypow = (float) Math.pow(ydist, 2);
             float dist = (float) Math.sqrt( xpow + ypow );
-            if(dist < mSelectionMargin*(mDiameter/2.0)) {
+//            Log.d(TAG, String.format("Checking point %d dist %f", i, dist));
+
+            float[] diameter_bmp = getBitmapCoords(new float[]{mDiameter, mDiameter}); //Hack
+            if(dist < mSelectionMargin*(diameter_bmp[0]/2.0)) {
                 Log.d(TAG, String.format("Found overlapping point at index %d", i));
                 return i;
             }
@@ -93,6 +101,9 @@ class TapSelectOverlay extends View {
     }
 
     private void init() {
+        mPointList = new ArrayList<PointFloat>();
+        mSelection = new HashSet<Integer>();
+
         mCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mCirclePaint.setColor(Color.RED);
         DashPathEffect dashPathEffect = new DashPathEffect(new float[]{5,5}, 0.0f);
@@ -106,49 +117,81 @@ class TapSelectOverlay extends View {
         mSelectedPaint.setStyle(Paint.Style.STROKE);
         mSelectedPaint.setStrokeWidth(5);
 
-        mDiameter = 200;
+        setDiameter(200);
     }
 
     @Override
     protected void onSizeChanged(int w, int h , int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
         float xpad = (float)(getPaddingLeft() + getPaddingRight());
         float ypad = (float)(getPaddingTop()  + getPaddingBottom());
 
         float padded_w = w - xpad;
         float padded_h = h - ypad;
+
+        Matrix imgMatrix = getImageMatrix();
+        getImageMatrix().mapRect(imagePos);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+
+        //Draw after image
         if (mPointList != null) {
             for (Integer i = 0; i < mPointList.size(); i++) {
                 PointFloat pnt = mPointList.get(i);
+                float[] bmp_coords = new float[] {pnt.x, pnt.y};
 
+                float[] screen_coords = getScreenCoords(bmp_coords);
+
+                Log.d(TAG, String.format("Drawing Circle %d at Pnt (%f,%f) BMP (%f,%f), Screen (%f,%f)", i, pnt.x, pnt.y, bmp_coords[0], bmp_coords[1], screen_coords[0], screen_coords[1]));
                 if(mSelection.contains(i)) {
-                    canvas.drawCircle(pnt.x, pnt.y, mDiameter / 2, mSelectedPaint);
+                    canvas.drawCircle(screen_coords[0], screen_coords[1], mDiameter / 2, mSelectedPaint);
                 } else {
-                    canvas.drawCircle(pnt.x, pnt.y, mDiameter / 2, mCirclePaint);
+                    canvas.drawCircle(screen_coords[0], screen_coords[1], mDiameter / 2, mCirclePaint);
                 }
             }
         }
-        super.onDraw(canvas);
+
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-
         if(event.getAction() == MotionEvent.ACTION_DOWN) {
             //User tapped the preview
             float x = event.getX();
             float y = event.getY();
 
-            Log.d(TAG, String.format("User tapped overlay at (%f,%f)", x, y));
-            mTapListener.onTap(x, y);
+
+            float[] bitmap_coords = getBitmapCoords(new float[] {x, y});
+            float[] screen_coords = getScreenCoords(bitmap_coords);
+
+            Log.d(TAG, String.format("User tapped overlay at (%f,%f), BMP (%f,%f) Screen (%f,%f)", x, y, bitmap_coords[0], bitmap_coords[1], screen_coords[0], screen_coords[1]));
+            if(mTapListener != null) {
+
+
+                mTapListener.onTap(bitmap_coords[0], bitmap_coords[1]);
+            }
         }
 
-        return true; //We handled the event
+        return super.onTouchEvent(event);
     }
 
+    private float[] getBitmapCoords(float[] in_coords) {
+        //From https://stackoverflow.com/questions/4933612/how-to-convert-coordinates-of-the-image-view-to-the-coordinates-of-the-bitmap
+        final float[] coords = new float[] { in_coords[0], in_coords[1] };
+        Matrix matrix = new Matrix();
+        getImageMatrix().invert(matrix);
+        matrix.postTranslate(getScrollX(), getScrollY());
+        matrix.mapPoints(coords);
+        return coords;
+    }
 
-
+    private float[] getScreenCoords(float[] in_coords) {
+        float[] coords = new float[] {in_coords[0], in_coords[1]};
+        Matrix matrix = getImageMatrix();
+        matrix.mapPoints(coords);
+        return coords;
+    }
 }

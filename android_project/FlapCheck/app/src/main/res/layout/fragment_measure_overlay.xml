@@ -21,16 +21,18 @@
         android:layout_weight="1">
 
         <FrameLayout
-            android:id="@+id/image_overlay_photo"
+            android:id="@+id/image_overlay_frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1">
+
+            <ca.utoronto.flapcheck.RegionSelectImageView
+                android:id="@+id/image_overlay_photo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:visibility="invisible"/>
         </FrameLayout>
-        <!--<ImageView android:id="@+id/image_overlay_photo"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_gravity="center"-->
-            <!--android:visibility="invisible"/>-->
     </RelativeLayout>
 
     <LinearLayout

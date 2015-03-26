@@ -13,8 +13,8 @@ public class PointToMeasure {
     private long pointId = INVALID_ID; //this will only be populated after being inserted into the db
     private long patientId;
     private int pointIndex;
-    private int pointX;
-    private int pointY;
+    private float pointX;
+    private float pointY;
 
     /**
      * create an empty patient object with none of the attributes defined
@@ -23,7 +23,7 @@ public class PointToMeasure {
 
     }
 
-    public PointToMeasure(long patID, int index, int x, int y) {
+    public PointToMeasure(long patID, int index, float x, float y) {
         patientId = patID;
         pointIndex = index;
         pointX = x;
@@ -39,7 +39,7 @@ public class PointToMeasure {
      * @param x
      * @param y
      */
-    public PointToMeasure(long id, long patID, int index, int x, int y) {
+    public PointToMeasure(long id, long patID, int index, float x, float y) {
         pointId = id;
         patientId = patID;
         pointIndex = index;
@@ -71,19 +71,19 @@ public class PointToMeasure {
         this.pointIndex = pointIndex;
     }
 
-    public int getPointX() {
+    public float getPointX() {
         return pointX;
     }
 
-    public void setPointX(int pointX) {
+    public void setPointX(float pointX) {
         this.pointX = pointX;
     }
 
-    public int getPointY() {
+    public float getPointY() {
         return pointY;
     }
 
-    public void setPointY(int pointY) {
+    public void setPointY(float pointY) {
         this.pointY = pointY;
     }
 }

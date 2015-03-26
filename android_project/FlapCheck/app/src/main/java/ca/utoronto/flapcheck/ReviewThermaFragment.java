@@ -5,7 +5,10 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Point;
+import android.graphics.Rect;
+import android.graphics.Region;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,6 +22,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
@@ -47,7 +51,7 @@ import java.util.List;
  * A simple {@link android.support.v4.app.Fragment} subclass.
  */
 public class ReviewThermaFragment extends Fragment implements
-        TapSelectOverlay.TapSelectOverlayListener
+        RegionSelectImageView.TapListener
 
 {
     private static String TAG = "ReviewThermaFragment";
@@ -55,6 +59,8 @@ public class ReviewThermaFragment extends Fragment implements
     private ReviewTemperatureListAdapter mAdapter;
     private Patient mPatient;
 
+    private TapSelectOverlay mRegionTapSelectOverlay;
+    private RegionSelectImageView mRegionImage;
 
     public interface ReviewThermaFragmentListener {
         Patient getPatient();
@@ -82,7 +88,7 @@ public class ReviewThermaFragment extends Fragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_review_therma, container, false);
+        final View view = inflater.inflate(R.layout.fragment_review_therma, container, false);
 
         setHasOptionsMenu(true);
 
@@ -96,8 +102,13 @@ public class ReviewThermaFragment extends Fragment implements
         GraphView graphTemp = (GraphView) view.findViewById(R.id.graph_review_therma);
 
         FrameLayout regionFrame = (FrameLayout) view.findViewById(R.id.region_frame_review_therma);
-        ImageView regionImage = (ImageView) view.findViewById(R.id.region_image_review_therma);
-        TapSelectOverlay regionTapSelectOverlay = new TapSelectOverlay(getActivity(), this);
+        mRegionImage = (RegionSelectImageView) view.findViewById(R.id.region_image_review_therma);
+        mRegionImage.setTapListener(this);
+//        mRegionTapSelectOverlay = new TapSelectOverlay(getActivity(), this);
+
+        //Use smaller circles
+//        mRegionTapSelectOverlay.setDiameter(50);
+        mRegionImage.setDiameter(50);
 
         //Load the correct image
         File pictureDir = new File(mPatient.getPatientPhotoPath());
@@ -105,23 +116,45 @@ public class ReviewThermaFragment extends Fragment implements
         //Fill the paths into a list
         File[] imageFiles = pictureDir.listFiles();
         if(imageFiles.length > 0) {
-            regionImage.setImageURI(Uri.fromFile(imageFiles[0]));
+            mRegionImage.setImageURI(Uri.fromFile(imageFiles[0]));
+            mRegionImage.requestLayout();
         }
 
         //Add the measurement points to the overlay
         DBLoaderPointToMeasure dbPointsLoader = new DBLoaderPointToMeasure(getActivity());
-        List<PointToMeasure> pointsOverlayList =  dbPointsLoader.getPointsToMeasureForPatient(mPatient.getPatientId());
-        List<Point> pointToMeasureList = new ArrayList<Point>();
-        for (PointToMeasure pointOverlay : pointsOverlayList) {
-            Point p = new Point(pointOverlay.getPointX(), pointOverlay.getPointY());
-            pointToMeasureList.add(p);
-            //pointList is the location of the regions of interest on the image
-            //A circle is drawn at each point in the list, which can then be selected by tapping
-            regionTapSelectOverlay.setPointList(pointToMeasureList);
+        final List<PointToMeasure> pointsOverlayList =  dbPointsLoader.getPointsToMeasureForPatient(mPatient.getPatientId());
+        final List<PointFloat> pointsToDraw = new ArrayList<PointFloat>();
+
+        //We don't know the regionImage size until layout is complete, so set up a callback
+        //to de-normalize the points and add then to the overlay once this information is known
+        ViewTreeObserver viewTreeObserver = view.getViewTreeObserver();
+        if(viewTreeObserver.isAlive()) {
+            viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    //Deregister since we only need to do this once
+                    view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+
+                    int[] xy = getBitmapOffset(mRegionImage, true);
+                    float w = mRegionImage.getDrawable().getIntrinsicWidth();
+                    float h = mRegionImage.getDrawable().getIntrinsicWidth();
+
+                    for (PointToMeasure pointOverlay : pointsOverlayList) {
+                        PointFloat p = new PointFloat(pointOverlay.getPointX(), pointOverlay.getPointY());
+
+//                        p.denormalize(xy[0], xy[1], w, h);
+                        pointsToDraw.add(p);
+                        //pointList is the location of the regions of interest on the image
+                        //A circle is drawn at each point in the list, which can then be selected by tapping
+                        mRegionImage.setPointList(pointsToDraw);
+                    }
+                }
+            });
+
         }
 
         //Add the image and tap overlay to regionFrame
-        regionFrame.addView(regionTapSelectOverlay);
+//        regionFrame.addView(mRegionTapSelectOverlay);
 
 
 
@@ -228,5 +261,50 @@ public class ReviewThermaFragment extends Fragment implements
     @Override
     public void onTap(float x, float y) {
 //        Log.d(TAG, String.format("Tap at %f %f", x, y));
+        //Are we near a region?
+//        if (mRegionTapSelectOverlay != null) {
+//            int mPointIdx = mRegionTapSelectOverlay.findPointIndex(x, y);
+//
+//            mRegionTapSelectOverlay.clearSelection();
+//            if (mPointIdx != -1) {
+//                //Found a close region, visually mark it
+//                mRegionTapSelectOverlay.addSelection(mPointIdx);
+//            }
+//            mRegionTapSelectOverlay.invalidate(); //Re-draw
+//
+//        }
+        if (mRegionImage != null) {
+            int mPointIdx = mRegionImage.findPointIndex(x, y);
+
+            mRegionImage.clearSelection();
+            if (mPointIdx != -1) {
+                //Found a close region, visually mark it
+                mRegionImage.addSelection(mPointIdx);
+            }
+            mRegionImage.invalidate(); //Re-draw
+
+        }
+    }
+
+    public int[] getBitmapOffset(ImageView img,  Boolean includeLayout) {
+        //From: https://stackoverflow.com/questions/6023549/android-how-to-get-the-image-edge-x-y-position-inside-imageview
+        int[] offset = new int[2];
+        float[] values = new float[9];
+
+        Matrix m = img.getImageMatrix();
+        m.getValues(values);
+
+        offset[0] = (int) values[5];
+        offset[1] = (int) values[2];
+
+        if (includeLayout) {
+            ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) img.getLayoutParams();
+            int paddingTop = (int) (img.getPaddingTop() );
+            int paddingLeft = (int) (img.getPaddingLeft() );
+
+            offset[0] += paddingTop + lp.topMargin;
+            offset[1] += paddingLeft + lp.leftMargin;
+        }
+        return offset;
     }
 }

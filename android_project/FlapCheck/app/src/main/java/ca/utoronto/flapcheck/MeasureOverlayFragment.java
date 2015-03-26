@@ -28,7 +28,7 @@ import ca.utoronto.flapcheck.MeasurementInterface.MeasurementFragmentListener;
  * A simple {@link android.support.v4.app.Fragment} subclass.
  */
 public class MeasureOverlayFragment extends Fragment implements
-        TapSelectOverlay.TapSelectOverlayListener
+        RegionSelectImageView.TapListener
 {
     private static String TAG ="MeasureOverlayFragment";
     private static final int MAX_POINTS = 3;
@@ -40,11 +40,10 @@ public class MeasureOverlayFragment extends Fragment implements
     private Patient mPatient;
     private List<File> photoReadings = new ArrayList<>();
 
-    ImageView imagePhotoOverlay;
+    RegionSelectImageView imagePhotoOverlay;
     Button actionButton;
     TextView textOverlayHeading;
-    TapSelectOverlay tapSelectOverlay;
-    List<Point> pointToMeasureList = new ArrayList<>();
+    List<PointFloat> pointsToDraw = new ArrayList<>();
 
     private int resumeCounter = -1;
 
@@ -102,16 +101,18 @@ public class MeasureOverlayFragment extends Fragment implements
             List<PointToMeasure> pointsOverlayList =  dbPointsLoader.getPointsToMeasureForPatient(mPatient.getPatientId());
             if (pointsOverlayList.size() > 0) {
                 //this may be reached when navigating back to this fragment, so values need to be reset
-                pointToMeasureList.clear();
+                pointsToDraw.clear();
             }
             for (PointToMeasure pointOverlay : pointsOverlayList) {
-                Point p = new Point(pointOverlay.getPointX(), pointOverlay.getPointY());
-                pointToMeasureList.add(p);
-//            pointList is the location of the regions of interest on the image
-//            A circle is drawn at each point in the list, which can then be selected by tapping
-                tapSelectOverlay.setPointList(pointToMeasureList);
+                PointFloat p = new PointFloat(pointOverlay.getPointX(), pointOverlay.getPointY());
+                p.denormalize(imagePhotoOverlay.getPaddingLeft(), imagePhotoOverlay.getPaddingRight(), imagePhotoOverlay.getWidth(), imagePhotoOverlay.getHeight());
+
+                pointsToDraw.add(p);
+                //pointList is the location of the regions of interest on the image
+                //A circle is drawn at each point in the list, which can then be selected by tapping
+                imagePhotoOverlay.setPointList(pointsToDraw);
             }
-            tapSelectOverlay.invalidate();
+            imagePhotoOverlay.invalidate();
 
             setActionToSavePointsToMeasure();
         } else {
@@ -153,12 +154,10 @@ public class MeasureOverlayFragment extends Fragment implements
         actionButton = (Button) view.findViewById(R.id.action_button);
 
 
-        FrameLayout photoFrame = (FrameLayout) view.findViewById(R.id.image_overlay_photo);
+        FrameLayout photoFrame = (FrameLayout) view.findViewById(R.id.image_overlay_frame);
 
-        imagePhotoOverlay = new ImageView(getActivity());
-        tapSelectOverlay = new TapSelectOverlay(getActivity(), this);
-        photoFrame.addView(imagePhotoOverlay);
-        photoFrame.addView(tapSelectOverlay);
+        imagePhotoOverlay = (RegionSelectImageView) view.findViewById(R.id.image_overlay_photo);
+        imagePhotoOverlay.setTapListener(this);
 
         return view;
     }
@@ -194,31 +193,31 @@ public class MeasureOverlayFragment extends Fragment implements
     @Override
     public void onTap(float x, float y) {
 
-        if (pointToMeasureList.size() < MAX_POINTS) {
+        if (pointsToDraw.size() < MAX_POINTS) {
             //can draw additional points
 
-            Point p = new Point(new Float(x).intValue(), new Float(y).intValue());
+            PointFloat p = new PointFloat(x, y);
 
-            pointToMeasureList.add(p);
+            pointsToDraw.add(p);
 //            pointList is the location of the regions of interest on the image
 //            A circle is drawn at each point in the list, which can then be selected by tapping
-            tapSelectOverlay.setPointList(pointToMeasureList);
+            imagePhotoOverlay.setPointList(pointsToDraw);
             //TODO: might be better to save to the db right away?
         } else {
             //cannot add more points
 
             //Are we near a region?
-            mPointIdx = tapSelectOverlay.findPointIndex(x, y);
+            mPointIdx = imagePhotoOverlay.findPointIndex(x, y);
 
-            tapSelectOverlay.clearSelection();
+            imagePhotoOverlay.clearSelection();
             if(mPointIdx != -1) {
                 //Found a close region, visually mark it
-                tapSelectOverlay.addSelection(mPointIdx);
+                imagePhotoOverlay.addSelection(mPointIdx);
             }
         }
-        tapSelectOverlay.invalidate(); //Re-draw
+        imagePhotoOverlay.invalidate(); //Re-draw
 
-        if (pointToMeasureList.size() == MAX_POINTS) {
+        if (pointsToDraw.size() == MAX_POINTS) {
             actionButton.setEnabled(true);
         } else {
             actionButton.setEnabled(false);
@@ -283,7 +282,7 @@ public class MeasureOverlayFragment extends Fragment implements
      * change the text and action button to save the points to measure
      */
     private void setActionToSavePointsToMeasure() {
-        if (pointToMeasureList.size() == MAX_POINTS) {
+        if (pointsToDraw.size() == MAX_POINTS) {
             setActionToCaptureMeasurement();
             return;
         }
@@ -293,7 +292,8 @@ public class MeasureOverlayFragment extends Fragment implements
             @Override
             public void onClick(View v) {
                 int pointIndex = 0;
-                for (Point point : pointToMeasureList) {
+                for (PointFloat point : pointsToDraw) {
+
                     DBLoaderPointToMeasure dbLoader = new DBLoaderPointToMeasure(getActivity());
                     long pointToMeasureID = dbLoader.addPointToMeasure(
                             new PointToMeasure(mPatient.getPatientId(),pointIndex,point.x, point.y));

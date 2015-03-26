@@ -132,8 +132,8 @@ public class DBLoaderPointToMeasure {
                     mPoint.setPointId(Long.parseLong(cursor.getString(0)));
                     mPoint.setPatientId(Long.parseLong(cursor.getString(1)));
                     mPoint.setPointIndex(Integer.parseInt(cursor.getString(2)));
-                    mPoint.setPointX(Integer.parseInt(cursor.getString(3)));
-                    mPoint.setPointY(Integer.parseInt(cursor.getString(4)));
+                    mPoint.setPointX(Float.parseFloat(cursor.getString(3)));
+                    mPoint.setPointY(Float.parseFloat(cursor.getString(4)));
 
                     foundPoints.add(mPoint);
                 } while (cursor.moveToNext());
