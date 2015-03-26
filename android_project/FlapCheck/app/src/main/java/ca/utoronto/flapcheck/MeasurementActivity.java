@@ -208,15 +208,22 @@ public class MeasurementActivity extends FragmentActivity
     public void onPointMeasure(String measureTypeNODE, int location_idx) {
         switch (measureTypeNODE) {
             case Constants.MEASUREMENT_TEMP:
-                Intent intent = new Intent(this, NodeActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString(NodeActivity.ARG_NODE_ACTION, NodeActivity.NODE_THERMA);
-                bundle.putInt(NodeActivity.ARG_NODE_POINT_INDEX, location_idx);
-                bundle.putLong(NodeActivity.ARG_NODE_PATIENT_ID, mActivePatientId);
-                intent.putExtras(bundle);
-                startActivity(intent);
+                Intent tempIntent = new Intent(this, NodeActivity.class);
+                Bundle tempBundle = new Bundle();
+                tempBundle.putString(NodeActivity.ARG_NODE_ACTION, NodeActivity.NODE_THERMA);
+                tempBundle.putInt(NodeActivity.ARG_NODE_POINT_INDEX, location_idx);
+                tempBundle.putLong(NodeActivity.ARG_NODE_PATIENT_ID, mActivePatientId);
+                tempIntent.putExtras(tempBundle);
+                startActivity(tempIntent);
                 break;
             case Constants.MEASUREMENT_COLOUR:
+                Intent colourIntent = new Intent(this, NodeActivity.class);
+                Bundle colourBundle = new Bundle();
+                colourBundle.putString(NodeActivity.ARG_NODE_ACTION, NodeActivity.NODE_CHROMA);
+                colourBundle.putInt(NodeActivity.ARG_NODE_POINT_INDEX, location_idx);
+                colourBundle.putLong(NodeActivity.ARG_NODE_PATIENT_ID, mActivePatientId);
+                colourIntent.putExtras(colourBundle);
+                startActivity(colourIntent);
                 break;
             default:
                 break;
