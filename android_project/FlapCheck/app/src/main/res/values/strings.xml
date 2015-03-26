@@ -125,7 +125,7 @@
     <string name="text_review_photo_heading">PHOTO</string>
 
     <!-- MeasureOverlayFragment -->
-    <string name="image_overlay_heading_measure">Tap on a marker to select it</string>
+    <string name="image_overlay_heading_measure">Select a marker and take measurement</string>
     <string name="image_overlay_heading_patient">You must first select a patient</string>
     <string name="image_overlay_heading_photo">You must take a photo</string>
     <string name="image_overlay_heading_points">Choose 3 points on the flap</string>

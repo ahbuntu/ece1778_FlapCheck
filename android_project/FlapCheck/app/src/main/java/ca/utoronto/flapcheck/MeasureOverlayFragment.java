@@ -100,6 +100,10 @@ public class MeasureOverlayFragment extends Fragment implements
 
             DBLoaderPointToMeasure dbPointsLoader = new DBLoaderPointToMeasure(getActivity());
             List<PointToMeasure> pointsOverlayList =  dbPointsLoader.getPointsToMeasureForPatient(mPatient.getPatientId());
+            if (pointsOverlayList.size() > 0) {
+                //this may be reached when navigating back to this fragment, so values need to be reset
+                pointToMeasureList.clear();
+            }
             for (PointToMeasure pointOverlay : pointsOverlayList) {
                 Point p = new Point(pointOverlay.getPointX(), pointOverlay.getPointY());
                 pointToMeasureList.add(p);
