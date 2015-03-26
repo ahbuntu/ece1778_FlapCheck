@@ -95,7 +95,7 @@
     <!-- ReviewPhotoCard -->
     <string name="text_picture_card_heading">PHOTOS</string>
     <string name="text_picture_card_img1_caption">Original</string>
-    <string name="text_picture_card_img2_caption">Latest</string>
+    <string name="text_picture_card_img2_caption">Latest</string>-----
 
     <!-- ReviewCapRefill Card -->
     <string name="text_cap_refill_card_heading">Capillary Refill</string>

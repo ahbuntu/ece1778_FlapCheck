@@ -1,10 +1,13 @@
 package ca.utoronto.flapcheck;
 
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.media.ExifInterface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -19,6 +22,8 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -41,11 +46,16 @@ import java.util.List;
 /**
  * A simple {@link android.support.v4.app.Fragment} subclass.
  */
-public class ReviewThermaFragment extends Fragment {
+public class ReviewThermaFragment extends Fragment implements
+        TapSelectOverlay.TapSelectOverlayListener
+
+{
     private static String TAG = "ReviewThermaFragment";
 
     private ReviewTemperatureListAdapter mAdapter;
     private Patient mPatient;
+
+
     public interface ReviewThermaFragmentListener {
         Patient getPatient();
     }
@@ -84,6 +94,38 @@ public class ReviewThermaFragment extends Fragment {
 
         ProgressBar spinner = (ProgressBar) view.findViewById(R.id.progress_review_temp);
         GraphView graphTemp = (GraphView) view.findViewById(R.id.graph_review_therma);
+
+        FrameLayout regionFrame = (FrameLayout) view.findViewById(R.id.region_frame_review_therma);
+        ImageView regionImage = (ImageView) view.findViewById(R.id.region_image_review_therma);
+        TapSelectOverlay regionTapSelectOverlay = new TapSelectOverlay(getActivity(), this);
+
+        //Load the correct image
+        File pictureDir = new File(mPatient.getPatientPhotoPath());
+
+        //Fill the paths into a list
+        File[] imageFiles = pictureDir.listFiles();
+        if(imageFiles.length > 0) {
+            regionImage.setImageURI(Uri.fromFile(imageFiles[0]));
+        }
+
+        //Add the measurement points to the overlay
+        DBLoaderPointToMeasure dbPointsLoader = new DBLoaderPointToMeasure(getActivity());
+        List<PointToMeasure> pointsOverlayList =  dbPointsLoader.getPointsToMeasureForPatient(mPatient.getPatientId());
+        List<Point> pointToMeasureList = new ArrayList<Point>();
+        for (PointToMeasure pointOverlay : pointsOverlayList) {
+            Point p = new Point(pointOverlay.getPointX(), pointOverlay.getPointY());
+            pointToMeasureList.add(p);
+            //pointList is the location of the regions of interest on the image
+            //A circle is drawn at each point in the list, which can then be selected by tapping
+            regionTapSelectOverlay.setPointList(pointToMeasureList);
+        }
+
+        //Add the image and tap overlay to regionFrame
+        regionFrame.addView(regionTapSelectOverlay);
+
+
+
+
         // construct graph here
         LineGraphSeries<DataPoint> lineSeries = new LineGraphSeries<DataPoint>();
         PointsGraphSeries<DataPoint> pointSeries = new PointsGraphSeries<DataPoint>();
@@ -180,5 +222,11 @@ public class ReviewThermaFragment extends Fragment {
             }
             return convertView;
         }
+    }
+
+
+    @Override
+    public void onTap(float x, float y) {
+//        Log.d(TAG, String.format("Tap at %f %f", x, y));
     }
 }
