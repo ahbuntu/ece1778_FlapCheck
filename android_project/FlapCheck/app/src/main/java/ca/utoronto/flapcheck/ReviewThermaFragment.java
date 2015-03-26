@@ -106,10 +106,6 @@ public class ReviewThermaFragment extends Fragment implements
         mRegionImage.setTapListener(this);
 //        mRegionTapSelectOverlay = new TapSelectOverlay(getActivity(), this);
 
-        //Use smaller circles
-//        mRegionTapSelectOverlay.setDiameter(50);
-        mRegionImage.setDiameter(50);
-
         //Load the correct image
         File pictureDir = new File(mPatient.getPatientPhotoPath());
 

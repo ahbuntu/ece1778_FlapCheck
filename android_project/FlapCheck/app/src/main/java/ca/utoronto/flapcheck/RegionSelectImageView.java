@@ -25,10 +25,10 @@ public class RegionSelectImageView extends ImageView {
     private String TAG = "RegionSelectImageView";
     private Paint mCirclePaint;
     private Paint mSelectedPaint;
-    private float mDiameter;
     private List<PointFloat> mPointList;
     private Set<Integer> mSelection;
     private static float mSelectionMargin = 1.5f;
+    private static float mDiameterImgFrac = 0.25f;
 
     private RectF imagePos = new RectF();
 
@@ -67,10 +67,6 @@ public class RegionSelectImageView extends ImageView {
         PointFloat p = new PointFloat(x, y);
     }
 
-    public void setDiameter(float dim) {
-        mDiameter = dim;
-    }
-
     public int findPointIndex(float x, float y) {
 
         for(int i = 0; i < mPointList.size(); i++) {
@@ -82,8 +78,7 @@ public class RegionSelectImageView extends ImageView {
             float dist = (float) Math.sqrt( xpow + ypow );
 //            Log.d(TAG, String.format("Checking point %d dist %f", i, dist));
 
-            float[] diameter_bmp = getBitmapCoords(new float[]{mDiameter, mDiameter}); //Hack
-            if(dist < mSelectionMargin*(diameter_bmp[0]/2.0)) {
+            if(dist < mSelectionMargin*(getDiameterBmp()/2.0)) {
                 Log.d(TAG, String.format("Found overlapping point at index %d", i));
                 return i;
             }
@@ -117,7 +112,6 @@ public class RegionSelectImageView extends ImageView {
         mSelectedPaint.setStyle(Paint.Style.STROKE);
         mSelectedPaint.setStrokeWidth(5);
 
-        setDiameter(200);
     }
 
     @Override
@@ -129,12 +123,12 @@ public class RegionSelectImageView extends ImageView {
         float padded_w = w - xpad;
         float padded_h = h - ypad;
 
-        Matrix imgMatrix = getImageMatrix();
-        getImageMatrix().mapRect(imagePos);
+
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
+        //Draw image first
         super.onDraw(canvas);
 
         //Draw after image
@@ -147,9 +141,9 @@ public class RegionSelectImageView extends ImageView {
 
                 Log.d(TAG, String.format("Drawing Circle %d at Pnt (%f,%f) BMP (%f,%f), Screen (%f,%f)", i, pnt.x, pnt.y, bmp_coords[0], bmp_coords[1], screen_coords[0], screen_coords[1]));
                 if(mSelection.contains(i)) {
-                    canvas.drawCircle(screen_coords[0], screen_coords[1], mDiameter / 2, mSelectedPaint);
+                    canvas.drawCircle(screen_coords[0], screen_coords[1], getDiameterScreen() / 2, mSelectedPaint);
                 } else {
-                    canvas.drawCircle(screen_coords[0], screen_coords[1], mDiameter / 2, mCirclePaint);
+                    canvas.drawCircle(screen_coords[0], screen_coords[1], getDiameterScreen() / 2, mCirclePaint);
                 }
             }
         }
@@ -193,5 +187,17 @@ public class RegionSelectImageView extends ImageView {
         Matrix matrix = getImageMatrix();
         matrix.mapPoints(coords);
         return coords;
+    }
+
+    private float getDiameterBmp() {
+
+        return Math.min(mDiameterImgFrac*getDrawable().getIntrinsicWidth(), mDiameterImgFrac*getDrawable().getIntrinsicHeight());
+    }
+
+    private float getDiameterScreen() {
+        float dim_bmp = getDiameterBmp();
+        float[] dim_screen = getScreenCoords(new float[] {dim_bmp, dim_bmp});
+
+        return Math.min(dim_screen[0], dim_screen[1]);
     }
 }

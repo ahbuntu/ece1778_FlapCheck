@@ -105,7 +105,7 @@ public class MeasureOverlayFragment extends Fragment implements
             }
             for (PointToMeasure pointOverlay : pointsOverlayList) {
                 PointFloat p = new PointFloat(pointOverlay.getPointX(), pointOverlay.getPointY());
-                p.denormalize(imagePhotoOverlay.getPaddingLeft(), imagePhotoOverlay.getPaddingRight(), imagePhotoOverlay.getWidth(), imagePhotoOverlay.getHeight());
+//                p.denormalize(imagePhotoOverlay.getPaddingLeft(), imagePhotoOverlay.getPaddingRight(), imagePhotoOverlay.getWidth(), imagePhotoOverlay.getHeight());
 
                 pointsToDraw.add(p);
                 //pointList is the location of the regions of interest on the image
