@@ -61,8 +61,10 @@ public class ReviewThermaFragment extends Fragment implements
 
     private RegionSelectImageView mRegionImage;
     private List<MeasurementReading> mTempReadings;
+    private AbsListView mListView;
     private GraphView mGraphTemp;
     private ProgressBar mSpinner;
+    private int mDefaultRegionIdx = 1;
 
     public interface ReviewThermaFragmentListener {
         Patient getPatient();
@@ -98,14 +100,13 @@ public class ReviewThermaFragment extends Fragment implements
         getActivity().setTitle(mPatient.getPatientName() + " " + "(" + mPatient.getPatientMRN() + ")");
 
         DBLoaderMeasurement dbLoaderMeasurement = new DBLoaderMeasurement(getActivity());
-        mTempReadings = dbLoaderMeasurement.getTemperaturesForPatient(mPatient.getPatientId());
+        mTempReadings = dbLoaderMeasurement.getTemperaturesForPatientAtIndex(mPatient.getPatientId(), mDefaultRegionIdx);
 
         mSpinner = (ProgressBar) view.findViewById(R.id.progress_review_temp);
         mGraphTemp = (GraphView) view.findViewById(R.id.graph_review_therma);
 
 
 
-        FrameLayout regionFrame = (FrameLayout) view.findViewById(R.id.region_frame_review_therma);
         mRegionImage = (RegionSelectImageView) view.findViewById(R.id.region_image_review_therma);
         mRegionImage.setTapListener(this);
 //        mRegionTapSelectOverlay = new TapSelectOverlay(getActivity(), this);
@@ -133,42 +134,49 @@ public class ReviewThermaFragment extends Fragment implements
             //A circle is drawn at each point in the list, which can then be selected by tapping
             mRegionImage.setPointList(pointsToDraw);
         }
+        mRegionImage.addSelection(mDefaultRegionIdx);
 
         // construct graph here
-
-        mGraphTemp.setTitleColor(getResources().getColor(R.color.fc_dark_gray));
-        mGraphTemp.setTitleTextSize(64);
-        GridLabelRenderer gridStyler =  mGraphTemp.getGridLabelRenderer();
-        gridStyler.setGridStyle(GridLabelRenderer.GridStyle.BOTH);
         redraw_graph(); //Draw it the first time
 
         mSpinner.setVisibility(View.GONE);
 
         mAdapter = new ReviewTemperatureListAdapter(getActivity(),R.layout.review_therma_list_item, mTempReadings);
-        AbsListView mListView = (AbsListView) view.findViewById(R.id.list_review_therma);
+        mListView = (AbsListView) view.findViewById(R.id.list_review_therma);
         mListView.setAdapter(mAdapter);
 
         return view;
     }
 
     private void redraw_graph() {
-        //Reset the graph
-        mGraphTemp.removeAllSeries();
+        if(mTempReadings.size() > 0) {
+            mGraphTemp.setVisibility(View.VISIBLE);
+            //Reset the graph
+            mGraphTemp.removeAllSeries();
 
-        //Draw the graph
-        LineGraphSeries<DataPoint> lineSeries = new LineGraphSeries<DataPoint>();
-        PointsGraphSeries<DataPoint> pointSeries = new PointsGraphSeries<DataPoint>();
-        int i = 0;
-        for (MeasurementReading mReading : mTempReadings) {
-            i++;
-//                    Log.d(TAG, "Patient ID: " + mReading.getMeas_patientID() + " Temp: " + mReading.getMeas_temperature());
-            //assume that temperature is returned in ascending timestamp order
-            DataPoint point = new DataPoint(i, mReading.getMeas_temperature());
-            lineSeries.appendData(point, false, mTempReadings.size());
-            pointSeries.appendData(point, false, mTempReadings.size());
+            //Draw the graph
+            LineGraphSeries<DataPoint> lineSeries = new LineGraphSeries<DataPoint>();
+            PointsGraphSeries<DataPoint> pointSeries = new PointsGraphSeries<DataPoint>();
+            int i = 0;
+            for (MeasurementReading mReading : mTempReadings) {
+                i++;
+                //                    Log.d(TAG, "Patient ID: " + mReading.getMeas_patientID() + " Temp: " + mReading.getMeas_temperature());
+                //assume that temperature is returned in ascending timestamp order
+                DataPoint point = new DataPoint(i, mReading.getMeas_temperature());
+                lineSeries.appendData(point, false, mTempReadings.size());
+                pointSeries.appendData(point, false, mTempReadings.size());
+            }
+            mGraphTemp.addSeries(lineSeries);
+            mGraphTemp.addSeries(pointSeries);
+
+            //Labels
+            mGraphTemp.setTitleColor(getResources().getColor(R.color.fc_dark_gray));
+            mGraphTemp.setTitleTextSize(64);
+            GridLabelRenderer gridStyler = mGraphTemp.getGridLabelRenderer();
+            gridStyler.setGridStyle(GridLabelRenderer.GridStyle.BOTH);
+        } else {
+            mGraphTemp.setVisibility(View.INVISIBLE);
         }
-        mGraphTemp.addSeries(lineSeries);
-        mGraphTemp.addSeries(pointSeries);
     }
 
     @Override
@@ -184,10 +192,11 @@ public class ReviewThermaFragment extends Fragment implements
         Log.d(TAG, String.format("Re-loading data for Region %d", region_idx));
         //Update the temperature readings
         DBLoaderMeasurement dbLoaderMeasurement = new DBLoaderMeasurement(getActivity());
-        mTempReadings = dbLoaderMeasurement.getTemperaturesForPatient(mPatient.getPatientId()); //TODO get the correct value for the region idx
+        mTempReadings = dbLoaderMeasurement.getTemperaturesForPatientAtIndex(mPatient.getPatientId(), region_idx); //TODO get the correct value for the region idx
 
         //Mark the list to be updated
-        mAdapter.notifyDataSetChanged();
+        mAdapter = new ReviewTemperatureListAdapter(getActivity(),R.layout.review_therma_list_item, mTempReadings);
+        mListView.setAdapter(mAdapter);
 
         //Update the graph
         redraw_graph();
