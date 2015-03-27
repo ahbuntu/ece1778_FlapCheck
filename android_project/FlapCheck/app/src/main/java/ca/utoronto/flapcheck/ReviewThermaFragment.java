@@ -151,20 +151,21 @@ public class ReviewThermaFragment extends Fragment implements
     private void redraw_graph() {
         if(mTempReadings.size() > 0) {
             mGraphTemp.setVisibility(View.VISIBLE);
+
             //Reset the graph
             mGraphTemp.removeAllSeries();
 
             //Draw the graph
             LineGraphSeries<DataPoint> lineSeries = new LineGraphSeries<DataPoint>();
             PointsGraphSeries<DataPoint> pointSeries = new PointsGraphSeries<DataPoint>();
-            int i = 0;
+            int i = 1;
             for (MeasurementReading mReading : mTempReadings) {
-                i++;
-                //                    Log.d(TAG, "Patient ID: " + mReading.getMeas_patientID() + " Temp: " + mReading.getMeas_temperature());
+                Log.d(TAG, "Patient ID: " + mReading.getMeas_patientID() + "MeasureIdx:" + i + " Temp: " + mReading.getMeas_temperature());
                 //assume that temperature is returned in ascending timestamp order
                 DataPoint point = new DataPoint(i, mReading.getMeas_temperature());
                 lineSeries.appendData(point, false, mTempReadings.size());
                 pointSeries.appendData(point, false, mTempReadings.size());
+                i++;
             }
             mGraphTemp.addSeries(lineSeries);
             mGraphTemp.addSeries(pointSeries);
@@ -174,6 +175,11 @@ public class ReviewThermaFragment extends Fragment implements
             mGraphTemp.setTitleTextSize(64);
             GridLabelRenderer gridStyler = mGraphTemp.getGridLabelRenderer();
             gridStyler.setGridStyle(GridLabelRenderer.GridStyle.BOTH);
+            if(i > 1) {
+                mGraphTemp.getViewport().setXAxisBoundsManual(true);
+                mGraphTemp.getViewport().setMinX(1);
+                mGraphTemp.getViewport().setMaxX(i - 1);
+            }
         } else {
             mGraphTemp.setVisibility(View.INVISIBLE);
         }
