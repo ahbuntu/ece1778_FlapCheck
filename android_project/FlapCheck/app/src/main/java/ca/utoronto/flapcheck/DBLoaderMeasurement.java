@@ -256,6 +256,57 @@ public class DBLoaderMeasurement {
         }
         return foundReadings;
     }
+
+    /**
+     * Gets all colour readings for the specified patient
+     *
+     * @param patientID
+     * @return
+     */
+    public List<MeasurementReading> getColoursForPatientAtIndex(long patientID, int pointIndex) {
+
+        List<MeasurementReading> foundReadings = new ArrayList<MeasurementReading>();
+        try {
+            //assuming that colour RGB, LAB and hex behave as an atomic unit
+            String where = MeasurementEntry.COL_MEASUREMENT_PATIENT_ID + "=? " +
+                    "AND " + MeasurementEntry.COL_MEASUREMENT_COLOUR_RGB + "  <> \"\"" +
+                    "AND " + MeasurementEntry.COL_MEASUREMENT_POSITION + "  =? ";
+            String orderBy = MeasurementEntry.COL_MEASUREMENT_TIMESTAMP + " ASC";
+
+            Cursor cursor = activeDB.query(MeasurementEntry.TABLE_NAME,
+                    new String[] {MeasurementEntry.COL_MEASUREMENT_ID,
+                            MeasurementEntry.COL_MEASUREMENT_PATIENT_ID,
+                            MeasurementEntry.COL_MEASUREMENT_TIMESTAMP,
+                            MeasurementEntry.COL_MEASUREMENT_POSITION,
+                            MeasurementEntry.COL_MEASUREMENT_TEMP_CELS,
+                            MeasurementEntry.COL_MEASUREMENT_COLOUR_RGB,
+                            MeasurementEntry.COL_MEASUREMENT_COLOUR_LAB,
+                            MeasurementEntry.COL_MEASUREMENT_COLOUR_HEX},
+                    where, new String[] { String.valueOf(patientID), String.valueOf(pointIndex)},
+                    null, null, orderBy, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    MeasurementReading mReading = new MeasurementReading();
+                    mReading.setMeasurementID(Long.parseLong(cursor.getString(0)));
+                    mReading.setMeas_patientID(Long.parseLong(cursor.getString(1)));
+                    mReading.setMeas_timestamp(Long.parseLong(cursor.getString(2)));
+                    mReading.setMeas_position(Integer.parseInt(cursor.getString(3)));
+                    mReading.setMeas_temperature(Float.parseFloat(cursor.getString(4)));
+                    mReading.setMeas_colour_rgb(cursor.getString(5));
+                    mReading.setMeas_colour_lab(cursor.getString(6));
+                    mReading.setMeas_colour_hex(cursor.getString(7));
+
+                    foundReadings.add(mReading);
+                } while (cursor.moveToNext());
+            }
+            closeDB();
+
+        } catch (SQLiteException e) {
+            Log.d(TAG, e.getMessage());
+        }
+        return foundReadings;
+    }
+
     /**
      * Gets all colour readings for the specified patient
      *

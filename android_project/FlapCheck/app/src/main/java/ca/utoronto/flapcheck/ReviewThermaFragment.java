@@ -64,7 +64,7 @@ public class ReviewThermaFragment extends Fragment implements
     private AbsListView mListView;
     private GraphView mGraphTemp;
     private ProgressBar mSpinner;
-    private int mDefaultRegionIdx = 1;
+    private int mDefaultRegionIdx = 0;
 
     public interface ReviewThermaFragmentListener {
         Patient getPatient();
@@ -118,7 +118,6 @@ public class ReviewThermaFragment extends Fragment implements
         File[] imageFiles = pictureDir.listFiles();
         if(imageFiles.length > 0) {
             mRegionImage.setImageURI(Uri.fromFile(imageFiles[0]));
-            mRegionImage.requestLayout();
         }
 
         //Add the measurement points to the overlay

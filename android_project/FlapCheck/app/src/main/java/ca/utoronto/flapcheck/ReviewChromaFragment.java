@@ -4,8 +4,10 @@ package ca.utoronto.flapcheck;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,17 +20,25 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 
 /**
  * A simple {@link android.support.v4.app.Fragment} subclass.
  */
-public class ReviewChromaFragment extends Fragment {
+public class ReviewChromaFragment extends Fragment implements
+        RegionSelectImageView.TapListener
+{
     private static String TAG = "ReviewChromaFragment";
 
     private ReviewColourListAdapter mAdapter;
     private Patient mPatient;
+    private AbsListView mListView;
+    private RegionSelectImageView mRegionImage;
+    private List<MeasurementReading> mColourReadings;
+    private int mDefaultRegionIdx = 0;
 
     public interface ReviewChromaFragmentListener {
         Patient getPatient();
@@ -63,11 +73,39 @@ public class ReviewChromaFragment extends Fragment {
         mPatient = mListenerCallback.getPatient();
         getActivity().setTitle(mPatient.getPatientName() + " " + "(" + mPatient.getPatientMRN() + ")");
 
+        mRegionImage = (RegionSelectImageView) view.findViewById(R.id.region_image_review_chroma);
+        mRegionImage.setTapListener(this);
+
+        //Load the correct image
+        File pictureDir = new File(mPatient.getPatientPhotoPath());
+
+        //Fill the paths into a list
+        File[] imageFiles = pictureDir.listFiles();
+        if(imageFiles.length > 0) {
+            mRegionImage.setImageURI(Uri.fromFile(imageFiles[0]));
+        }
+
+        //Add the measurement points to the overlay
+        DBLoaderPointToMeasure dbPointsLoader = new DBLoaderPointToMeasure(getActivity());
+        final List<PointToMeasure> pointsOverlayList =  dbPointsLoader.getPointsToMeasureForPatient(mPatient.getPatientId());
+        final List<PointFloat> pointsToDraw = new ArrayList<PointFloat>();
+
+        for (PointToMeasure pointOverlay : pointsOverlayList) {
+            PointFloat p = new PointFloat(pointOverlay.getPointX(), pointOverlay.getPointY());
+
+            pointsToDraw.add(p);
+            //pointList is the location of the regions of interest on the image
+            //A circle is drawn at each point in the list, which can then be selected by tapping
+            mRegionImage.setPointList(pointsToDraw);
+        }
+        mRegionImage.addSelection(mDefaultRegionIdx);
+
+
         DBLoaderMeasurement dbLoaderMeasurement = new DBLoaderMeasurement(getActivity());
-        List<MeasurementReading> colourReadings = dbLoaderMeasurement.getColoursForPatient(mPatient.getPatientId());
+        List<MeasurementReading> colourReadings = dbLoaderMeasurement.getColoursForPatientAtIndex(mPatient.getPatientId(), mDefaultRegionIdx);
 
         mAdapter = new ReviewColourListAdapter(getActivity(),R.layout.review_chroma_list_item, colourReadings);
-        AbsListView mListView = (AbsListView) view.findViewById(R.id.list_review_chroma);
+        mListView = (AbsListView) view.findViewById(R.id.list_review_chroma);
         mListView.setAdapter(mAdapter);
 
         ProgressBar spinner = (ProgressBar) view.findViewById(R.id.progress_review_colour);
@@ -82,6 +120,36 @@ public class ReviewChromaFragment extends Fragment {
         item.setIcon(R.drawable.ic_colour_grey);
 
         super.onCreateOptionsMenu(menu,inflater);
+    }
+
+    @Override
+    public void onTap(float x, float y) {
+
+        if (mRegionImage != null) {
+            int mPointIdx = mRegionImage.findPointIndex(x, y);
+
+            mRegionImage.clearSelection();
+            if (mPointIdx != -1) {
+                //Found a close region, visually mark it
+                mRegionImage.addSelection(mPointIdx);
+
+                updateSelectedRegion(mPointIdx);
+            }
+            mRegionImage.invalidate(); //Re-draw
+
+        }
+    }
+
+    private void updateSelectedRegion(int region_idx) {
+        Log.d(TAG, String.format("Re-loading data for Region %d", region_idx));
+        //Update the temperature readings
+        DBLoaderMeasurement dbLoaderMeasurement = new DBLoaderMeasurement(getActivity());
+        mColourReadings = dbLoaderMeasurement.getColoursForPatientAtIndex(mPatient.getPatientId(), region_idx); //TODO get the correct value for the region idx
+
+        //Mark the list to be updated
+        mAdapter = new ReviewColourListAdapter(getActivity(),R.layout.review_chroma_list_item, mColourReadings);
+        mListView.setAdapter(mAdapter);
+
     }
 
     private class ReviewColourListAdapter extends BaseAdapter {
