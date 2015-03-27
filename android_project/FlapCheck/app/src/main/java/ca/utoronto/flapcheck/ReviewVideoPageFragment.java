@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.MediaController;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.VideoView;
@@ -27,6 +28,7 @@ public class ReviewVideoPageFragment extends Fragment {
     private int video_ready_count;
     VideoView rawVideoView;
     VideoView processedVideoView;
+    MediaController rawVideoController;
     ProgressBar progressBar;
     TextView text_overlay;
 
@@ -46,13 +48,17 @@ public class ReviewVideoPageFragment extends Fragment {
         progressBar = (ProgressBar) view.findViewById(R.id.video_load_progress_bar);
         text_overlay = (TextView) view.findViewById(R.id.video_page_time);
 
-
+        rawVideoController = new MediaController(getActivity());
 
         Bundle args = getArguments();
         File rawVidFile = new File(args.getString(ARG_RAW_VIDEO_PATH));
         text_overlay.setText(rawVidFile.getName());
 
         video_ready_count = 0;
+
+        rawVideoController.setAnchorView(rawVideoView);
+        rawVideoView.setMediaController(rawVideoController);
+
         rawVideoView.setVideoPath(args.getString(ARG_RAW_VIDEO_PATH));
         rawVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
@@ -77,17 +83,17 @@ public class ReviewVideoPageFragment extends Fragment {
 //            }
 //        });
 
-        view.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "Clicked page");
-                if(video_ready_count == 1) {
-                    Log.d(TAG, "Starting videos");
-                    rawVideoView.start();
-//                    processedVideoView.start();
-                }
-            }
-        });
+//        view.setOnClickListener( new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Log.d(TAG, "Clicked page");
+//                if(video_ready_count == 1) {
+//                    Log.d(TAG, "Starting videos");
+//                    rawVideoView.start();
+////                    processedVideoView.start();
+//                }
+//            }
+//        });
 
         return view;
     }
@@ -95,6 +101,10 @@ public class ReviewVideoPageFragment extends Fragment {
     public void onVideosLoaded() {
         progressBar.setVisibility(View.INVISIBLE);
         rawVideoView.setVisibility(View.VISIBLE);
+        if(rawVideoController.isShowing() == false) {
+            rawVideoController.show();
+        }
+
 //        processedVideoView.setVisibility(View.VISIBLE);
     }
 
