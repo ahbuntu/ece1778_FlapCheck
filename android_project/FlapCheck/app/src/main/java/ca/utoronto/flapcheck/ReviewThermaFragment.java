@@ -12,6 +12,7 @@ import android.graphics.Region;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -24,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
@@ -61,10 +63,16 @@ public class ReviewThermaFragment extends Fragment implements
 
     private RegionSelectImageView mRegionImage;
     private List<MeasurementReading> mTempReadings;
+    private List<MeasurementReading> mListTempReadings = new ArrayList<>();;
     private AbsListView mListView;
     private GraphView mGraphTemp;
-    private ProgressBar mSpinner;
+
     private int mDefaultRegionIdx = 0;
+
+    TextView textHeadingDate;
+    TextView textHeadingTime;
+    TextView textHeadingTemp;
+    TextView textThermaStatus;
 
     public interface ReviewThermaFragmentListener {
         Patient getPatient();
@@ -88,6 +96,17 @@ public class ReviewThermaFragment extends Fragment implements
         mListenerCallback = (ReviewThermaFragmentListener) activity;
     }
 
+    private void populateListTempReadings(){
+        //the first two are always null
+        if (mListTempReadings.size() > 0) {
+            mListTempReadings.clear();
+        }
+            mListTempReadings.add(null);
+            mListTempReadings.add(null);
+            for (MeasurementReading reading : mTempReadings) {
+                mListTempReadings.add(reading);
+            }
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -102,45 +121,9 @@ public class ReviewThermaFragment extends Fragment implements
         DBLoaderMeasurement dbLoaderMeasurement = new DBLoaderMeasurement(getActivity());
         mTempReadings = dbLoaderMeasurement.getTemperaturesForPatientAtIndex(mPatient.getPatientId(), mDefaultRegionIdx);
 
-        mSpinner = (ProgressBar) view.findViewById(R.id.progress_review_temp);
-        mGraphTemp = (GraphView) view.findViewById(R.id.graph_review_therma);
+        populateListTempReadings();
 
-
-
-        mRegionImage = (RegionSelectImageView) view.findViewById(R.id.region_image_review_therma);
-        mRegionImage.setTapListener(this);
-//        mRegionTapSelectOverlay = new TapSelectOverlay(getActivity(), this);
-
-        //Load the correct image
-        File pictureDir = new File(mPatient.getPatientPhotoPath());
-
-        //Fill the paths into a list
-        File[] imageFiles = pictureDir.listFiles();
-        if(imageFiles.length > 0) {
-            mRegionImage.setImageURI(Uri.fromFile(imageFiles[0]));
-        }
-
-        //Add the measurement points to the overlay
-        DBLoaderPointToMeasure dbPointsLoader = new DBLoaderPointToMeasure(getActivity());
-        final List<PointToMeasure> pointsOverlayList =  dbPointsLoader.getPointsToMeasureForPatient(mPatient.getPatientId());
-        final List<PointFloat> pointsToDraw = new ArrayList<PointFloat>();
-
-        for (PointToMeasure pointOverlay : pointsOverlayList) {
-            PointFloat p = new PointFloat(pointOverlay.getPointX(), pointOverlay.getPointY());
-
-            pointsToDraw.add(p);
-            //pointList is the location of the regions of interest on the image
-            //A circle is drawn at each point in the list, which can then be selected by tapping
-            mRegionImage.setPointList(pointsToDraw);
-        }
-        mRegionImage.addSelection(mDefaultRegionIdx);
-
-        // construct graph here
-        redraw_graph(); //Draw it the first time
-
-        mSpinner.setVisibility(View.GONE);
-
-        mAdapter = new ReviewTemperatureListAdapter(getActivity(),R.layout.review_therma_list_item, mTempReadings);
+        mAdapter = new ReviewTemperatureListAdapter(getActivity(),R.layout.review_therma_list_item, mListTempReadings);
         mListView = (AbsListView) view.findViewById(R.id.list_review_therma);
         mListView.setAdapter(mAdapter);
 
@@ -149,7 +132,11 @@ public class ReviewThermaFragment extends Fragment implements
 
     private void redraw_graph() {
         if(mTempReadings.size() > 0) {
+            textThermaStatus.setVisibility(View.GONE);
             mGraphTemp.setVisibility(View.VISIBLE);
+            textHeadingDate.setVisibility(View.VISIBLE);
+            textHeadingTime.setVisibility(View.VISIBLE);
+            textHeadingTemp.setVisibility(View.VISIBLE);
 
             //Reset the graph
             mGraphTemp.removeAllSeries();
@@ -179,11 +166,24 @@ public class ReviewThermaFragment extends Fragment implements
                 mGraphTemp.getViewport().setMinX(1);
                 mGraphTemp.getViewport().setMaxX(i - 1);
             }
+
+            //sexiness
+            mListView.smoothScrollToPosition(1); //display the graph
+            mListView.setSelection(1);
+
         } else {
-            mGraphTemp.setVisibility(View.INVISIBLE);
+            textThermaStatus.setVisibility(View.VISIBLE);
+            mGraphTemp.setVisibility(View.GONE);
+            textHeadingDate.setVisibility(View.GONE);
+            textHeadingTime.setVisibility(View.GONE);
+            textHeadingTemp.setVisibility(View.GONE);
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_review, menu);
@@ -199,13 +199,14 @@ public class ReviewThermaFragment extends Fragment implements
         DBLoaderMeasurement dbLoaderMeasurement = new DBLoaderMeasurement(getActivity());
         mTempReadings = dbLoaderMeasurement.getTemperaturesForPatientAtIndex(mPatient.getPatientId(), region_idx); //TODO get the correct value for the region idx
 
+        populateListTempReadings();
+
         //Mark the list to be updated
-        mAdapter = new ReviewTemperatureListAdapter(getActivity(),R.layout.review_therma_list_item, mTempReadings);
+        mAdapter = new ReviewTemperatureListAdapter(getActivity(),R.layout.review_therma_list_item, mListTempReadings);
         mListView.setAdapter(mAdapter);
 
         //Update the graph
         redraw_graph();
-
     }
 
     @Override
@@ -222,7 +223,6 @@ public class ReviewThermaFragment extends Fragment implements
                 updateSelectedRegion(mPointIdx);
             }
             mRegionImage.invalidate(); //Re-draw
-
         }
     }
 
@@ -261,29 +261,86 @@ public class ReviewThermaFragment extends Fragment implements
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            if(convertView==null){
-                // inflate the layout
-                LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
-                convertView = inflater.inflate(layoutResourceId, parent, false);
+        public int getItemViewType(int position) {
+            int viewType = layoutResourceId;
+            switch (position) {
+                case 0:
+                    viewType = R.layout.review_therma_image_item;
+                    break;
+                case 1:
+                    viewType = R.layout.review_therma_graph_item;
+                    break;
+                default:
+                    break;
             }
+            return viewType;
+        }
 
-            TextView textViewDate = (TextView) convertView.findViewById(R.id.text_review_therma_list_date);
-            TextView textViewTime = (TextView) convertView.findViewById(R.id.text_review_therma_list_time);
-            TextView textViewTemp = (TextView) convertView.findViewById(R.id.text_review_therma_list_temp);
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
 
-            // object item based on the position
-//            Log.d(TAG, "pos to inflate: " + position);
+            int viewType = getItemViewType(position);
+            switch (viewType) {
+                case R.layout.review_therma_image_item:
+                    convertView = inflater.inflate(R.layout.review_therma_image_item, parent, false);
+                    mRegionImage = (RegionSelectImageView) convertView.findViewById(R.id.region_image_review_therma);
+                    mRegionImage.setTapListener(ReviewThermaFragment.this);
 
-            if (readingsList == null) {
-                textViewDate.setText("");
-                textViewTime.setText("");
-                textViewTemp.setText("");
-            } else {
-                MeasurementReading mReading = readingsList.get(position);
-                textViewDate.setText(Utils.prettyDate(mReading.getMeas_timestamp()));
-                textViewTime.setText(Utils.prettyTimeDiffHrs(mPatient.getPatientOpDateTime(), mReading.getMeas_timestamp()));
-                textViewTemp.setText(Utils.prettyTempCelsius(mReading.getMeas_temperature()));
+                    //Load the correct image
+                    File pictureDir = new File(mPatient.getPatientPhotoPath());
+
+                    //Fill the paths into a list
+                    File[] imageFiles = pictureDir.listFiles();
+                    if(imageFiles.length > 0) {
+                        mRegionImage.setImageURI(Uri.fromFile(imageFiles[0]));
+                    }
+
+                    //Add the measurement points to the overlay
+                    DBLoaderPointToMeasure dbPointsLoader = new DBLoaderPointToMeasure(getActivity());
+                    final List<PointToMeasure> pointsOverlayList =  dbPointsLoader.getPointsToMeasureForPatient(mPatient.getPatientId());
+                    final List<PointFloat> pointsToDraw = new ArrayList<PointFloat>();
+
+                    for (PointToMeasure pointOverlay : pointsOverlayList) {
+                        PointFloat p = new PointFloat(pointOverlay.getPointX(), pointOverlay.getPointY());
+
+                        pointsToDraw.add(p);
+                        //pointList is the location of the regions of interest on the image
+                        //A circle is drawn at each point in the list, which can then be selected by tapping
+                        mRegionImage.setPointList(pointsToDraw);
+                    }
+                    mRegionImage.addSelection(mDefaultRegionIdx);
+                    break;
+                case R.layout.review_therma_graph_item:
+                    convertView = inflater.inflate(R.layout.review_therma_graph_item, parent, false);
+                    mGraphTemp = (GraphView) convertView.findViewById(R.id.graph_review_therma);
+                    textHeadingDate = (TextView) convertView.findViewById(R.id.text_review_therma_heading_date);
+                    textHeadingTime = (TextView) convertView.findViewById(R.id.text_review_therma_heading_time);
+                    textHeadingTemp = (TextView) convertView.findViewById(R.id.text_review_therma_heading_temp);
+                    textThermaStatus = (TextView) convertView.findViewById(R.id.text_therma_status);
+
+
+                    // construct graph here
+                    redraw_graph(); //Draw it the first time
+                    break;
+                default:
+                    convertView = inflater.inflate(layoutResourceId, parent, false);
+
+                    TextView textViewDate = (TextView) convertView.findViewById(R.id.text_review_therma_list_date);
+                    TextView textViewTime = (TextView) convertView.findViewById(R.id.text_review_therma_list_time);
+                    TextView textViewTemp = (TextView) convertView.findViewById(R.id.text_review_therma_list_temp);
+
+                    if (readingsList == null) {
+                        textViewDate.setText("");
+                        textViewTime.setText("");
+                        textViewTemp.setText("");
+                    } else {
+                        MeasurementReading mReading = readingsList.get(position);
+                        textViewDate.setText(Utils.prettyDate(mReading.getMeas_timestamp()));
+                        textViewTime.setText(Utils.prettyTimeDiffHrs(mPatient.getPatientOpDateTime(), mReading.getMeas_timestamp()));
+                        textViewTemp.setText(Utils.prettyTempCelsius(mReading.getMeas_temperature()));
+                    }
+                    break;
             }
             return convertView;
         }
