@@ -5,7 +5,7 @@
     android:id="@+id/card_review_pulse"
     android:layout_gravity="center"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="@dimen/card_height"
     android:layout_margin="@dimen/card_margin"
     android:clickable="true"
     card_view:cardCornerRadius="4dp"
@@ -17,6 +17,7 @@
         <TextView
             android:id="@+id/info_text"
             android:text="@string/text_pulse_card_heading"
+            android:textSize="@dimen/card_title_size"
             android:layout_width="match_parent"
             android:background="@color/fc_card_title"
             android:layout_height="@dimen/card_title_height"

@@ -5,7 +5,9 @@
 
     <!--Review Card Margins-->
     <dimen name="card_margin">6dp</dimen>
+    <dimen name="card_height">225dp</dimen>
     <dimen name="colour_text_margin">6dp</dimen>
-    <dimen name="card_title_height">30dp</dimen>
+    <dimen name="card_title_height">45dp</dimen>
+    <dimen name="card_title_size">24sp</dimen>
     <dimen name="colour_patch_margin">40dp</dimen>
 </resources>
