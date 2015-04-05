@@ -63,7 +63,7 @@ public class ReviewThermaFragment extends Fragment implements
 
     private RegionSelectImageView mRegionImage;
     private List<MeasurementReading> mTempReadings;
-    private List<MeasurementReading> mListTempReadings = new ArrayList<>();;
+    private List<MeasurementReading> mListTempReadings = new ArrayList<>();
     private AbsListView mListView;
     private GraphView mGraphTemp;
 
@@ -121,6 +121,39 @@ public class ReviewThermaFragment extends Fragment implements
         DBLoaderMeasurement dbLoaderMeasurement = new DBLoaderMeasurement(getActivity());
         mTempReadings = dbLoaderMeasurement.getTemperaturesForPatientAtIndex(mPatient.getPatientId(), mDefaultRegionIdx);
 
+        /*
+         * The region image is stateful, and must not be re-created or else selection is screwed up!
+         */
+        mRegionImage = (RegionSelectImageView) inflater.inflate(R.layout.review_therma_image_item, container, false);
+        mRegionImage.setTapListener(ReviewThermaFragment.this);
+
+        //Load the correct image
+        File pictureDir = new File(mPatient.getPatientPhotoPath());
+
+        //Fill the paths into a list
+        File[] imageFiles = pictureDir.listFiles();
+        if(imageFiles.length > 0) {
+            mRegionImage.setImageURI(Uri.fromFile(imageFiles[0]));
+        }
+
+        //Add the measurement points to the overlay
+        DBLoaderPointToMeasure dbPointsLoader = new DBLoaderPointToMeasure(getActivity());
+        final List<PointToMeasure> pointsOverlayList =  dbPointsLoader.getPointsToMeasureForPatient(mPatient.getPatientId());
+        final List<PointFloat> pointsToDraw = new ArrayList<PointFloat>();
+
+        for (PointToMeasure pointOverlay : pointsOverlayList) {
+            PointFloat p = new PointFloat(pointOverlay.getPointX(), pointOverlay.getPointY());
+
+            pointsToDraw.add(p);
+            //pointList is the location of the regions of interest on the image
+            //A circle is drawn at each point in the list, which can then be selected by tapping
+            mRegionImage.setPointList(pointsToDraw);
+        }
+        mRegionImage.addSelection(mDefaultRegionIdx);
+
+        /*
+         * Load the temperatures
+         */
         populateListTempReadings();
 
         mAdapter = new ReviewTemperatureListAdapter(getActivity(),R.layout.review_therma_list_item, mListTempReadings);
@@ -131,7 +164,10 @@ public class ReviewThermaFragment extends Fragment implements
     }
 
     private void redraw_graph() {
-        if(mTempReadings.size() > 0) {
+        if(mGraphTemp == null) {
+            return; //Nothing to do
+        }
+        if(mTempReadings.size() > 0 ) {
             textThermaStatus.setVisibility(View.GONE);
             mGraphTemp.setVisibility(View.VISIBLE);
             textHeadingDate.setVisibility(View.VISIBLE);
@@ -184,6 +220,7 @@ public class ReviewThermaFragment extends Fragment implements
     public void onResume() {
         super.onResume();
     }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_review, menu);
@@ -197,7 +234,7 @@ public class ReviewThermaFragment extends Fragment implements
         Log.d(TAG, String.format("Re-loading data for Region %d", region_idx));
         //Update the temperature readings
         DBLoaderMeasurement dbLoaderMeasurement = new DBLoaderMeasurement(getActivity());
-        mTempReadings = dbLoaderMeasurement.getTemperaturesForPatientAtIndex(mPatient.getPatientId(), region_idx); //TODO get the correct value for the region idx
+        mTempReadings = dbLoaderMeasurement.getTemperaturesForPatientAtIndex(mPatient.getPatientId(), region_idx);
 
         populateListTempReadings();
 
@@ -215,8 +252,11 @@ public class ReviewThermaFragment extends Fragment implements
         if (mRegionImage != null) {
             int mPointIdx = mRegionImage.findPointIndex(x, y);
 
-            mRegionImage.clearSelection();
+
             if (mPointIdx != -1) {
+                //Only clear if we found a new point
+                mRegionImage.clearSelection();
+
                 //Found a close region, visually mark it
                 mRegionImage.addSelection(mPointIdx);
 
@@ -283,33 +323,8 @@ public class ReviewThermaFragment extends Fragment implements
             int viewType = getItemViewType(position);
             switch (viewType) {
                 case R.layout.review_therma_image_item:
-                    convertView = inflater.inflate(R.layout.review_therma_image_item, parent, false);
-                    mRegionImage = (RegionSelectImageView) convertView.findViewById(R.id.region_image_review_therma);
-                    mRegionImage.setTapListener(ReviewThermaFragment.this);
-
-                    //Load the correct image
-                    File pictureDir = new File(mPatient.getPatientPhotoPath());
-
-                    //Fill the paths into a list
-                    File[] imageFiles = pictureDir.listFiles();
-                    if(imageFiles.length > 0) {
-                        mRegionImage.setImageURI(Uri.fromFile(imageFiles[0]));
-                    }
-
-                    //Add the measurement points to the overlay
-                    DBLoaderPointToMeasure dbPointsLoader = new DBLoaderPointToMeasure(getActivity());
-                    final List<PointToMeasure> pointsOverlayList =  dbPointsLoader.getPointsToMeasureForPatient(mPatient.getPatientId());
-                    final List<PointFloat> pointsToDraw = new ArrayList<PointFloat>();
-
-                    for (PointToMeasure pointOverlay : pointsOverlayList) {
-                        PointFloat p = new PointFloat(pointOverlay.getPointX(), pointOverlay.getPointY());
-
-                        pointsToDraw.add(p);
-                        //pointList is the location of the regions of interest on the image
-                        //A circle is drawn at each point in the list, which can then be selected by tapping
-                        mRegionImage.setPointList(pointsToDraw);
-                    }
-                    mRegionImage.addSelection(mDefaultRegionIdx);
+                    convertView = mRegionImage; //Re-use directly so we don't loose selection state!
+                    //TODO: this currently resets the list scroll, don't know how to fix that
                     break;
                 case R.layout.review_therma_graph_item:
                     convertView = inflater.inflate(R.layout.review_therma_graph_item, parent, false);
