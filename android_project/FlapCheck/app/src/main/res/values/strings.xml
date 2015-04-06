@@ -113,7 +113,7 @@
     <string name="text_review_therma_heading">TEMPERATURE</string>
 
     <!-- ReviewChromaFragment -->
-    <string name="text_review_chroma_heading">COLOUR</string>
+    <string name="text_review_chroma_heading">Select a marker to view the colours associated with it.</string>
 
     <!-- ReviewCapRefillFragment -->
     <string name="text_review_caprefill_heading">CAPILLARY REFILL</string>
