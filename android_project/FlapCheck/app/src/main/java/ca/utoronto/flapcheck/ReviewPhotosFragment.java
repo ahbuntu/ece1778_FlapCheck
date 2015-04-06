@@ -86,6 +86,12 @@ public class ReviewPhotosFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        mPager1.setCurrentItem(0);
+        mPager2.setCurrentItem(mPagerAdapter.getCount()-1);
+    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
